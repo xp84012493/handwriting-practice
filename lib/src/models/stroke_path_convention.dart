@@ -1,4 +1,5 @@
-import 'dart:ui' show Matrix4, Rect;
+import 'dart:ui' show Rect;
+import 'package:vector_math/vector_math_64.dart' show Matrix4;
 
 /// 描述笔画 SVG 路径所处的坐标约定，便于与不同数据源对齐。
 enum StrokePathConvention {

@@ -1,4 +1,5 @@
-import 'dart:ui' show Matrix4, Offset, Path, Rect;
+import 'dart:ui' show Offset, Path, Rect;
+import 'package:vector_math/vector_math_64.dart' show Matrix4;
 
 import 'package:flutter/foundation.dart';
 

@@ -3,6 +3,7 @@ import 'dart:ui' show Canvas, Color, Paint, PaintingStyle, Rect, Size, StrokeCap
 import 'package:flutter/widgets.dart';
 
 import '../engine/prepared_hanzi_strokes.dart';
+import '../models/stroke_path_convention.dart';
 
 /// 在 [glyphRect] 内绘制笔画。
 ///

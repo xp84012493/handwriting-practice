@@ -8,7 +8,7 @@ import 'stroke_path_convention.dart';
 /// - 本地 JSON：`{ "character": "永", "strokes": ["M...", ...] }`
 /// - Make Me a Hanzi `graphics.txt` 每行 JSON：`character` + `strokes`
 class HanziCharacter {
-  const HanziCharacter({
+  HanziCharacter({
     required this.character,
     required this.strokePathData,
     this.convention = StrokePathConvention.makemeahanzi1024,
@@ -16,8 +16,8 @@ class HanziCharacter {
     this.viewBoxHeight = 1024,
     this.medians,
   }) : assert(character.characters.length == 1, 'character 应为单个 Unicode 字符'),
-       assert(strokePathData.isNotEmpty, '至少应有一笔'),
-       assert(viewBoxWidth > 0 && viewBoxHeight > 0);
+        assert(strokePathData.isNotEmpty, '至少应有一笔'),
+        assert(viewBoxWidth > 0 && viewBoxHeight > 0);
 
   /// 单字（一个 grapheme cluster 的简化假设：一个 code unit 常见汉字）。
   final String character;
