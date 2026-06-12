@@ -1,0 +1,10 @@
+{
+  "character": "二",
+  "convention": "svgTopLeftYDown",
+  "viewBoxWidth": 1024,
+  "viewBoxHeight": 1024,
+  "strokes": [
+    "M 192 384 L 832 384",
+    "M 192 640 L 832 640"
+  ]
+}

@@ -1,0 +1,30 @@
+[
+  {
+    "character": "一",
+    "convention": "svgTopLeftYDown",
+    "viewBoxWidth": 1024,
+    "viewBoxHeight": 1024,
+    "strokes": ["M 128 512 L 896 512"]
+  },
+  {
+    "character": "二",
+    "convention": "svgTopLeftYDown",
+    "viewBoxWidth": 1024,
+    "viewBoxHeight": 1024,
+    "strokes": [
+      "M 192 384 L 832 384",
+      "M 192 640 L 832 640"
+    ]
+  },
+  {
+    "character": "三",
+    "convention": "svgTopLeftYDown",
+    "viewBoxWidth": 1024,
+    "viewBoxHeight": 1024,
+    "strokes": [
+      "M 192 288 L 832 288",
+      "M 192 512 L 832 512",
+      "M 192 736 L 832 736"
+    ]
+  }
+]

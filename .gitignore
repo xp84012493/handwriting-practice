@@ -1,0 +1,85 @@
+# Dart / Pub
+.dart_tool/
+.packages
+.pub/
+.pub-cache/
+
+# Flutter
+.flutter-plugins
+.flutter-plugins-dependencies
+
+# Build outputs
+build/
+**/build/
+*.dill
+*.snapshot
+
+# Symbolication / obfuscation
+app.*.symbols
+app.*.map.json
+
+# IDE & editors
+*.iml
+*.ipr
+*.iws
+.idea/
+.vscode/*
+!.vscode/extensions.json
+
+# OS
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*~
+
+# Logs & temp
+*.log
+*.tmp
+*.temp
+.atom/
+.history/
+
+# Coverage
+coverage/
+*.lcov
+
+# Android (when present)
+**/android/**/local.properties
+**/android/**/.gradle/
+**/android/**/captures/
+**/android/**/GeneratedPluginRegistrant.java
+**/android/app/debug/
+**/android/app/profile/
+**/android/app/release/
+*.jks
+*.keystore
+
+# iOS / macOS (when present)
+**/ios/**/*.mode1v3
+**/ios/**/*.mode2v3
+**/ios/**/*.moved-aside
+**/ios/**/*.pbxuser
+**/ios/**/*.perspectivev3
+**/ios/**/*sync/
+**/ios/**/.sconsign.dblite
+**/ios/**/.tags*
+**/ios/**/.vagrant/
+**/ios/**/DerivedData/
+**/ios/**/Icon?
+**/ios/**/Pods/
+**/ios/**/.symlinks/
+**/ios/**/profile
+**/ios/**/xcuserdata
+**/ios/.generated/
+**/ios/Flutter/.last_build_id
+**/ios/Flutter/App.framework
+**/ios/Flutter/Flutter.framework
+**/ios/Flutter/Flutter.podspec
+**/ios/ServiceDefinitions.json
+**/ios/Runner/GeneratedPluginRegistrant.*
+
+# Secrets (do not commit)
+.env
+.env.*
+!.env.example
