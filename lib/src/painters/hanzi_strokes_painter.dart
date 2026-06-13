@@ -3,6 +3,7 @@ import 'dart:ui' show Canvas, Color, Paint, PaintingStyle, Rect, Size, StrokeCap
 import 'package:flutter/widgets.dart';
 
 import '../engine/prepared_hanzi_strokes.dart';
+import '../style/practice_stroke_colors.dart';
 import '../models/stroke_path_convention.dart';
 
 /// 在 [glyphRect] 内绘制笔画。
@@ -19,9 +20,9 @@ class HanziStrokesPainter extends CustomPainter {
     required this.visibleStrokeCount,
     required this.highlightStrokeIndex,
     this.traceStyle = false,
-    this.traceColor = const Color(0x66888888),
-    this.highlightColor = const Color(0xFFD32F2F),
-    this.completedColor = const Color(0xFF424242),
+    this.traceColor = PracticeStrokeColors.trace,
+    this.highlightColor = PracticeStrokeColors.highlight,
+    this.completedColor = PracticeStrokeColors.completed,
     this.strokePaintWidth = 3.0,
   }) : assert(visibleStrokeCount >= 1),
        assert(highlightStrokeIndex >= 0 && highlightStrokeIndex < visibleStrokeCount);

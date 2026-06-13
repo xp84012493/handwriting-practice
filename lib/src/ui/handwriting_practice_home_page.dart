@@ -17,7 +17,8 @@ class HandwritingPracticeHomePage extends StatefulWidget {
       _HandwritingPracticeHomePageState();
 }
 
-class _HandwritingPracticeHomePageState extends State<HandwritingPracticeHomePage> {
+class _HandwritingPracticeHomePageState
+    extends State<HandwritingPracticeHomePage> {
   late final PracticeSheetController _controller = PracticeSheetController();
 
   @override
@@ -125,15 +126,13 @@ class _ControlBar extends StatelessWidget {
     final field = TextField(
       controller: controller.textController,
       textAlign: TextAlign.center,
-      maxLines: isSingle ? 1 : 3,
+      maxLines: 1,
       style: theme.textTheme.headlineSmall?.copyWith(
         fontWeight: FontWeight.w600,
         letterSpacing: isSingle ? 4 : 2,
       ),
       decoration: InputDecoration(
-        hintText: isSingle
-            ? '输入一个汉字'
-            : '输入多个汉字（A4 一页最多 ${controller.maxMultiCharacters} 字）',
+        hintText: isSingle ? '输入一个汉字' : '输入多个汉字',
         filled: true,
         fillColor: theme.colorScheme.surfaceContainerHighest.withValues(
           alpha: 0.35,
@@ -141,7 +140,8 @@ class _ControlBar extends StatelessWidget {
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
         ),
-        contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
+        contentPadding:
+            const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
       ),
       keyboardType: TextInputType.text,
       textInputAction: TextInputAction.done,
@@ -265,11 +265,10 @@ class _PreviewBody extends StatelessWidget {
             '${controller.blankSlots} 临摹 × '
             '${A4SheetLayout.singleModeRows} 行'
         : rows
-              .map(
-                (e) =>
-                    '「${e.character.character}」${e.prepared.strokeCount}笔',
-              )
-              .join(' · ');
+            .map(
+              (e) => '「${e.character.character}」${e.prepared.strokeCount}笔',
+            )
+            .join(' · ');
 
     return LayoutBuilder(
       builder: (context, constraints) {

@@ -8,6 +8,7 @@ import 'package:printing/printing.dart';
 
 import '../layout/a4_sheet_layout.dart';
 import '../models/practice_sheet_entry.dart';
+import '../style/practice_stroke_colors.dart';
 import '../models/stroke_path_convention.dart';
 
 /// 将当前字帖布局导出为 **矢量 PDF**（笔画使用 [PdfGraphics.drawShape]），并唤起系统打印/保存。
@@ -101,9 +102,9 @@ class _PracticeSheetPdfPainter {
 
   static final PdfColor _borderColor = PdfColor.fromInt(0xFF2C2C2C);
   static final PdfColor _guideColor = PdfColor.fromInt(0xFF9E9E9E);
-  static final PdfColor _highlight = PdfColor.fromInt(0xFFD32F2F);
-  static final PdfColor _completed = PdfColor.fromInt(0xFF424242);
-  static final PdfColor _trace = PdfColor(0.53, 0.53, 0.53, 0.22);
+  static final PdfColor _highlight = PracticeStrokeColors.pdfHighlight;
+  static final PdfColor _completed = PracticeStrokeColors.pdfCompleted;
+  static final PdfColor _trace = PracticeStrokeColors.pdfTrace;
 
   void paint(PdfGraphics g, PdfPoint innerSize) {
     final innerW = innerSize.x;
@@ -117,41 +118,38 @@ class _PracticeSheetPdfPainter {
         ..scaleByDouble(1.0, -1.0, 1, 1),
     );
 
-    final colsPerRow = rows
-        .map(
-          (e) => e.columnsCount(
-            traceSlots: traceSlots,
-            blankSlots: blankSlots,
-          ),
-        )
-        .toList(growable: false);
-    final geometry = A4SheetLayout.computeMultiRowGeometry(
+    final targetCell = A4SheetLayout.practiceCellSizePt;
+    final layout = A4SheetLayout.planWrappedSheet(
       innerW: innerW,
       innerH: innerH,
-      colsPerRow: colsPerRow,
+      logicalRows: rows,
+      traceSlots: traceSlots,
+      blankSlots: blankSlots,
       rowGap: rowGap,
+      targetCellSize: targetCell,
     );
-    final cell = geometry.cellSize;
-    final strokeW = geometry.strokeWidth;
-    final top = geometry.top;
+    final cell = layout.cellSize;
+    final strokeW = layout.strokeWidth;
+    final top = layout.top;
 
-    for (var row = 0; row < rows.length; row++) {
-      final entry = rows[row];
-      final rowCols = colsPerRow[row];
+    for (var i = 0; i < layout.physicalRows.length; i++) {
+      final slice = layout.physicalRows[i];
       const left = 0.0;
-      final y0 = top + row * (cell + rowGap);
+      final y0 = top + i * (cell + rowGap);
+      final strokeCount = slice.entry.prepared.strokeCount;
 
-      for (var col = 0; col < rowCols; col++) {
-        final x0 = left + col * cell;
+      for (var col = slice.startCol; col < slice.endCol; col++) {
+        final local = col - slice.startCol;
+        final x0 = left + local * cell;
         _paintMiziGrid(g, x0, y0, cell);
 
-        final kind = _cellKind(col, entry.prepared.strokeCount);
+        final kind = _cellKind(col, strokeCount);
         if (kind == _CellKind.blank) continue;
 
         final step = kind == _CellKind.progressive ? col : null;
         _paintStrokesForCell(
           g,
-          entry,
+          slice.entry,
           x0,
           y0,
           cell,

@@ -90,8 +90,8 @@ class PracticeSheetController extends ChangeNotifier {
   bool get loading => _loading;
   bool get hasSheet => _entries.isNotEmpty;
 
-  /// 多字模式 A4 一页最多字数。
-  int get maxMultiCharacters => A4SheetLayout.maxCharactersOnSheet();
+  /// 多字模式输入上限（按每字至少占 1 物理行估算）。
+  int get maxMultiCharacters => A4SheetLayout.maxPhysicalRowsOnSheet();
 
   /// 兼容旧接口：单字模式下的首字。
   HanziCharacter? get character =>
@@ -174,6 +174,26 @@ class PracticeSheetController extends ChangeNotifier {
         prepared: PreparedHanziStrokes.prepare(model: model, cache: pathCache),
       ),
     ];
+    _hint = _pageOverflowHint(_entries);
+  }
+
+  String? _pageOverflowHint(List<PracticeSheetEntry> logicalRows) {
+    final colsPerLine = A4SheetLayout.columnsPerLine(
+      A4SheetLayout.pdfInnerWidthPt,
+      A4SheetLayout.practiceCellSizePt,
+    );
+    final maxPhysical = A4SheetLayout.maxPhysicalRowsOnSheet();
+    var used = 0;
+    for (final entry in logicalRows) {
+      used += A4SheetLayout.physicalLineCountForEntry(
+        entry,
+        traceSlots: traceSlots,
+        blankSlots: blankSlots,
+        colsPerLine: colsPerLine,
+      );
+    }
+    if (used <= maxPhysical) return null;
+    return '折行后共 $used 行，超出 A4 单页约 $maxPhysical 行，打印时底部可能被裁切';
   }
 
   Future<void> _generateMulti(String raw) async {
@@ -186,28 +206,42 @@ class PracticeSheetController extends ChangeNotifier {
       return;
     }
 
-    final maxChars = maxMultiCharacters;
-    final selected = chars.take(maxChars).toList(growable: false);
-    final overflow = chars.length - selected.length;
+    final colsPerLine = A4SheetLayout.columnsPerLine(
+      A4SheetLayout.pdfInnerWidthPt,
+      A4SheetLayout.practiceCellSizePt,
+    );
+    final maxPhysical = A4SheetLayout.maxPhysicalRowsOnSheet();
 
     final built = <PracticeSheetEntry>[];
     final missing = <String>[];
+    var physicalUsed = 0;
+    var skippedForPage = 0;
 
-    for (final ch in selected) {
+    for (final ch in chars) {
       final model = _dictionary![ch];
       if (model == null) {
         missing.add(ch);
         continue;
       }
-      built.add(
-        PracticeSheetEntry(
-          character: model,
-          prepared: PreparedHanziStrokes.prepare(
-            model: model,
-            cache: pathCache,
-          ),
+      final entry = PracticeSheetEntry(
+        character: model,
+        prepared: PreparedHanziStrokes.prepare(
+          model: model,
+          cache: pathCache,
         ),
       );
+      final lines = A4SheetLayout.physicalLineCountForEntry(
+        entry,
+        traceSlots: traceSlots,
+        blankSlots: blankSlots,
+        colsPerLine: colsPerLine,
+      );
+      if (physicalUsed + lines > maxPhysical) {
+        skippedForPage++;
+        continue;
+      }
+      physicalUsed += lines;
+      built.add(entry);
     }
 
     if (built.isEmpty) {
@@ -222,8 +256,12 @@ class PracticeSheetController extends ChangeNotifier {
     if (missing.isNotEmpty) {
       hints.add('字库中暂无：${missing.join('、')}');
     }
-    if (overflow > 0) {
-      hints.add('A4 一页最多 $maxChars 字，已忽略后 $overflow 字');
+    if (skippedForPage > 0) {
+      hints.add('折行后超出 A4 单页（约 $maxPhysical 行），已忽略后 $skippedForPage 字');
+    }
+    final overflowHint = _pageOverflowHint(built);
+    if (overflowHint != null) {
+      hints.add(overflowHint);
     }
     _hint = hints.isEmpty ? null : hints.join('；');
   }

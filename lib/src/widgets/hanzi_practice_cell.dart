@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../engine/prepared_hanzi_strokes.dart';
 import '../painters/hanzi_strokes_painter.dart';
+import '../style/practice_stroke_colors.dart';
 import '../painters/mizi_grid_painter.dart';
 
 /// 练字格展示类型。
@@ -27,7 +28,7 @@ class HanziPracticeCell extends StatelessWidget {
     this.stepIndex = 0,
     this.glyphInsetFraction = 0.14,
     this.strokeWidth = 3.0,
-    this.traceColor = const Color(0x66888888),
+    this.traceColor = PracticeStrokeColors.trace,
   }) : assert(stepIndex >= 0);
 
   final PreparedHanziStrokes prepared;

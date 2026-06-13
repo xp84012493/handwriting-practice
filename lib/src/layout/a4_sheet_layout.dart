@@ -2,24 +2,8 @@ import 'dart:math' as math;
 
 import 'package:pdf/pdf.dart';
 
-/// 字帖网格在页面内的几何布局结果。
-class PracticeSheetGeometry {
-  const PracticeSheetGeometry({
-    required this.cellSize,
-    required this.strokeWidth,
-    required this.left,
-    required this.top,
-    required this.rowWidth,
-    required this.totalGridHeight,
-  });
-
-  final double cellSize;
-  final double strokeWidth;
-  final double left;
-  final double top;
-  final double rowWidth;
-  final double totalGridHeight;
-}
+import '../models/practice_sheet_entry.dart';
+import 'practice_sheet_wrap.dart';
 
 /// A4 字帖版式：横向放置，练字行沿 297mm 长边排列。
 abstract final class A4SheetLayout {
@@ -46,46 +30,55 @@ abstract final class A4SheetLayout {
     return practiceCellSizePt * (previewInnerW / pdfInnerWidthPt);
   }
 
-  /// 计算字帖网格布局。
-  ///
-  /// 优先使用 [targetCellSize]（默认 [practiceCellSizePt]），仅在格数过多或
-  /// 页面高度不足时缩小，不会为铺满纸张而放大。
-  static PracticeSheetGeometry computeGeometry({
-    required double innerW,
-    required double innerH,
-    required int cols,
-    required int rows,
-    double rowGap = defaultRowGap,
-    double? targetCellSize,
-  }) {
-    final target = targetCellSize ?? practiceCellSizePt;
-    final gapTotal = rowGap * math.max(0, rows - 1);
-    final maxCellW = innerW / cols;
-    final maxCellH = (innerH - gapTotal) / math.max(1, rows);
-    final maxCell = math.min(maxCellW, maxCellH);
-    final cell = math.min(target, maxCell).toDouble();
-
-    final strokeW = (2.2 * (cell / 72.0)).clamp(1.4, 4.2).toDouble();
-    final rowWidth = (cell * cols).toDouble();
-    const left = 0.0;
-    final totalGridH = (cell * rows + gapTotal).toDouble();
-    final top = math.max(0.0, (innerH - totalGridH) / 2).toDouble();
-
-    return PracticeSheetGeometry(
-      cellSize: cell,
-      strokeWidth: strokeW,
-      left: left,
-      top: top,
-      rowWidth: rowWidth,
-      totalGridHeight: totalGridH,
-    );
-  }
-
   /// 单字模式：同一字重复的行数。
   static const int singleModeRows = 7;
 
-  /// 多字模式：A4 横向可容纳的最大行数（每字一行，按 [practiceCellSizePt] 估算）。
-  static int maxCharactersOnSheet({
+  /// 固定 [cellSize] 时，一行最多容纳多少列。
+  static int columnsPerLine(double innerW, double cellSize) {
+    if (cellSize <= 0) return 1;
+    return math.max(1, (innerW / cellSize).floor());
+  }
+
+  /// 逻辑行拆成若干物理行（每行最多 [colsPerLine] 列）。
+  static List<PracticeRowSlice> sliceLogicalRow(
+    PracticeSheetEntry entry, {
+    required int traceSlots,
+    required int blankSlots,
+    required int colsPerLine,
+  }) {
+    final total = entry.columnsCount(
+      traceSlots: traceSlots,
+      blankSlots: blankSlots,
+    );
+    final slices = <PracticeRowSlice>[];
+    for (var start = 0; start < total; start += colsPerLine) {
+      slices.add(
+        PracticeRowSlice(
+          entry: entry,
+          startCol: start,
+          endCol: math.min(start + colsPerLine, total),
+        ),
+      );
+    }
+    return slices;
+  }
+
+  /// 单条逻辑行占用的物理行数。
+  static int physicalLineCountForEntry(
+    PracticeSheetEntry entry, {
+    required int traceSlots,
+    required int blankSlots,
+    required int colsPerLine,
+  }) {
+    final total = entry.columnsCount(
+      traceSlots: traceSlots,
+      blankSlots: blankSlots,
+    );
+    return (total + colsPerLine - 1) ~/ colsPerLine;
+  }
+
+  /// A4 一页最多容纳多少物理行（固定 2cm 格）。
+  static int maxPhysicalRowsOnSheet({
     double rowGap = defaultRowGap,
     double? targetCellSize,
   }) {
@@ -98,32 +91,73 @@ abstract final class A4SheetLayout {
     );
   }
 
-  /// 多字模式：按各行列数计算统一格宽（取最宽行决定缩放）。
-  static PracticeSheetGeometry computeMultiRowGeometry({
-    required double innerW,
-    required double innerH,
-    required List<int> colsPerRow,
+  /// 多字模式：在不超过一页物理行数的前提下，最多容纳多少字。
+  static int maxCharactersOnSheet({
+    required int traceSlots,
+    required int blankSlots,
+    int? maxStrokeCountHint,
     double rowGap = defaultRowGap,
     double? targetCellSize,
   }) {
-    if (colsPerRow.isEmpty) {
-      return const PracticeSheetGeometry(
-        cellSize: 0,
-        strokeWidth: 0,
-        left: 0,
-        top: 0,
-        rowWidth: 0,
-        totalGridHeight: 0,
+    final cell = targetCellSize ?? practiceCellSizePt;
+    final colsPerLine = columnsPerLine(pdfInnerWidthPt, cell);
+    final maxPhysical = maxPhysicalRowsOnSheet(
+      rowGap: rowGap,
+      targetCellSize: cell,
+    );
+
+    if (maxStrokeCountHint != null) {
+      final colsPerChar =
+          maxStrokeCountHint + traceSlots + blankSlots;
+      final linesPerChar =
+          (colsPerChar + colsPerLine - 1) ~/ colsPerLine;
+      return math.max(1, maxPhysical ~/ math.max(1, linesPerChar));
+    }
+
+    return maxPhysical;
+  }
+
+  static double strokeWidthForCell(double cell) {
+    return (2.2 * (cell / 72.0)).clamp(1.4, 4.2).toDouble();
+  }
+
+  /// 固定格宽，逻辑行超宽时自动换行。
+  static WrappedSheetLayout planWrappedSheet({
+    required double innerW,
+    required double innerH,
+    required List<PracticeSheetEntry> logicalRows,
+    required int traceSlots,
+    required int blankSlots,
+    double rowGap = defaultRowGap,
+    double? targetCellSize,
+  }) {
+    final cell = targetCellSize ?? practiceCellSizePt;
+    final colsPerLine = columnsPerLine(innerW, cell);
+    final physicalRows = <PracticeRowSlice>[];
+
+    for (final entry in logicalRows) {
+      physicalRows.addAll(
+        sliceLogicalRow(
+          entry,
+          traceSlots: traceSlots,
+          blankSlots: blankSlots,
+          colsPerLine: colsPerLine,
+        ),
       );
     }
-    final maxCols = colsPerRow.reduce(math.max);
-    return computeGeometry(
-      innerW: innerW,
-      innerH: innerH,
-      cols: maxCols,
-      rows: colsPerRow.length,
-      rowGap: rowGap,
-      targetCellSize: targetCellSize,
+
+    final gapTotal = rowGap * math.max(0, physicalRows.length - 1);
+    final totalH = cell * physicalRows.length + gapTotal;
+    const top = 0.0;
+
+    return WrappedSheetLayout(
+      cellSize: cell,
+      strokeWidth: strokeWidthForCell(cell),
+      top: top,
+      contentWidth: colsPerLine * cell,
+      totalHeight: totalH,
+      colsPerLine: colsPerLine,
+      physicalRows: physicalRows,
     );
   }
 }
