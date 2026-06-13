@@ -67,7 +67,7 @@ abstract final class A4SheetLayout {
 
     final strokeW = (2.2 * (cell / 72.0)).clamp(1.4, 4.2).toDouble();
     final rowWidth = (cell * cols).toDouble();
-    final left = ((innerW - rowWidth) / 2).toDouble();
+    const left = 0.0;
     final totalGridH = (cell * rows + gapTotal).toDouble();
     final top = math.max(0.0, (innerH - totalGridH) / 2).toDouble();
 
@@ -78,6 +78,52 @@ abstract final class A4SheetLayout {
       top: top,
       rowWidth: rowWidth,
       totalGridHeight: totalGridH,
+    );
+  }
+
+  /// 单字模式：同一字重复的行数。
+  static const int singleModeRows = 7;
+
+  /// 多字模式：A4 横向可容纳的最大行数（每字一行，按 [practiceCellSizePt] 估算）。
+  static int maxCharactersOnSheet({
+    double rowGap = defaultRowGap,
+    double? targetCellSize,
+  }) {
+    final cell = targetCellSize ?? practiceCellSizePt;
+    final innerH = pdfInnerHeightPt;
+    if (cell <= 0) return 1;
+    return math.max(
+      1,
+      ((innerH + rowGap) / (cell + rowGap)).floor(),
+    );
+  }
+
+  /// 多字模式：按各行列数计算统一格宽（取最宽行决定缩放）。
+  static PracticeSheetGeometry computeMultiRowGeometry({
+    required double innerW,
+    required double innerH,
+    required List<int> colsPerRow,
+    double rowGap = defaultRowGap,
+    double? targetCellSize,
+  }) {
+    if (colsPerRow.isEmpty) {
+      return const PracticeSheetGeometry(
+        cellSize: 0,
+        strokeWidth: 0,
+        left: 0,
+        top: 0,
+        rowWidth: 0,
+        totalGridHeight: 0,
+      );
+    }
+    final maxCols = colsPerRow.reduce(math.max);
+    return computeGeometry(
+      innerW: innerW,
+      innerH: innerH,
+      cols: maxCols,
+      rows: colsPerRow.length,
+      rowGap: rowGap,
+      targetCellSize: targetCellSize,
     );
   }
 }

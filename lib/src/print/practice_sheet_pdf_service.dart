@@ -7,8 +7,7 @@ import 'package:pdf/widgets.dart' as pw;
 import 'package:printing/printing.dart';
 
 import '../layout/a4_sheet_layout.dart';
-import '../engine/prepared_hanzi_strokes.dart';
-import '../models/hanzi_character.dart';
+import '../models/practice_sheet_entry.dart';
 import '../models/stroke_path_convention.dart';
 
 /// 将当前字帖布局导出为 **矢量 PDF**（笔画使用 [PdfGraphics.drawShape]），并唤起系统打印/保存。
@@ -22,11 +21,9 @@ class PracticeSheetPdfService {
 
   /// 生成 PDF 字节（矢量路径，非位图）。
   static Future<Uint8List> buildPdfBytes({
-    required HanziCharacter character,
-    required PreparedHanziStrokes prepared,
+    required List<PracticeSheetEntry> rows,
     required int traceSlots,
     required int blankSlots,
-    required int rowsOnSheet,
     double rowGap = 4,
     double pagePadding = 18,
   }) async {
@@ -50,11 +47,9 @@ class PracticeSheetPdfService {
                 ),
                 painter: (PdfGraphics canvas, PdfPoint innerSize) {
                   _PracticeSheetPdfPainter(
-                    character: character,
-                    prepared: prepared,
+                    rows: rows,
                     traceSlots: traceSlots,
                     blankSlots: blankSlots,
-                    rowsOnSheet: rowsOnSheet,
                     rowGap: rowGap,
                   ).paint(canvas, innerSize);
                 },
@@ -70,11 +65,9 @@ class PracticeSheetPdfService {
 
   /// 调用系统原生打印预览（可另存为 PDF）。
   static Future<void> layoutPrint({
-    required HanziCharacter character,
-    required PreparedHanziStrokes prepared,
+    required List<PracticeSheetEntry> rows,
     required int traceSlots,
     required int blankSlots,
-    required int rowsOnSheet,
     String name = '练字帖',
   }) async {
     await Printing.layoutPdf(
@@ -82,13 +75,10 @@ class PracticeSheetPdfService {
       format: pageFormat,
       dynamicLayout: false,
       onLayout: (PdfPageFormat _) async {
-        // 需求：版式严格 A4 横向；忽略部分平台传入的变体格式，始终输出 A4 矢量页。
         return buildPdfBytes(
-          character: character,
-          prepared: prepared,
+          rows: rows,
           traceSlots: traceSlots,
           blankSlots: blankSlots,
-          rowsOnSheet: rowsOnSheet,
         );
       },
     );
@@ -98,19 +88,15 @@ class PracticeSheetPdfService {
 /// 使用 [PdfGraphics] 矢量指令绘制米字格与 SVG path 笔画。
 class _PracticeSheetPdfPainter {
   _PracticeSheetPdfPainter({
-    required this.character,
-    required this.prepared,
+    required this.rows,
     required this.traceSlots,
     required this.blankSlots,
-    required this.rowsOnSheet,
     required this.rowGap,
-  }) : assert(prepared.strokeCount == character.strokePathData.length);
+  });
 
-  final HanziCharacter character;
-  final PreparedHanziStrokes prepared;
+  final List<PracticeSheetEntry> rows;
   final int traceSlots;
   final int blankSlots;
-  final int rowsOnSheet;
   final double rowGap;
 
   static final PdfColor _borderColor = PdfColor.fromInt(0xFF2C2C2C);
@@ -122,11 +108,8 @@ class _PracticeSheetPdfPainter {
   void paint(PdfGraphics g, PdfPoint innerSize) {
     final innerW = innerSize.x;
     final innerH = innerSize.y;
-    final cols = prepared.strokeCount + traceSlots + blankSlots;
-    if (cols <= 0 || rowsOnSheet <= 0) return;
+    if (rows.isEmpty) return;
 
-    // Pdf CustomPaint 回调坐标系为左下角原点、Y 向上；与屏幕预览的 Y 向下相反。
-    // 先翻转为与 [HanziStrokesPainter] / [A4PracticeSheetPreview] 一致的坐标系。
     g.saveContext();
     g.setTransform(
       Matrix4.identity()
@@ -134,30 +117,41 @@ class _PracticeSheetPdfPainter {
         ..scaleByDouble(1.0, -1.0, 1, 1),
     );
 
-    final geometry = A4SheetLayout.computeGeometry(
+    final colsPerRow = rows
+        .map(
+          (e) => e.columnsCount(
+            traceSlots: traceSlots,
+            blankSlots: blankSlots,
+          ),
+        )
+        .toList(growable: false);
+    final geometry = A4SheetLayout.computeMultiRowGeometry(
       innerW: innerW,
       innerH: innerH,
-      cols: cols,
-      rows: rowsOnSheet,
+      colsPerRow: colsPerRow,
       rowGap: rowGap,
     );
     final cell = geometry.cellSize;
     final strokeW = geometry.strokeWidth;
-    final left = geometry.left;
     final top = geometry.top;
 
-    for (var row = 0; row < rowsOnSheet; row++) {
+    for (var row = 0; row < rows.length; row++) {
+      final entry = rows[row];
+      final rowCols = colsPerRow[row];
+      const left = 0.0;
       final y0 = top + row * (cell + rowGap);
-      for (var col = 0; col < cols; col++) {
+
+      for (var col = 0; col < rowCols; col++) {
         final x0 = left + col * cell;
         _paintMiziGrid(g, x0, y0, cell);
 
-        final kind = _cellKind(col);
+        final kind = _cellKind(col, entry.prepared.strokeCount);
         if (kind == _CellKind.blank) continue;
 
         final step = kind == _CellKind.progressive ? col : null;
         _paintStrokesForCell(
           g,
+          entry,
           x0,
           y0,
           cell,
@@ -171,10 +165,9 @@ class _PracticeSheetPdfPainter {
     g.restoreContext();
   }
 
-  _CellKind _cellKind(int col) {
-    final n = prepared.strokeCount;
-    if (col < n) return _CellKind.progressive;
-    if (col < n + traceSlots) return _CellKind.trace;
+  _CellKind _cellKind(int col, int strokeCount) {
+    if (col < strokeCount) return _CellKind.progressive;
+    if (col < strokeCount + traceSlots) return _CellKind.trace;
     return _CellKind.blank;
   }
 
@@ -220,6 +213,7 @@ class _PracticeSheetPdfPainter {
 
   void _paintStrokesForCell(
     PdfGraphics g,
+    PracticeSheetEntry entry,
     double cellX,
     double cellY,
     double cell,
@@ -227,6 +221,7 @@ class _PracticeSheetPdfPainter {
     required _CellKind kind,
     int? progressiveStep,
   }) {
+    final character = entry.character;
     final inset = cell * 0.14;
     final glyph = Rect.fromLTRB(
       cellX + inset,
@@ -260,7 +255,6 @@ class _PracticeSheetPdfPainter {
       return;
     }
 
-    // progressive
     final step = (progressiveStep ?? 0).clamp(0, n - 1);
     final visible = step + 1;
     for (var i = 0; i < visible; i++) {

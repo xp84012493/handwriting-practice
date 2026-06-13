@@ -2,6 +2,7 @@
 library hanzi_practice_engine;
 
 export 'src/models/hanzi_character.dart';
+export 'src/models/practice_sheet_entry.dart';
 export 'src/models/stroke_path_convention.dart';
 export 'src/parsers/hanzi_graphics_parser.dart';
 export 'src/engine/stroke_path_cache.dart';

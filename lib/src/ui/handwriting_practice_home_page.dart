@@ -2,6 +2,8 @@ import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 
+import '../layout/a4_sheet_layout.dart';
+import '../models/practice_sheet_entry.dart';
 import '../print/practice_sheet_pdf_service.dart';
 import 'a4_practice_sheet_preview.dart';
 import 'practice_sheet_controller.dart';
@@ -37,17 +39,17 @@ class _HandwritingPracticeHomePageState extends State<HandwritingPracticeHomePag
   }
 
   Future<void> _onPrintOrExport() async {
-    final character = _controller.character;
-    final prepared = _controller.prepared;
-    if (character == null || prepared == null) return;
+    if (!_controller.hasSheet) return;
     try {
+      final rows = _controller.sheetRows;
+      final name = _controller.mode == PracticeSheetMode.single
+          ? '练字帖_${_controller.character!.character}'
+          : '练字帖_${rows.map((e) => e.character.character).join()}';
       await PracticeSheetPdfService.layoutPrint(
-        character: character,
-        prepared: prepared,
+        rows: rows,
         traceSlots: _controller.traceSlots,
         blankSlots: _controller.blankSlots,
-        rowsOnSheet: _controller.rowsOnSheet,
-        name: '练字帖_${character.character}',
+        name: name,
       );
     } catch (e, st) {
       debugPrint('Print/Export failed: $e\n$st');
@@ -118,15 +120,20 @@ class _ControlBar extends StatelessWidget {
     final mq = MediaQuery.of(context);
     final isNarrow = mq.size.width < 420;
 
+    final isSingle = controller.mode == PracticeSheetMode.single;
+
     final field = TextField(
       controller: controller.textController,
       textAlign: TextAlign.center,
+      maxLines: isSingle ? 1 : 3,
       style: theme.textTheme.headlineSmall?.copyWith(
         fontWeight: FontWeight.w600,
-        letterSpacing: 4,
+        letterSpacing: isSingle ? 4 : 2,
       ),
       decoration: InputDecoration(
-        hintText: '输入一个汉字',
+        hintText: isSingle
+            ? '输入一个汉字'
+            : '输入多个汉字（A4 一页最多 ${controller.maxMultiCharacters} 字）',
         filled: true,
         fillColor: theme.colorScheme.surfaceContainerHighest.withValues(
           alpha: 0.35,
@@ -138,10 +145,34 @@ class _ControlBar extends StatelessWidget {
       ),
       keyboardType: TextInputType.text,
       textInputAction: TextInputAction.done,
-      inputFormatters: const [
-        SingleGraphemeTextInputFormatter(),
+      inputFormatters: [
+        if (isSingle)
+          const SingleGraphemeTextInputFormatter()
+        else
+          HanziOnlyTextInputFormatter(
+            maxCharacters: controller.maxMultiCharacters,
+          ),
       ],
       onSubmitted: (_) => onGenerate(),
+    );
+
+    final modeToggle = SegmentedButton<PracticeSheetMode>(
+      segments: const [
+        ButtonSegment(
+          value: PracticeSheetMode.single,
+          label: Text('单字'),
+          icon: Icon(Icons.looks_one_outlined),
+        ),
+        ButtonSegment(
+          value: PracticeSheetMode.multi,
+          label: Text('多字'),
+          icon: Icon(Icons.notes_outlined),
+        ),
+      ],
+      selected: {controller.mode},
+      onSelectionChanged: controller.loading
+          ? null
+          : (selection) => controller.setMode(selection.first),
     );
 
     final button = FilledButton.icon(
@@ -168,17 +199,26 @@ class _ControlBar extends StatelessWidget {
             ? Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
+                  modeToggle,
+                  const SizedBox(height: 10),
                   field,
                   const SizedBox(height: 10),
                   button,
                 ],
               )
-            : Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
+            : Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  Expanded(child: field),
-                  const SizedBox(width: 12),
-                  button,
+                  modeToggle,
+                  const SizedBox(height: 10),
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Expanded(child: field),
+                      const SizedBox(width: 12),
+                      button,
+                    ],
+                  ),
                 ],
               ),
       ),
@@ -206,7 +246,7 @@ class _PreviewBody extends StatelessWidget {
         child: Padding(
           padding: const EdgeInsets.all(24),
           child: Text(
-            '在上方输入汉字并点击「生成字帖」，\n此处将显示 A4 横向预览（练字行沿长边排列）。',
+            '在上方选择模式并输入汉字，\n单字模式 7 行重复；多字模式每字一行（A4 限 ${controller.maxMultiCharacters} 字）。',
             textAlign: TextAlign.center,
             style: theme.textTheme.bodyLarge?.copyWith(
               color: theme.colorScheme.onSurfaceVariant,
@@ -217,13 +257,19 @@ class _PreviewBody extends StatelessWidget {
       );
     }
 
-    final prepared = controller.prepared!;
-    final subtitle =
-        '「${controller.character!.character}」'
-        ' · ${prepared.strokeCount} 笔递进 + '
-        '${controller.traceSlots} 描红 + '
-        '${controller.blankSlots} 临摹 × '
-        '${controller.rowsOnSheet} 行';
+    final rows = controller.sheetRows;
+    final subtitle = controller.mode == PracticeSheetMode.single
+        ? '「${controller.character!.character}」'
+            ' · ${controller.prepared!.strokeCount} 笔递进 + '
+            '${controller.traceSlots} 描红 + '
+            '${controller.blankSlots} 临摹 × '
+            '${A4SheetLayout.singleModeRows} 行'
+        : rows
+              .map(
+                (e) =>
+                    '「${e.character.character}」${e.prepared.strokeCount}笔',
+              )
+              .join(' · ');
 
     return LayoutBuilder(
       builder: (context, constraints) {
@@ -247,10 +293,9 @@ class _PreviewBody extends StatelessWidget {
                   ),
                   const SizedBox(height: 12),
                   A4PracticeSheetPreview(
-                    prepared: prepared,
+                    rows: rows,
                     traceSlots: controller.traceSlots,
                     blankSlots: controller.blankSlots,
-                    rowsOnSheet: controller.rowsOnSheet,
                   ),
                 ],
               ),

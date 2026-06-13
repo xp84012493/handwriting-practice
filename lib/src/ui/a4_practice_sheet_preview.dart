@@ -1,33 +1,31 @@
 import 'package:flutter/material.dart';
 
 import '../layout/a4_sheet_layout.dart';
-import '../engine/prepared_hanzi_strokes.dart';
+import '../models/practice_sheet_entry.dart';
 import '../widgets/hanzi_practice_cell.dart';
 
 /// A4 横向比例（宽:高 = 297:210）下的字帖预览：练字行沿长边排列，多行堆叠。
 class A4PracticeSheetPreview extends StatelessWidget {
   const A4PracticeSheetPreview({
     super.key,
-    required this.prepared,
+    required this.rows,
     required this.traceSlots,
     required this.blankSlots,
-    required this.rowsOnSheet,
     this.rowGap = 4,
     this.pagePadding = 14,
     this.traceColor = const Color(0x55888888),
   });
 
-  final PreparedHanziStrokes prepared;
+  final List<PracticeSheetEntry> rows;
   final int traceSlots;
   final int blankSlots;
-  final int rowsOnSheet;
   final double rowGap;
   final double pagePadding;
   final Color traceColor;
 
   @override
   Widget build(BuildContext context) {
-    final cols = prepared.strokeCount + traceSlots + blankSlots;
+    if (rows.isEmpty) return const SizedBox.shrink();
 
     return LayoutBuilder(
       builder: (context, constraints) {
@@ -59,49 +57,59 @@ class A4PracticeSheetPreview extends StatelessWidget {
                   builder: (context, inner) {
                     final innerW = inner.maxWidth;
                     final innerH = inner.maxHeight;
-                    final geometry = A4SheetLayout.computeGeometry(
+                    final colsPerRow = rows
+                        .map(
+                          (e) => e.columnsCount(
+                            traceSlots: traceSlots,
+                            blankSlots: blankSlots,
+                          ),
+                        )
+                        .toList(growable: false);
+                    final targetCell =
+                        A4SheetLayout.targetCellSizeForPreview(innerW);
+                    final geometry = A4SheetLayout.computeMultiRowGeometry(
                       innerW: innerW,
                       innerH: innerH,
-                      cols: cols,
-                      rows: rowsOnSheet,
+                      colsPerRow: colsPerRow,
                       rowGap: rowGap,
-                      targetCellSize:
-                          A4SheetLayout.targetCellSizeForPreview(innerW),
+                      targetCellSize: targetCell,
                     );
                     final cell = geometry.cellSize;
                     final strokeW = geometry.strokeWidth;
-                    final rowWidth = geometry.rowWidth;
-                    final left = geometry.left;
-                    final totalGridH = geometry.totalGridHeight;
                     final top = geometry.top;
+                    final totalGridH = geometry.totalGridHeight;
+                    final maxRowWidth = geometry.rowWidth;
 
                     return Stack(
                       children: [
                         Positioned.fill(
                           child: CustomPaint(
                             painter: _MarginGuidePainter(
-                              safeLeft: left,
+                              safeLeft: 0,
                               safeTop: top,
-                              rowWidth: rowWidth,
+                              rowWidth: maxRowWidth,
                               totalGridH: totalGridH,
                             ),
                           ),
                         ),
                         Positioned(
-                          left: left,
+                          left: 0,
                           top: top,
-                          width: rowWidth,
+                          width: innerW,
                           height: totalGridH,
                           child: Column(
-                            children: List.generate(rowsOnSheet, (row) {
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: List.generate(rows.length, (rowIndex) {
+                              final entry = rows[rowIndex];
                               return Padding(
                                 padding: EdgeInsets.only(
-                                  bottom: row == rowsOnSheet - 1 ? 0 : rowGap,
+                                  bottom:
+                                      rowIndex == rows.length - 1 ? 0 : rowGap,
                                 ),
                                 child: SizedBox(
                                   height: cell,
                                   child: _PracticeRow(
-                                    prepared: prepared,
+                                    entry: entry,
                                     traceSlots: traceSlots,
                                     blankSlots: blankSlots,
                                     cellSize: cell,
@@ -128,7 +136,7 @@ class A4PracticeSheetPreview extends StatelessWidget {
 
 class _PracticeRow extends StatelessWidget {
   const _PracticeRow({
-    required this.prepared,
+    required this.entry,
     required this.traceSlots,
     required this.blankSlots,
     required this.cellSize,
@@ -136,7 +144,7 @@ class _PracticeRow extends StatelessWidget {
     required this.traceColor,
   });
 
-  final PreparedHanziStrokes prepared;
+  final PracticeSheetEntry entry;
   final int traceSlots;
   final int blankSlots;
   final double cellSize;
@@ -145,6 +153,7 @@ class _PracticeRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final prepared = entry.prepared;
     final n = prepared.strokeCount;
     final children = <Widget>[];
 
@@ -191,7 +200,7 @@ class _PracticeRow extends StatelessWidget {
     }
 
     return Row(
-      mainAxisSize: MainAxisSize.max,
+      mainAxisSize: MainAxisSize.min,
       children: children,
     );
   }
