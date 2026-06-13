@@ -6,18 +6,19 @@ import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:printing/printing.dart';
 
+import '../layout/a4_sheet_layout.dart';
 import '../engine/prepared_hanzi_strokes.dart';
 import '../models/hanzi_character.dart';
 import '../models/stroke_path_convention.dart';
 
 /// 将当前字帖布局导出为 **矢量 PDF**（笔画使用 [PdfGraphics.drawShape]），并唤起系统打印/保存。
 ///
-/// 页面格式固定为 [PdfPageFormat.a4]；布局算法与 [A4PracticeSheetPreview] 对齐。
+/// 页面格式固定为 A4 横向（[PdfPageFormat.a4.landscape]）；布局算法与 [A4PracticeSheetPreview] 对齐。
 class PracticeSheetPdfService {
   PracticeSheetPdfService._();
 
-  /// 严格 A4 纵向页面（与 `PdfPageFormat.a4` 一致）。
-  static const PdfPageFormat pageFormat = PdfPageFormat.a4;
+  /// A4 横向：练字行沿 297mm 长边排列。
+  static final PdfPageFormat pageFormat = PdfPageFormat.a4.landscape;
 
   /// 生成 PDF 字节（矢量路径，非位图）。
   static Future<Uint8List> buildPdfBytes({
@@ -78,8 +79,10 @@ class PracticeSheetPdfService {
   }) async {
     await Printing.layoutPdf(
       name: name,
+      format: pageFormat,
+      dynamicLayout: false,
       onLayout: (PdfPageFormat _) async {
-        // 需求：版式严格 A4；忽略部分平台传入的变体格式，始终输出 A4 矢量页。
+        // 需求：版式严格 A4 横向；忽略部分平台传入的变体格式，始终输出 A4 矢量页。
         return buildPdfBytes(
           character: character,
           prepared: prepared,
@@ -131,16 +134,17 @@ class _PracticeSheetPdfPainter {
         ..scaleByDouble(1.0, -1.0, 1, 1),
     );
 
-    final gapTotal = rowGap * (rowsOnSheet > 1 ? rowsOnSheet - 1 : 0);
-    final cellW = innerW / cols;
-    final cellH = (innerH - gapTotal) / rowsOnSheet;
-    final cell = cellW < cellH ? cellW : cellH;
-    final strokeW = (2.2 * (cell / 72.0)).clamp(1.4, 4.2).toDouble();
-
-    final rowWidth = cell * cols;
-    final left = (innerW - rowWidth) / 2;
-    final totalGridH = cell * rowsOnSheet + gapTotal;
-    final top = ((innerH - totalGridH) / 2).clamp(0.0, double.infinity);
+    final geometry = A4SheetLayout.computeGeometry(
+      innerW: innerW,
+      innerH: innerH,
+      cols: cols,
+      rows: rowsOnSheet,
+      rowGap: rowGap,
+    );
+    final cell = geometry.cellSize;
+    final strokeW = geometry.strokeWidth;
+    final left = geometry.left;
+    final top = geometry.top;
 
     for (var row = 0; row < rowsOnSheet; row++) {
       final y0 = top + row * (cell + rowGap);

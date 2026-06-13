@@ -1,11 +1,10 @@
-import 'dart:math' as math;
-
 import 'package:flutter/material.dart';
 
+import '../layout/a4_sheet_layout.dart';
 import '../engine/prepared_hanzi_strokes.dart';
 import '../widgets/hanzi_practice_cell.dart';
 
-/// A4 纵向比例（宽:高 = 210:297）下的字帖预览：多行 × 多列练字格。
+/// A4 横向比例（宽:高 = 297:210）下的字帖预览：练字行沿长边排列，多行堆叠。
 class A4PracticeSheetPreview extends StatelessWidget {
   const A4PracticeSheetPreview({
     super.key,
@@ -40,7 +39,7 @@ class A4PracticeSheetPreview extends StatelessWidget {
         return SizedBox(
           width: pageW,
           child: AspectRatio(
-            aspectRatio: 210 / 297,
+            aspectRatio: A4SheetLayout.aspectRatio,
             child: DecoratedBox(
               decoration: BoxDecoration(
                 color: Colors.white,
@@ -60,17 +59,21 @@ class A4PracticeSheetPreview extends StatelessWidget {
                   builder: (context, inner) {
                     final innerW = inner.maxWidth;
                     final innerH = inner.maxHeight;
-                    final gapTotal = rowGap * math.max(0, rowsOnSheet - 1);
-                    final cellW = innerW / cols;
-                    final cellH = (innerH - gapTotal) / math.max(1, rowsOnSheet);
-                    final cell = math.min(cellW, cellH);
-                    final strokeW =
-                        (2.2 * (cell / 72.0)).clamp(1.4, 4.2).toDouble();
-
-                    final rowWidth = cell * cols;
-                    final left = (innerW - rowWidth) / 2;
-                    final totalGridH = cell * rowsOnSheet + gapTotal;
-                    final top = ((innerH - totalGridH) / 2).clamp(0.0, double.infinity);
+                    final geometry = A4SheetLayout.computeGeometry(
+                      innerW: innerW,
+                      innerH: innerH,
+                      cols: cols,
+                      rows: rowsOnSheet,
+                      rowGap: rowGap,
+                      targetCellSize:
+                          A4SheetLayout.targetCellSizeForPreview(innerW),
+                    );
+                    final cell = geometry.cellSize;
+                    final strokeW = geometry.strokeWidth;
+                    final rowWidth = geometry.rowWidth;
+                    final left = geometry.left;
+                    final totalGridH = geometry.totalGridHeight;
+                    final top = geometry.top;
 
                     return Stack(
                       children: [

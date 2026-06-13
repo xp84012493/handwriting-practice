@@ -47,7 +47,7 @@ class PracticeSheetController extends ChangeNotifier {
   /// 每行末尾仅米字格（临摹）的格数。
   final int blankSlots;
 
-  /// A4 预览内重复多少行相同模板。
+  /// A4 横向预览内重复多少行相同模板（行沿短边堆叠）。
   final int rowsOnSheet;
 
   final TextEditingController textController = TextEditingController();

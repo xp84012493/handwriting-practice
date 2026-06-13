@@ -6,7 +6,7 @@ import '../print/practice_sheet_pdf_service.dart';
 import 'a4_practice_sheet_preview.dart';
 import 'practice_sheet_controller.dart';
 
-/// 练字帖主界面：顶部输入 + 生成，下方 A4 比例字帖预览。
+/// 练字帖主界面：顶部输入 + 生成，下方 A4 横向比例字帖预览。
 class HandwritingPracticeHomePage extends StatefulWidget {
   const HandwritingPracticeHomePage({super.key});
 
@@ -206,7 +206,7 @@ class _PreviewBody extends StatelessWidget {
         child: Padding(
           padding: const EdgeInsets.all(24),
           child: Text(
-            '在上方输入汉字并点击「生成字帖」，\n此处将显示 A4 比例预览（递进笔顺 → 描红 → 空白临摹）。',
+            '在上方输入汉字并点击「生成字帖」，\n此处将显示 A4 横向预览（练字行沿长边排列）。',
             textAlign: TextAlign.center,
             style: theme.textTheme.bodyLarge?.copyWith(
               color: theme.colorScheme.onSurfaceVariant,
