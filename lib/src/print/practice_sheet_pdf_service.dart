@@ -122,6 +122,15 @@ class _PracticeSheetPdfPainter {
     final cols = prepared.strokeCount + traceSlots + blankSlots;
     if (cols <= 0 || rowsOnSheet <= 0) return;
 
+    // Pdf CustomPaint 回调坐标系为左下角原点、Y 向上；与屏幕预览的 Y 向下相反。
+    // 先翻转为与 [HanziStrokesPainter] / [A4PracticeSheetPreview] 一致的坐标系。
+    g.saveContext();
+    g.setTransform(
+      Matrix4.identity()
+        ..translateByDouble(0.0, innerH, 0, 1)
+        ..scaleByDouble(1.0, -1.0, 1, 1),
+    );
+
     final gapTotal = rowGap * (rowsOnSheet > 1 ? rowsOnSheet - 1 : 0);
     final cellW = innerW / cols;
     final cellH = (innerH - gapTotal) / rowsOnSheet;
@@ -154,6 +163,8 @@ class _PracticeSheetPdfPainter {
         );
       }
     }
+
+    g.restoreContext();
   }
 
   _CellKind _cellKind(int col) {
