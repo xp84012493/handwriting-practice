@@ -163,10 +163,15 @@ class _PracticeRowSlice extends StatelessWidget {
           width: cellSize,
           height: cellSize,
           child: switch (kind) {
+            PracticeCellKind.model => HanziPracticeCell(
+                prepared: prepared,
+                kind: HanziPracticeCellKind.model,
+                strokeWidth: strokeWidth,
+              ),
             PracticeCellKind.progressive => HanziPracticeCell(
                 prepared: prepared,
                 kind: HanziPracticeCellKind.progressive,
-                stepIndex: col,
+                stepIndex: practiceProgressiveStepIndex(col)!,
                 strokeWidth: strokeWidth,
               ),
             PracticeCellKind.trace => HanziPracticeCell(

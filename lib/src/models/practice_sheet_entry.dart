@@ -1,4 +1,5 @@
 import '../engine/prepared_hanzi_strokes.dart';
+import '../layout/practice_sheet_wrap.dart';
 import 'hanzi_character.dart';
 
 /// 字帖模式。
@@ -21,6 +22,10 @@ class PracticeSheetEntry {
   final PreparedHanziStrokes prepared;
 
   int columnsCount({required int traceSlots, required int blankSlots}) {
-    return prepared.strokeCount + traceSlots + blankSlots;
+    return practiceColumnsCount(
+      strokeCount: prepared.strokeCount,
+      traceSlots: traceSlots,
+      blankSlots: blankSlots,
+    );
   }
 }

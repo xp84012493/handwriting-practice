@@ -146,7 +146,7 @@ class _PracticeSheetPdfPainter {
         final kind = _cellKind(col, strokeCount);
         if (kind == _CellKind.blank) continue;
 
-        final step = kind == _CellKind.progressive ? col : null;
+        final step = kind == _CellKind.progressive ? col - 1 : null;
         _paintStrokesForCell(
           g,
           slice.entry,
@@ -164,8 +164,9 @@ class _PracticeSheetPdfPainter {
   }
 
   _CellKind _cellKind(int col, int strokeCount) {
-    if (col < strokeCount) return _CellKind.progressive;
-    if (col < strokeCount + traceSlots) return _CellKind.trace;
+    if (col == 0) return _CellKind.model;
+    if (col <= strokeCount) return _CellKind.progressive;
+    if (col <= strokeCount + traceSlots) return _CellKind.trace;
     return _CellKind.blank;
   }
 
@@ -253,6 +254,21 @@ class _PracticeSheetPdfPainter {
       return;
     }
 
+    if (kind == _CellKind.model) {
+      g.saveContext();
+      g.setLineJoin(PdfLineJoin.round);
+      g.setLineCap(PdfLineCap.round);
+      g.setLineWidth(strokeW);
+      g.setStrokeColor(_completed);
+      g.setTransform(ctm);
+      for (var i = 0; i < n; i++) {
+        g.drawShape(character.strokePathData[i]);
+        g.strokePath(close: false);
+      }
+      g.restoreContext();
+      return;
+    }
+
     final step = (progressiveStep ?? 0).clamp(0, n - 1);
     final visible = step + 1;
     for (var i = 0; i < visible; i++) {
@@ -269,4 +285,4 @@ class _PracticeSheetPdfPainter {
   }
 }
 
-enum _CellKind { progressive, trace, blank }
+enum _CellKind { model, progressive, trace, blank }

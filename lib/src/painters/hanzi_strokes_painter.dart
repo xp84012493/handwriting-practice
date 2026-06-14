@@ -8,7 +8,8 @@ import '../models/stroke_path_convention.dart';
 
 /// 在 [glyphRect] 内绘制笔画。
 ///
-/// - **递进**：[traceStyle] 为 false 时，最后一笔用 [highlightColor]，其余 [completedColor]。
+/// - **示范**：[modelStyle] 为 true 时，全部笔画 [completedColor]。
+/// - **递进**：[traceStyle] 与 [modelStyle] 均为 false 时，最后一笔 [highlightColor]，其余 [completedColor]。
 /// - **描红**：[traceStyle] 为 true 时，所有可见笔画使用 [traceColor]（建议带透明度）。
 ///
 /// 使用 [Canvas.transform] 将规范化 path 映射到米字格，避免每帧 [Path.addPath] 拷贝。
@@ -20,6 +21,7 @@ class HanziStrokesPainter extends CustomPainter {
     required this.visibleStrokeCount,
     required this.highlightStrokeIndex,
     this.traceStyle = false,
+    this.modelStyle = false,
     this.traceColor = PracticeStrokeColors.trace,
     this.highlightColor = PracticeStrokeColors.highlight,
     this.completedColor = PracticeStrokeColors.completed,
@@ -38,6 +40,9 @@ class HanziStrokesPainter extends CustomPainter {
 
   /// 为 true 时进入描红样式（淡色叠字）。
   final bool traceStyle;
+
+  /// 为 true 时行首完整示范（全笔深灰，无高亮）。
+  final bool modelStyle;
 
   /// 描红颜色（通常含 alpha）。
   final Color traceColor;
@@ -62,6 +67,17 @@ class HanziStrokesPainter extends CustomPainter {
     if (traceStyle) {
       final p = Paint()
         ..color = traceColor
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = strokePaintWidth
+        ..strokeJoin = StrokeJoin.round
+        ..strokeCap = StrokeCap.round
+        ..isAntiAlias = true;
+      for (var i = 0; i < visibleStrokeCount; i++) {
+        canvas.drawPath(strokes.pathsInNormalizedSpace[i], p);
+      }
+    } else if (modelStyle) {
+      final p = Paint()
+        ..color = completedColor
         ..style = PaintingStyle.stroke
         ..strokeWidth = strokePaintWidth
         ..strokeJoin = StrokeJoin.round
@@ -102,6 +118,7 @@ class HanziStrokesPainter extends CustomPainter {
         oldDelegate.visibleStrokeCount != visibleStrokeCount ||
         oldDelegate.highlightStrokeIndex != highlightStrokeIndex ||
         oldDelegate.traceStyle != traceStyle ||
+        oldDelegate.modelStyle != modelStyle ||
         oldDelegate.traceColor != traceColor ||
         oldDelegate.highlightColor != highlightColor ||
         oldDelegate.completedColor != completedColor ||

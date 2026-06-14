@@ -107,8 +107,11 @@ abstract final class A4SheetLayout {
     );
 
     if (maxStrokeCountHint != null) {
-      final colsPerChar =
-          maxStrokeCountHint + traceSlots + blankSlots;
+      final colsPerChar = practiceColumnsCount(
+        strokeCount: maxStrokeCountHint,
+        traceSlots: traceSlots,
+        blankSlots: blankSlots,
+      );
       final linesPerChar =
           (colsPerChar + colsPerLine - 1) ~/ colsPerLine;
       return math.max(1, maxPhysical ~/ math.max(1, linesPerChar));

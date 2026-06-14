@@ -37,14 +37,42 @@ class WrappedSheetLayout {
 }
 
 /// 练字格类型（列索引决定）。
-enum PracticeCellKind { progressive, trace, blank }
+enum PracticeCellKind {
+  /// 行首完整汉字示范。
+  model,
+
+  /// 递进笔顺。
+  progressive,
+
+  /// 描红。
+  trace,
+
+  /// 空白临摹。
+  blank,
+}
+
+/// 每行第一格为完整字，其后为递进笔顺 → 描红 → 临摹。
+int practiceColumnsCount({
+  required int strokeCount,
+  required int traceSlots,
+  required int blankSlots,
+}) {
+  return 1 + strokeCount + traceSlots + blankSlots;
+}
 
 PracticeCellKind practiceCellKindAt({
   required int col,
   required int strokeCount,
   required int traceSlots,
 }) {
-  if (col < strokeCount) return PracticeCellKind.progressive;
-  if (col < strokeCount + traceSlots) return PracticeCellKind.trace;
+  if (col == 0) return PracticeCellKind.model;
+  if (col <= strokeCount) return PracticeCellKind.progressive;
+  if (col <= strokeCount + traceSlots) return PracticeCellKind.trace;
   return PracticeCellKind.blank;
+}
+
+/// 递进格对应的 stepIndex（0 = 仅第 1 笔）。
+int? practiceProgressiveStepIndex(int col) {
+  if (col <= 0) return null;
+  return col - 1;
 }

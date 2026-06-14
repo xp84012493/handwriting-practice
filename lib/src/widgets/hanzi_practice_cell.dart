@@ -7,6 +7,9 @@ import '../painters/mizi_grid_painter.dart';
 
 /// 练字格展示类型。
 enum HanziPracticeCellKind {
+  /// 行首完整汉字示范（全笔深灰）。
+  model,
+
   /// 递进笔顺：第 [stepIndex] 笔高亮。
   progressive,
 
@@ -70,23 +73,35 @@ class HanziPracticeCell extends StatelessWidget {
                 ),
                 if (kind != HanziPracticeCellKind.blank)
                   CustomPaint(
-                    painter: kind == HanziPracticeCellKind.trace
-                        ? HanziStrokesPainter(
-                            strokes: prepared,
-                            glyphRect: glyphRect,
-                            visibleStrokeCount: n,
-                            highlightStrokeIndex: 0,
-                            traceStyle: true,
-                            traceColor: traceColor,
-                            strokePaintWidth: strokeWidth,
-                          )
-                        : HanziStrokesPainter(
-                            strokes: prepared,
-                            glyphRect: glyphRect,
-                            visibleStrokeCount: progressiveVisible,
-                            highlightStrokeIndex: safeStep,
-                            strokePaintWidth: strokeWidth,
-                          ),
+                    painter: switch (kind) {
+                      HanziPracticeCellKind.model => HanziStrokesPainter(
+                          strokes: prepared,
+                          glyphRect: glyphRect,
+                          visibleStrokeCount: n,
+                          highlightStrokeIndex: 0,
+                          modelStyle: true,
+                          strokePaintWidth: strokeWidth,
+                        ),
+                      HanziPracticeCellKind.trace => HanziStrokesPainter(
+                          strokes: prepared,
+                          glyphRect: glyphRect,
+                          visibleStrokeCount: n,
+                          highlightStrokeIndex: 0,
+                          traceStyle: true,
+                          traceColor: traceColor,
+                          strokePaintWidth: strokeWidth,
+                        ),
+                      HanziPracticeCellKind.progressive => HanziStrokesPainter(
+                          strokes: prepared,
+                          glyphRect: glyphRect,
+                          visibleStrokeCount: progressiveVisible,
+                          highlightStrokeIndex: safeStep,
+                          strokePaintWidth: strokeWidth,
+                        ),
+                      HanziPracticeCellKind.blank => throw StateError(
+                          'blank cell has no stroke painter',
+                        ),
+                    },
                     size: Size(side, side),
                   ),
               ],

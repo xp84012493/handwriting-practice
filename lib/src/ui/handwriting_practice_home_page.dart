@@ -260,7 +260,7 @@ class _PreviewBody extends StatelessWidget {
     final rows = controller.sheetRows;
     final subtitle = controller.mode == PracticeSheetMode.single
         ? '「${controller.character!.character}」'
-            ' · ${controller.prepared!.strokeCount} 笔递进 + '
+            ' · 完整示范 + ${controller.prepared!.strokeCount} 笔递进 + '
             '${controller.traceSlots} 描红 + '
             '${controller.blankSlots} 临摹 × '
             '${A4SheetLayout.singleModeRows} 行'
