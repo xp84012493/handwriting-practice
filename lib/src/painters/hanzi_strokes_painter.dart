@@ -22,6 +22,7 @@ class HanziStrokesPainter extends CustomPainter {
     required this.highlightStrokeIndex,
     this.traceStyle = false,
     this.modelStyle = false,
+    this.fillStrokes = false,
     this.traceColor = PracticeStrokeColors.trace,
     this.highlightColor = PracticeStrokeColors.highlight,
     this.completedColor = PracticeStrokeColors.completed,
@@ -44,6 +45,9 @@ class HanziStrokesPainter extends CustomPainter {
   /// 为 true 时行首完整示范（全笔深灰，无高亮）。
   final bool modelStyle;
 
+  /// 为 true 时用 [PaintingStyle.fill] 实心填充笔画（如图标），避免描边镂空。
+  final bool fillStrokes;
+
   /// 描红颜色（通常含 alpha）。
   final Color traceColor;
 
@@ -64,44 +68,35 @@ class HanziStrokesPainter extends CustomPainter {
     canvas.save();
     canvas.transform(m.storage);
 
-    if (traceStyle) {
+    Paint paintFor(Color color) {
       final p = Paint()
-        ..color = traceColor
-        ..style = PaintingStyle.stroke
-        ..strokeWidth = strokePaintWidth
-        ..strokeJoin = StrokeJoin.round
-        ..strokeCap = StrokeCap.round
+        ..color = color
         ..isAntiAlias = true;
+      if (fillStrokes) {
+        p.style = PaintingStyle.fill;
+      } else {
+        p
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = strokePaintWidth
+          ..strokeJoin = StrokeJoin.round
+          ..strokeCap = StrokeCap.round;
+      }
+      return p;
+    }
+
+    if (traceStyle) {
+      final p = paintFor(traceColor);
       for (var i = 0; i < visibleStrokeCount; i++) {
         canvas.drawPath(strokes.pathsInNormalizedSpace[i], p);
       }
     } else if (modelStyle) {
-      final p = Paint()
-        ..color = completedColor
-        ..style = PaintingStyle.stroke
-        ..strokeWidth = strokePaintWidth
-        ..strokeJoin = StrokeJoin.round
-        ..strokeCap = StrokeCap.round
-        ..isAntiAlias = true;
+      final p = paintFor(completedColor);
       for (var i = 0; i < visibleStrokeCount; i++) {
         canvas.drawPath(strokes.pathsInNormalizedSpace[i], p);
       }
     } else {
-      final highlightPaint = Paint()
-        ..color = highlightColor
-        ..style = PaintingStyle.stroke
-        ..strokeWidth = strokePaintWidth
-        ..strokeJoin = StrokeJoin.round
-        ..strokeCap = StrokeCap.round
-        ..isAntiAlias = true;
-
-      final completedPaint = Paint()
-        ..color = completedColor
-        ..style = PaintingStyle.stroke
-        ..strokeWidth = strokePaintWidth
-        ..strokeJoin = StrokeJoin.round
-        ..strokeCap = StrokeCap.round
-        ..isAntiAlias = true;
+      final highlightPaint = paintFor(highlightColor);
+      final completedPaint = paintFor(completedColor);
 
       for (var i = 0; i < visibleStrokeCount; i++) {
         final paint = i == highlightStrokeIndex ? highlightPaint : completedPaint;
@@ -119,6 +114,7 @@ class HanziStrokesPainter extends CustomPainter {
         oldDelegate.highlightStrokeIndex != highlightStrokeIndex ||
         oldDelegate.traceStyle != traceStyle ||
         oldDelegate.modelStyle != modelStyle ||
+        oldDelegate.fillStrokes != fillStrokes ||
         oldDelegate.traceColor != traceColor ||
         oldDelegate.highlightColor != highlightColor ||
         oldDelegate.completedColor != completedColor ||
