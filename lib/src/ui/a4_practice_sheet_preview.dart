@@ -6,7 +6,7 @@ import '../models/practice_sheet_entry.dart';
 import '../style/practice_stroke_colors.dart';
 import '../widgets/hanzi_practice_cell.dart';
 
-/// A4 横向比例（宽:高 = 297:210）下的字帖预览：固定 2cm 格宽，超宽自动换行。
+/// A4 横向比例（宽:高 = 297:210）下的字帖预览：固定格宽，超宽自动换行。
 class A4PracticeSheetPreview extends StatelessWidget {
   const A4PracticeSheetPreview({
     super.key,

@@ -10,8 +10,8 @@ abstract final class A4SheetLayout {
   /// 宽:高 = 297:210（A4 横向）。
   static const double aspectRatio = 297 / 210;
 
-  /// 练字米字格推荐边长（mm）。国内小学字帖常见 1.8–2.2cm，默认取 2.0cm。
-  static const double practiceCellSizeMm = 20;
+  /// 练字米字格边长（mm）。
+  static const double practiceCellSizeMm = 13;
 
   static const double defaultRowGap = 4;
   static const double defaultPagePaddingPt = 18;
@@ -77,7 +77,7 @@ abstract final class A4SheetLayout {
     return (total + colsPerLine - 1) ~/ colsPerLine;
   }
 
-  /// A4 一页最多容纳多少物理行（固定 2cm 格）。
+  /// A4 一页最多容纳多少物理行（固定格宽）。
   static int maxPhysicalRowsOnSheet({
     double rowGap = defaultRowGap,
     double? targetCellSize,
