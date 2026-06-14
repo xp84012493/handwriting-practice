@@ -65,25 +65,25 @@ class _HandwritingPracticeHomePageState
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('汉字笔顺字帖'),
-        centerTitle: true,
-        actions: [
-          IconButton(
-            tooltip: '打印 / 导出 PDF',
-            icon: const Icon(Icons.print_outlined),
-            onPressed: _controller.hasSheet && !_controller.loading
-                ? _onPrintOrExport
-                : null,
+    return AnimatedBuilder(
+      animation: _controller,
+      builder: (context, _) {
+        return Scaffold(
+          appBar: AppBar(
+            title: const Text('汉字笔顺字帖'),
+            centerTitle: true,
+            actions: [
+              IconButton(
+                tooltip: '打印 / 导出 PDF',
+                icon: const Icon(Icons.print_outlined),
+                onPressed: _controller.hasSheet && !_controller.loading
+                    ? _onPrintOrExport
+                    : null,
+              ),
+            ],
           ),
-        ],
-      ),
-      body: SafeArea(
-        child: AnimatedBuilder(
-          animation: _controller,
-          builder: (context, _) {
-            return Column(
+          body: SafeArea(
+            child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 _ControlBar(
@@ -97,10 +97,10 @@ class _HandwritingPracticeHomePageState
                   child: _PreviewBody(controller: _controller, theme: theme),
                 ),
               ],
-            );
-          },
-        ),
-      ),
+            ),
+          ),
+        );
+      },
     );
   }
 }
