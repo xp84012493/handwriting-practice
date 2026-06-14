@@ -57,6 +57,16 @@ final list = HanziGraphicsParser().parseGraphicsTxt(contents);
 
 再按 `character` 字段检索所需单字即可。
 
+## iOS 云端打包（GitHub Actions）
+
+推送 `main` 或手动触发 **iOS Build** workflow，在 macOS + Xcode 26 runner 上构建 Ad Hoc / App Store 两套 IPA，并可选自动上传 TestFlight。
+
+- Workflow：[`.github/workflows/ios.yml`](.github/workflows/ios.yml)  
+- 配置说明：[`docs/IOS_CI_UPLOAD.md`](docs/IOS_CI_UPLOAD.md)  
+- Bundle ID：`com.leoxp.handwritingpractice`
+
+签名证书与描述文件通过 GitHub Repository secrets 注入；配置方式与 `pose-angle` 项目相同。
+
 ## 许可
 
 示例代码与结构可自由使用；若使用 Make Me a Hanzi 数据，请遵循其仓库许可说明。
