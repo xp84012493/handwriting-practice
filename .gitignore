@@ -83,5 +83,4 @@ coverage/
 .env
 .env.*
 !.env.example
-keys/
 *.p8
