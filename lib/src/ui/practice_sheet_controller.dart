@@ -17,6 +17,10 @@ class SingleGraphemeTextInputFormatter extends TextInputFormatter {
     TextEditingValue oldValue,
     TextEditingValue newValue,
   ) {
+    // 组字/拼音未上屏时勿改文本，否则 IME 候选条会消失或异常。
+    if (newValue.composing.isValid && !newValue.composing.isCollapsed) {
+      return newValue;
+    }
     final t = newValue.text;
     if (t.isEmpty) return newValue;
     final chars = t.characters;
@@ -44,6 +48,9 @@ class HanziOnlyTextInputFormatter extends TextInputFormatter {
     TextEditingValue oldValue,
     TextEditingValue newValue,
   ) {
+    if (newValue.composing.isValid && !newValue.composing.isCollapsed) {
+      return newValue;
+    }
     final kept = newValue.text.characters
         .where((ch) => _hanzi.hasMatch(ch))
         .take(maxCharacters ?? 1 << 20);

@@ -28,7 +28,6 @@ class _HandwritingPracticeHomePageState
   }
 
   Future<void> _onGenerate() async {
-    FocusScope.of(context).unfocus();
     await _controller.generate();
     if (!mounted) return;
     final hint = _controller.hint;
@@ -36,6 +35,13 @@ class _HandwritingPracticeHomePageState
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(hint)),
       );
+    }
+    // 仅在成功生成字帖后、下一帧再收起键盘，避免与进度条/预览布局叠加引起视窗抖动。
+    if (_controller.hasSheet) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!mounted) return;
+        FocusManager.instance.primaryFocus?.unfocus();
+      });
     }
   }
 
@@ -91,8 +97,14 @@ class _HandwritingPracticeHomePageState
                   onGenerate: _onGenerate,
                   theme: theme,
                 ),
-                if (_controller.loading)
-                  const LinearProgressIndicator(minHeight: 2),
+                // 固定高度占位，避免生成时进度条插入导致 Column 高度跳变、字帖区域抖动。
+                SizedBox(
+                  height: 3,
+                  width: double.infinity,
+                  child: _controller.loading
+                      ? const LinearProgressIndicator(minHeight: 3)
+                      : const SizedBox.shrink(),
+                ),
                 Expanded(
                   child: _PreviewBody(controller: _controller, theme: theme),
                 ),
@@ -145,6 +157,10 @@ class _ControlBar extends StatelessWidget {
       ),
       keyboardType: TextInputType.text,
       textInputAction: TextInputAction.done,
+      autocorrect: false,
+      enableSuggestions: true,
+      smartDashesType: SmartDashesType.disabled,
+      smartQuotesType: SmartQuotesType.disabled,
       inputFormatters: [
         if (isSingle)
           const SingleGraphemeTextInputFormatter()
