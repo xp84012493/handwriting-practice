@@ -28,6 +28,8 @@ class _HandwritingPracticeHomePageState
   }
 
   Future<void> _onGenerate() async {
+    // 先收键盘再生成：避免「字帖已出、下一帧才关键盘」导致 viewInsets 突变、面板抖动。
+    FocusManager.instance.primaryFocus?.unfocus();
     await _controller.generate();
     if (!mounted) return;
     final hint = _controller.hint;
@@ -35,13 +37,6 @@ class _HandwritingPracticeHomePageState
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(hint)),
       );
-    }
-    // 仅在成功生成字帖后、下一帧再收起键盘，避免与进度条/预览布局叠加引起视窗抖动。
-    if (_controller.hasSheet) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (!mounted) return;
-        FocusManager.instance.primaryFocus?.unfocus();
-      });
     }
   }
 
@@ -253,36 +248,22 @@ class _PreviewBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // 生成中不在此处切换为全屏 CircularProgressIndicator：会与占位说明高度差过大，
-    // 造成 Expanded 区域首次「占位 → 转圈 → 字帖」连续抖动。加载态仅用顶栏 3px 进度条。
-    if (!controller.hasSheet) {
-      return Center(
-        child: Padding(
-          padding: const EdgeInsets.all(24),
-          child: Text(
-            '在上方选择模式并输入汉字，\n单字模式 7 行重复；多字模式每字一行（A4 限 ${controller.maxMultiCharacters} 字）。',
-            textAlign: TextAlign.center,
-            style: theme.textTheme.bodyLarge?.copyWith(
-              color: theme.colorScheme.onSurfaceVariant,
-              height: 1.45,
-            ),
-          ),
-        ),
-      );
-    }
-
-    final rows = controller.sheetRows;
-    final subtitle = controller.mode == PracticeSheetMode.single
-        ? '「${controller.character!.character}」'
-            ' · 完整示范 + ${controller.prepared!.strokeCount} 笔递进 + '
-            '${controller.traceSlots} 描红 + '
-            '${controller.blankSlots} 临摹 × '
-            '${A4SheetLayout.singleModeRows} 行'
-        : rows
-            .map(
-              (e) => '「${e.character.character}」${e.prepared.strokeCount}笔',
-            )
-            .join(' · ');
+    // 空状态与有字帖时共用「顶对齐 + 同宽滚动」外壳，避免首次生成从 Center 垂直居中
+    // 切到字帖顶对齐时的整段位移抖动。生成中仍用顶栏细进度条，不在此切全屏转圈。
+    final rows = controller.hasSheet ? controller.sheetRows : const <PracticeSheetEntry>[];
+    final subtitle = !controller.hasSheet
+        ? null
+        : controller.mode == PracticeSheetMode.single
+            ? '「${controller.character!.character}」'
+                ' · 完整示范 + ${controller.prepared!.strokeCount} 笔递进 + '
+                '${controller.traceSlots} 描红 + '
+                '${controller.blankSlots} 临摹 × '
+                '${A4SheetLayout.singleModeRows} 行'
+            : rows
+                .map(
+                  (e) => '「${e.character.character}」${e.prepared.strokeCount}笔',
+                )
+                .join(' · ');
 
     return LayoutBuilder(
       builder: (context, constraints) {
@@ -294,24 +275,36 @@ class _PreviewBody extends StatelessWidget {
               constraints: BoxConstraints(
                 maxWidth: math.min(constraints.maxWidth, 620),
               ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  Text(
-                    subtitle,
-                    textAlign: TextAlign.center,
-                    style: theme.textTheme.labelLarge?.copyWith(
-                      color: theme.colorScheme.onSurfaceVariant,
+              child: controller.hasSheet
+                  ? Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        Text(
+                          subtitle!,
+                          textAlign: TextAlign.center,
+                          style: theme.textTheme.labelLarge?.copyWith(
+                            color: theme.colorScheme.onSurfaceVariant,
+                          ),
+                        ),
+                        const SizedBox(height: 12),
+                        A4PracticeSheetPreview(
+                          rows: rows,
+                          traceSlots: controller.traceSlots,
+                          blankSlots: controller.blankSlots,
+                        ),
+                      ],
+                    )
+                  : Padding(
+                      padding: const EdgeInsets.fromLTRB(12, 32, 12, 24),
+                      child: Text(
+                        '在上方选择模式并输入汉字，\n单字模式 7 行重复；多字模式每字一行（A4 限 ${controller.maxMultiCharacters} 字）。',
+                        textAlign: TextAlign.center,
+                        style: theme.textTheme.bodyLarge?.copyWith(
+                          color: theme.colorScheme.onSurfaceVariant,
+                          height: 1.45,
+                        ),
+                      ),
                     ),
-                  ),
-                  const SizedBox(height: 12),
-                  A4PracticeSheetPreview(
-                    rows: rows,
-                    traceSlots: controller.traceSlots,
-                    blankSlots: controller.blankSlots,
-                  ),
-                ],
-              ),
             ),
           ),
         );
