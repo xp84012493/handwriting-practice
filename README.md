@@ -69,4 +69,17 @@ final list = HanziGraphicsParser().parseGraphicsTxt(contents);
 
 ## 许可
 
-示例代码与结构可自由使用；若使用 Make Me a Hanzi 数据，请遵循其仓库许可说明。
+### 本仓库源代码
+
+除下述第三方数据外，本仓库中的 **Dart / Flutter 源代码** 以 [**MIT License**](LICENSE) 发布。
+
+在应用商店 **收费上架、内购或广告** 并不改变你对第三方数据仍需履行的许可义务（保留许可、按上游要求再分发等）。以下说明不构成法律意见。
+
+### 第三方数据（Make Me a Hanzi）
+
+笔画矢量数据来自 [Make Me a Hanzi](https://github.com/skishore/makemeahanzi) 的 **`graphics.txt`**，或由该文件转换生成的资源（例如 `assets/hanzi_dictionary.json`）。上游在 [COPYING](https://github.com/skishore/makemeahanzi/blob/master/COPYING) 中说明：`graphics.txt` 基于文鼎 **Arphic PL** 字体衍生，再分发时需遵守 **Arphic Public License**。
+
+- **详细说明与链接：** [`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md)  
+- **Arphic 许可全文（英文，与上游一致）：** [`third_party/licenses/ARPHICPL.TXT`](third_party/licenses/ARPHICPL.TXT)
+
+**未使用** MMaH 的 `dictionary.txt`（LGPL）。若你自行加入该文件，须另行遵守 LGPL。
