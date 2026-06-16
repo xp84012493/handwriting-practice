@@ -253,10 +253,8 @@ class _PreviewBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (controller.loading && !controller.hasSheet) {
-      return const Center(child: CircularProgressIndicator());
-    }
-
+    // 生成中不在此处切换为全屏 CircularProgressIndicator：会与占位说明高度差过大，
+    // 造成 Expanded 区域首次「占位 → 转圈 → 字帖」连续抖动。加载态仅用顶栏 3px 进度条。
     if (!controller.hasSheet) {
       return Center(
         child: Padding(
