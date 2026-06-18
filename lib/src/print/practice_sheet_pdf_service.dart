@@ -21,30 +21,35 @@ class PracticeSheetPdfService {
   static final PdfPageFormat pageFormat = PdfPageFormat.a4.landscape;
 
   /// 生成 PDF 字节（矢量路径，非位图）。
+  ///
+  /// [pageFormat] 默认 [PracticeSheetPdfService.pageFormat]；打印时由系统传入尺寸，
+  /// 应使用 [PdfPageFormat.landscape] 以保证与 A4 横向字帖一致。
   static Future<Uint8List> buildPdfBytes({
     required List<PracticeSheetEntry> rows,
     required int traceSlots,
     required int blankSlots,
     double rowGap = 4,
     double pagePadding = 18,
+    PdfPageFormat? pageFormat,
   }) async {
+    final fmt = pageFormat ?? PracticeSheetPdfService.pageFormat;
     final doc = pw.Document();
 
     doc.addPage(
       pw.Page(
-        pageFormat: pageFormat,
+        pageFormat: fmt,
         margin: pw.EdgeInsets.zero,
         build: (context) {
           return pw.Container(
-            width: pageFormat.width,
-            height: pageFormat.height,
+            width: fmt.width,
+            height: fmt.height,
             color: PdfColors.white,
             child: pw.Padding(
               padding: pw.EdgeInsets.all(pagePadding),
               child: pw.CustomPaint(
                 size: PdfPoint(
-                  pageFormat.width - 2 * pagePadding,
-                  pageFormat.height - 2 * pagePadding,
+                  fmt.width - 2 * pagePadding,
+                  fmt.height - 2 * pagePadding,
                 ),
                 painter: (PdfGraphics canvas, PdfPoint innerSize) {
                   _PracticeSheetPdfPainter(
@@ -71,15 +76,19 @@ class PracticeSheetPdfService {
     required int blankSlots,
     String name = '练字帖',
   }) async {
+    // iOS：`dynamicLayout: false` 时 printing 插件在 setDocument 里用新的 UIPrintInfo
+    // 覆盖打印面板，丢失已在 printPdf 里根据宽高设置的横屏，系统会回到默认竖向。
+    // `dynamicLayout: true` 保留横屏 UIPrintInfo；此处始终按横向页生成 PDF。
     await Printing.layoutPdf(
       name: name,
       format: pageFormat,
-      dynamicLayout: false,
-      onLayout: (PdfPageFormat _) async {
+      dynamicLayout: true,
+      onLayout: (PdfPageFormat format) async {
         return buildPdfBytes(
           rows: rows,
           traceSlots: traceSlots,
           blankSlots: blankSlots,
+          pageFormat: format.landscape,
         );
       },
     );
@@ -256,14 +265,12 @@ class _PracticeSheetPdfPainter {
 
     if (kind == _CellKind.model) {
       g.saveContext();
-      g.setLineJoin(PdfLineJoin.round);
-      g.setLineCap(PdfLineCap.round);
-      g.setLineWidth(strokeW);
-      g.setStrokeColor(_completed);
       g.setTransform(ctm);
+      g.setFillColor(_completed);
       for (var i = 0; i < n; i++) {
         g.drawShape(character.strokePathData[i]);
-        g.strokePath(close: false);
+        // 与屏上示范格一致：实心填充笔画轮廓（含带孔部件用 even-odd）
+        g.fillPath(evenOdd: true);
       }
       g.restoreContext();
       return;

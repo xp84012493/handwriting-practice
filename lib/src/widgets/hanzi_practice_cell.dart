@@ -80,6 +80,7 @@ class HanziPracticeCell extends StatelessWidget {
                           visibleStrokeCount: n,
                           highlightStrokeIndex: 0,
                           modelStyle: true,
+                          fillStrokes: true,
                           strokePaintWidth: strokeWidth,
                         ),
                       HanziPracticeCellKind.trace => HanziStrokesPainter(
