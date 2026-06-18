@@ -70,6 +70,8 @@ class _HandwritingPracticeHomePageState
       animation: _controller,
       builder: (context, _) {
         return Scaffold(
+          // 键盘不挤压 body：与 Android adjustNothing 一致，避免 viewInsets 动画导致字帖区域高度抖动。
+          resizeToAvoidBottomInset: false,
           appBar: AppBar(
             title: const Text('汉字笔顺字帖'),
             centerTitle: true,
