@@ -202,12 +202,7 @@ class _ControlBar extends StatelessWidget {
       elevation: 0.5,
       color: theme.colorScheme.surface,
       child: Padding(
-        padding: EdgeInsets.fromLTRB(
-          16,
-          12,
-          16,
-          mq.viewPadding.bottom > 0 ? 8 : 12,
-        ),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
         child: isNarrow
             ? Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
