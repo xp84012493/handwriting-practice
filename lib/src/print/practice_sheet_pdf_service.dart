@@ -11,7 +11,9 @@ import '../models/practice_sheet_entry.dart';
 import '../style/practice_stroke_colors.dart';
 import '../models/stroke_path_convention.dart';
 
-/// 将当前字帖布局导出为 **矢量 PDF**（笔画使用 [PdfGraphics.drawShape]），并唤起系统打印/保存。
+/// 将当前字帖布局导出为 **矢量 PDF**（笔画使用 [PdfGraphics.drawShape]）。
+///
+/// 系统打印见 [layoutPrint]；另存为文件与分享见 `practice_sheet_export.dart`。
 ///
 /// 页面格式固定为 A4 横向（[PdfPageFormat.a4.landscape]）；布局算法与 [A4PracticeSheetPreview] 对齐。
 class PracticeSheetPdfService {

@@ -9,7 +9,7 @@
 - **米字格**：[MiziGridPainter](lib/src/painters/mizi_grid_painter.dart) 外框实线、内部十字与对角线虚线。
 - **递进练字格**：[ProgressiveHanziPractice](lib/src/widgets/progressive_hanzi_practice.dart) 第 1 格仅第 1 笔（红），之后每格多一笔：旧笔深灰、新笔红。
 - **性能**：SVG 解析结果进入 [StrokePathCache](lib/src/engine/stroke_path_cache.dart)；[PreparedHanziStrokes](lib/src/engine/prepared_hanzi_strokes.dart) 每字只构建一次；每格 [RepaintBoundary](lib/src/widgets/hanzi_practice_cell.dart)；列表懒构建。
-- **PDF / 打印**：矢量导出见 [PracticeSheetPdfService](lib/src/print/practice_sheet_pdf_service.dart)（[PdfGraphics.drawShape](https://pub.dev/documentation/pdf/latest/pdf/PdfGraphics/drawShape.html) + `Printing.layoutPdf`）。
+- **PDF / 导出**：矢量生成见 [PracticeSheetPdfService](lib/src/print/practice_sheet_pdf_service.dart)（[PdfGraphics.drawShape](https://pub.dev/documentation/pdf/latest/pdf/PdfGraphics/drawShape.html)）；系统打印、另存为、分享见 [PracticeSheetExport](lib/src/print/practice_sheet_export.dart)（`Printing.layoutPdf` / `Printing.sharePdf` + `file_saver`）。
 
 ## 运行示例
 
@@ -22,16 +22,17 @@ flutter run -t lib/main.dart
 
 状态管理使用 [PracticeSheetController](lib/src/ui/practice_sheet_controller.dart)（`ChangeNotifier`）+ 页面内 `AnimatedBuilder` 刷新。
 
-## `pubspec.yaml`：PDF / 打印依赖
+## `pubspec.yaml`：PDF / 导出依赖
 
 在 `dependencies` 下加入（与仓库当前版本一致即可）：
 
 ```yaml
   pdf: ^3.11.1
   printing: ^5.13.4
+  file_saver: ^0.2.14
 ```
 
-笔画在 PDF 中通过 **SVG path 字符串 + `PdfGraphics.drawShape`** 输出为矢量路径；页面格式为 **`PdfPageFormat.a4`**。主界面 AppBar 右侧「打印」按钮调用 `Printing.layoutPdf()` 打开系统打印/另存为 PDF。
+笔画在 PDF 中通过 **SVG path 字符串 + `PdfGraphics.drawShape`** 输出为矢量路径；页面格式为 **`PdfPageFormat.a4`**。主界面 AppBar 右侧 **「导出 PDF」** 菜单：`Printing.layoutPdf()` 系统打印、`file_saver` 另存为、`Printing.sharePdf()` 分享。
 
 ## JSON 格式示例
 

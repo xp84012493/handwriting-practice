@@ -1,12 +1,16 @@
 import 'dart:math' as math;
+import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 
 import '../models/practice_sheet_entry.dart';
+import '../print/practice_sheet_export.dart';
 import '../print/practice_sheet_pdf_service.dart';
 import 'about_page.dart';
 import 'a4_practice_sheet_preview.dart';
 import 'practice_sheet_controller.dart';
+
+enum _PdfExportAction { systemPrint, saveFile, share }
 
 /// 练字帖主界面：顶部输入 + 生成，下方 A4 横向比例字帖预览。
 class HandwritingPracticeHomePage extends StatefulWidget {
@@ -40,24 +44,87 @@ class _HandwritingPracticeHomePageState
     }
   }
 
-  Future<void> _onPrintOrExport() async {
+  String _sheetPdfBaseName() {
+    final rows = _controller.sheetRows;
+    return '练字帖_${rows.map((e) => e.character.character).join()}';
+  }
+
+  Future<Uint8List> _buildSheetPdfBytes() {
+    return PracticeSheetPdfService.buildPdfBytes(
+      rows: _controller.sheetRows,
+      traceSlots: _controller.traceSlots,
+      blankSlots: _controller.blankSlots,
+    );
+  }
+
+  Future<void> _onSystemPrint() async {
     if (!_controller.hasSheet) return;
     try {
-      final rows = _controller.sheetRows;
-      final name =
-          '练字帖_${rows.map((e) => e.character.character).join()}';
       await PracticeSheetPdfService.layoutPrint(
-        rows: rows,
+        rows: _controller.sheetRows,
         traceSlots: _controller.traceSlots,
         blankSlots: _controller.blankSlots,
-        name: name,
+        name: _sheetPdfBaseName(),
       );
     } catch (e, st) {
-      debugPrint('Print/Export failed: $e\n$st');
+      debugPrint('Print failed: $e\n$st');
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('打印失败：$e')),
       );
+    }
+  }
+
+  Future<void> _savePdfToFile() async {
+    if (!_controller.hasSheet) return;
+    try {
+      final bytes = await _buildSheetPdfBytes();
+      final ok = await PracticeSheetExport.savePdfToFile(
+        bytes: bytes,
+        baseName: _sheetPdfBaseName(),
+      );
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(ok ? '已保存 PDF' : '已取消保存')),
+      );
+    } catch (e, st) {
+      debugPrint('Save PDF failed: $e\n$st');
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('保存失败：$e')),
+      );
+    }
+  }
+
+  Future<void> _sharePdf() async {
+    if (!_controller.hasSheet) return;
+    try {
+      final bytes = await _buildSheetPdfBytes();
+      await PracticeSheetExport.sharePdf(
+        bytes: bytes,
+        baseName: _sheetPdfBaseName(),
+        context: context,
+      );
+    } catch (e, st) {
+      debugPrint('Share PDF failed: $e\n$st');
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('分享失败：$e')),
+      );
+    }
+  }
+
+  Future<void> _onPdfExportMenu(_PdfExportAction action) async {
+    switch (action) {
+      case _PdfExportAction.systemPrint:
+        await _onSystemPrint();
+        break;
+      case _PdfExportAction.saveFile:
+        await _savePdfToFile();
+        break;
+      case _PdfExportAction.share:
+        await _sharePdf();
+        break;
     }
   }
 
@@ -86,12 +153,47 @@ class _HandwritingPracticeHomePageState
                   );
                 },
               ),
-              IconButton(
-                tooltip: '打印 / 导出 PDF',
-                icon: const Icon(Icons.print_outlined),
-                onPressed: _controller.hasSheet && !_controller.loading
-                    ? _onPrintOrExport
-                    : null,
+              PopupMenuButton<_PdfExportAction>(
+                tooltip: '导出 PDF',
+                enabled: _controller.hasSheet && !_controller.loading,
+                icon: const Icon(Icons.upload_file_outlined),
+                onSelected: _onPdfExportMenu,
+                itemBuilder: (menuContext) {
+                  final t = Theme.of(menuContext);
+                  final onSurface = t.colorScheme.onSurface;
+                  return [
+                    PopupMenuItem(
+                      value: _PdfExportAction.systemPrint,
+                      child: Row(
+                        children: [
+                          Icon(Icons.print_outlined, size: 22, color: onSurface),
+                          const SizedBox(width: 12),
+                          const Expanded(child: Text('系统打印…')),
+                        ],
+                      ),
+                    ),
+                    PopupMenuItem(
+                      value: _PdfExportAction.saveFile,
+                      child: Row(
+                        children: [
+                          Icon(Icons.save_alt_outlined, size: 22, color: onSurface),
+                          const SizedBox(width: 12),
+                          const Expanded(child: Text('保存 PDF 到文件')),
+                        ],
+                      ),
+                    ),
+                    PopupMenuItem(
+                      value: _PdfExportAction.share,
+                      child: Row(
+                        children: [
+                          Icon(Icons.share_outlined, size: 22, color: onSurface),
+                          const SizedBox(width: 12),
+                          const Expanded(child: Text('分享 PDF')),
+                        ],
+                      ),
+                    ),
+                  ];
+                },
               ),
             ],
           ),
