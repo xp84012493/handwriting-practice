@@ -2,7 +2,6 @@ import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 
-import '../layout/a4_sheet_layout.dart';
 import '../models/practice_sheet_entry.dart';
 import '../print/practice_sheet_pdf_service.dart';
 import 'a4_practice_sheet_preview.dart';
@@ -44,9 +43,8 @@ class _HandwritingPracticeHomePageState
     if (!_controller.hasSheet) return;
     try {
       final rows = _controller.sheetRows;
-      final name = _controller.mode == PracticeSheetMode.single
-          ? '练字帖_${_controller.character!.character}'
-          : '练字帖_${rows.map((e) => e.character.character).join()}';
+      final name =
+          '练字帖_${rows.map((e) => e.character.character).join()}';
       await PracticeSheetPdfService.layoutPrint(
         rows: rows,
         traceSlots: _controller.traceSlots,
@@ -130,18 +128,16 @@ class _ControlBar extends StatelessWidget {
     final mq = MediaQuery.of(context);
     final isNarrow = mq.size.width < 420;
 
-    final isSingle = controller.mode == PracticeSheetMode.single;
-
     final field = TextField(
       controller: controller.textController,
       textAlign: TextAlign.center,
       maxLines: 1,
       style: theme.textTheme.headlineSmall?.copyWith(
         fontWeight: FontWeight.w600,
-        letterSpacing: isSingle ? 4 : 2,
+        letterSpacing: 2,
       ),
       decoration: InputDecoration(
-        hintText: isSingle ? '输入一个汉字' : '输入多个汉字',
+        hintText: '输入汉字（多字）',
         filled: true,
         fillColor: theme.colorScheme.surfaceContainerHighest.withValues(
           alpha: 0.35,
@@ -159,33 +155,11 @@ class _ControlBar extends StatelessWidget {
       smartDashesType: SmartDashesType.disabled,
       smartQuotesType: SmartQuotesType.disabled,
       inputFormatters: [
-        if (isSingle)
-          const SingleGraphemeTextInputFormatter()
-        else
-          HanziOnlyTextInputFormatter(
-            maxCharacters: controller.maxMultiCharacters,
-          ),
+        HanziOnlyTextInputFormatter(
+          maxCharacters: controller.maxMultiCharacters,
+        ),
       ],
       onSubmitted: (_) => onGenerate(),
-    );
-
-    final modeToggle = SegmentedButton<PracticeSheetMode>(
-      segments: const [
-        ButtonSegment(
-          value: PracticeSheetMode.single,
-          label: Text('单字'),
-          icon: Icon(Icons.looks_one_outlined),
-        ),
-        ButtonSegment(
-          value: PracticeSheetMode.multi,
-          label: Text('多字'),
-          icon: Icon(Icons.notes_outlined),
-        ),
-      ],
-      selected: {controller.mode},
-      onSelectionChanged: controller.loading
-          ? null
-          : (selection) => controller.setMode(selection.first),
     );
 
     final button = FilledButton.icon(
@@ -207,26 +181,17 @@ class _ControlBar extends StatelessWidget {
             ? Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  modeToggle,
-                  const SizedBox(height: 10),
                   field,
                   const SizedBox(height: 10),
                   button,
                 ],
               )
-            : Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
+            : Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  modeToggle,
-                  const SizedBox(height: 10),
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Expanded(child: field),
-                      const SizedBox(width: 12),
-                      button,
-                    ],
-                  ),
+                  Expanded(child: field),
+                  const SizedBox(width: 12),
+                  button,
                 ],
               ),
       ),
@@ -250,17 +215,11 @@ class _PreviewBody extends StatelessWidget {
     final rows = controller.hasSheet ? controller.sheetRows : const <PracticeSheetEntry>[];
     final subtitle = !controller.hasSheet
         ? null
-        : controller.mode == PracticeSheetMode.single
-            ? '「${controller.character!.character}」'
-                ' · 完整示范 + ${controller.prepared!.strokeCount} 笔递进 + '
-                '${controller.traceSlots} 描红 + '
-                '${controller.blankSlots} 临摹 × '
-                '${A4SheetLayout.singleModeRows} 行'
-            : rows
-                .map(
-                  (e) => '「${e.character.character}」${e.prepared.strokeCount}笔',
-                )
-                .join(' · ');
+        : rows
+            .map(
+              (e) => '「${e.character.character}」${e.prepared.strokeCount}笔',
+            )
+            .join(' · ');
 
     return LayoutBuilder(
       builder: (context, constraints) {
@@ -294,7 +253,7 @@ class _PreviewBody extends StatelessWidget {
                   : Padding(
                       padding: const EdgeInsets.fromLTRB(12, 32, 12, 24),
                       child: Text(
-                        '在上方选择模式并输入汉字，\n单字模式 7 行重复；多字模式每字一行（A4 限 ${controller.maxMultiCharacters} 字）。',
+                        '在上方输入多个汉字（每字一行字帖，\nA4 单页约限 ${controller.maxMultiCharacters} 字，超出部分将忽略）。',
                         textAlign: TextAlign.center,
                         style: theme.textTheme.bodyLarge?.copyWith(
                           color: theme.colorScheme.onSurfaceVariant,

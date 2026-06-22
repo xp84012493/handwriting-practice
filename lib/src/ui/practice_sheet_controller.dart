@@ -9,33 +9,7 @@ import '../models/hanzi_character.dart';
 import '../models/practice_sheet_entry.dart';
 import '../parsers/hanzi_graphics_parser.dart';
 
-/// 仅保留「第一个 grapheme cluster」，用于单字输入。
-class SingleGraphemeTextInputFormatter extends TextInputFormatter {
-  const SingleGraphemeTextInputFormatter();
-  @override
-  TextEditingValue formatEditUpdate(
-    TextEditingValue oldValue,
-    TextEditingValue newValue,
-  ) {
-    // 组字/拼音未上屏时勿改文本，否则 IME 候选条会消失或异常。
-    if (newValue.composing.isValid && !newValue.composing.isCollapsed) {
-      return newValue;
-    }
-    final t = newValue.text;
-    if (t.isEmpty) return newValue;
-    final chars = t.characters;
-    final first = chars.first;
-    if (chars.length > 1) {
-      return TextEditingValue(
-        text: first,
-        selection: TextSelection.collapsed(offset: first.length),
-      );
-    }
-    return newValue;
-  }
-}
-
-/// 多字模式：仅保留基本汉字区字符。
+/// 多字输入：仅保留基本汉字区字符。
 class HanziOnlyTextInputFormatter extends TextInputFormatter {
   const HanziOnlyTextInputFormatter({this.maxCharacters});
 
@@ -63,7 +37,7 @@ class HanziOnlyTextInputFormatter extends TextInputFormatter {
   }
 }
 
-/// 字帖生成状态：输入、查库、预处理笔画路径。
+/// 字帖生成状态：输入、查库、预处理笔画路径（多字：每字一行）。
 class PracticeSheetController extends ChangeNotifier {
   PracticeSheetController({
     this.dictionaryAssetPath = 'assets/hanzi_dictionary.json',
@@ -83,58 +57,38 @@ class PracticeSheetController extends ChangeNotifier {
   final TextEditingController textController = TextEditingController();
   final StrokePathCache pathCache = StrokePathCache();
   static const HanziGraphicsParser _parser = HanziGraphicsParser();
-  static final RegExp _hanzi = RegExp(r'^[\u4e00-\u9fff]$');
+  static final RegExp _hanzi = RegExp(r'[\u4e00-\u9fff]');
 
-  PracticeSheetMode _mode = PracticeSheetMode.single;
   Map<String, HanziCharacter>? _dictionary;
   List<PracticeSheetEntry> _entries = const [];
   String? _hint;
   bool _loading = false;
 
-  PracticeSheetMode get mode => _mode;
   List<PracticeSheetEntry> get entries => _entries;
   String? get hint => _hint;
   bool get loading => _loading;
   bool get hasSheet => _entries.isNotEmpty;
 
-  /// 多字模式输入上限（按每字至少占 1 物理行估算）。
+  /// 输入上限（按每字至少占 1 物理行估算）。
   int get maxMultiCharacters => A4SheetLayout.maxPhysicalRowsOnSheet();
 
-  /// 兼容旧接口：单字模式下的首字。
+  /// 兼容：首字。
   HanziCharacter? get character =>
       _entries.isEmpty ? null : _entries.first.character;
 
-  /// 兼容旧接口：单字模式下的首字笔画。
+  /// 兼容：首字笔画。
   PreparedHanziStrokes? get prepared =>
       _entries.isEmpty ? null : _entries.first.prepared;
 
-  /// 渲染用行列表：单字模式重复 7 行，多字模式每字一行。
-  List<PracticeSheetEntry> get sheetRows {
-    if (_entries.isEmpty) return const [];
-    if (_mode == PracticeSheetMode.single) {
-      return List<PracticeSheetEntry>.filled(
-        A4SheetLayout.singleModeRows,
-        _entries.first,
-      );
-    }
-    return _entries;
-  }
+  /// 渲染用行列表：每字一行。
+  List<PracticeSheetEntry> get sheetRows => _entries;
 
   int get rowsOnSheet => sheetRows.length;
-
-  void setMode(PracticeSheetMode value) {
-    if (_mode == value) return;
-    _mode = value;
-    textController.clear();
-    _entries = const [];
-    _hint = null;
-    notifyListeners();
-  }
 
   Future<void> generate() async {
     final raw = textController.text.trim();
     if (raw.isEmpty) {
-      _hint = _mode == PracticeSheetMode.single ? '请输入一个汉字' : '请输入汉字';
+      _hint = '请输入汉字';
       notifyListeners();
       return;
     }
@@ -145,11 +99,7 @@ class PracticeSheetController extends ChangeNotifier {
 
     try {
       await _ensureDictionaryLoaded();
-      if (_mode == PracticeSheetMode.single) {
-        await _generateSingle(raw);
-      } else {
-        await _generateMulti(raw);
-      }
+      await _generateMulti(raw);
     } catch (e, st) {
       debugPrint('PracticeSheetController.generate failed: $e\n$st');
       _entries = const [];
@@ -158,30 +108,6 @@ class PracticeSheetController extends ChangeNotifier {
       _loading = false;
       notifyListeners();
     }
-  }
-
-  Future<void> _generateSingle(String raw) async {
-    final ch = raw.characters.first;
-    if (!_hanzi.hasMatch(ch)) {
-      _entries = const [];
-      _hint = '请输入单个汉字（基本区 U+4E00–U+9FFF）';
-      return;
-    }
-
-    final model = _dictionary![ch];
-    if (model == null) {
-      _entries = const [];
-      _hint = '字库中暂无「$ch」。可将该字数据加入 $dictionaryAssetPath。';
-      return;
-    }
-
-    _entries = [
-      PracticeSheetEntry(
-        character: model,
-        prepared: PreparedHanziStrokes.prepare(model: model, cache: pathCache),
-      ),
-    ];
-    _hint = _pageOverflowHint(_entries);
   }
 
   String? _pageOverflowHint(List<PracticeSheetEntry> logicalRows) {

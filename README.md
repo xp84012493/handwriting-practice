@@ -18,7 +18,7 @@ flutter pub get
 flutter run -t lib/main.dart
 ```
 
-主界面为 [HandwritingPracticeHomePage](lib/src/ui/handwriting_practice_home_page.dart)：顶部限制为**单个 grapheme** 的输入框与「生成字帖」按钮；下方为 **A4 纵向比例**（210:297）预览。每一行格子顺序为：**递进笔顺（1 笔→全字）→ 半透明叠字描红 → 仅米字格临摹**；行数由 [PracticeSheetController.rowsOnSheet](lib/src/ui/practice_sheet_controller.dart) 控制。默认可用字见 `assets/hanzi_dictionary.json`（一、二、三），可自行扩充或接入 Make Me a Hanzi 导出数据。
+主界面为 [HandwritingPracticeHomePage](lib/src/ui/handwriting_practice_home_page.dart)：顶部为**多字**输入（基本汉字区）与「生成字帖」按钮；下方为 **A4 纵向比例**（210:297）预览，**每字一行**。每一行格子顺序为：**递进笔顺（1 笔→全字）→ 半透明叠字描红 → 仅米字格临摹**；行数由 [PracticeSheetController.rowsOnSheet](lib/src/ui/practice_sheet_controller.dart) 控制。默认可用字见 `assets/hanzi_dictionary.json`（一、二、三），可自行扩充或接入 Make Me a Hanzi 导出数据。
 
 状态管理使用 [PracticeSheetController](lib/src/ui/practice_sheet_controller.dart)（`ChangeNotifier`）+ 页面内 `AnimatedBuilder` 刷新。
 

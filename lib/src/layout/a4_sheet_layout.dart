@@ -30,9 +30,6 @@ abstract final class A4SheetLayout {
     return practiceCellSizePt * (previewInnerW / pdfInnerWidthPt);
   }
 
-  /// 单字模式：同一字重复的行数。
-  static const int singleModeRows = 7;
-
   /// 固定 [cellSize] 时，一行最多容纳多少列。
   static int columnsPerLine(double innerW, double cellSize) {
     if (cellSize <= 0) return 1;
