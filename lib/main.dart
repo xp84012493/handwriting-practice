@@ -1,9 +1,17 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import 'src/ui/handwriting_practice_home_page.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
+  LicenseRegistry.addLicense(() async* {
+    yield LicenseEntryWithLineBreaks(
+      <String>['hanzi_practice_engine'],
+      await rootBundle.loadString('LICENSE'),
+    );
+  });
   runApp(const HanziPracticeApp());
 }
 

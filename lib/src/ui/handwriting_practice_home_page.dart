@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 
 import '../models/practice_sheet_entry.dart';
 import '../print/practice_sheet_pdf_service.dart';
+import 'about_page.dart';
 import 'a4_practice_sheet_preview.dart';
 import 'practice_sheet_controller.dart';
 
@@ -74,6 +75,17 @@ class _HandwritingPracticeHomePageState
             title: const Text('汉字笔顺字帖'),
             centerTitle: true,
             actions: [
+              IconButton(
+                tooltip: '关于',
+                icon: const Icon(Icons.info_outline),
+                onPressed: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute<void>(
+                      builder: (context) => const AboutPage(),
+                    ),
+                  );
+                },
+              ),
               IconButton(
                 tooltip: '打印 / 导出 PDF',
                 icon: const Icon(Icons.print_outlined),

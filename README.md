@@ -67,6 +67,10 @@ final list = HanziGraphicsParser().parseGraphicsTxt(contents);
 
 签名证书与描述文件通过 GitHub Repository secrets 注入；配置方式与 `pose-angle` 项目相同。
 
+## 上架前核对
+
+商店与合规项见 **[上架前 Checklist](docs/STORE_LAUNCH_CHECKLIST.md)**（产品、测试、版权、App Store / Play / 国内渠道等）。
+
 ## 许可
 
 ### 本仓库源代码

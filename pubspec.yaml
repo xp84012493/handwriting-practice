@@ -25,3 +25,5 @@ flutter:
   assets:
     - assets/sample_graphics.json
     - assets/hanzi_dictionary.json
+    - LICENSE
+    - THIRD_PARTY_NOTICES.md
