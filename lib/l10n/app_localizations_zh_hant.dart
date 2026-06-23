@@ -94,6 +94,18 @@ class AppLocalizationsZhHant extends AppLocalizations {
   String get languageEnglish => 'English';
 
   @override
+  String get themeTitle => '主題';
+
+  @override
+  String get themeFollowSystem => '跟隨系統';
+
+  @override
+  String get themeLight => '淺色';
+
+  @override
+  String get themeDark => '深色';
+
+  @override
   String get featureOverviewTitle => '功能簡介';
 
   @override

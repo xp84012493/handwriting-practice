@@ -3,15 +3,23 @@ import 'package:flutter_test/flutter_test.dart';
 
 import 'package:hanzi_practice_engine/main.dart';
 import 'package:hanzi_practice_engine/src/locale/locale_controller.dart';
+import 'package:hanzi_practice_engine/src/theme/theme_controller.dart';
 
 Future<void> _pumpApp(WidgetTester tester, {Locale? locale}) async {
   final localeController = LocaleController();
-  await localeController.load();
+  final themeController = ThemeController();
+  await Future.wait([
+    localeController.load(),
+    themeController.load(),
+  ]);
   if (locale != null) {
     await localeController.setLocale(locale);
   }
   await tester.pumpWidget(
-    HanziPracticeApp(localeController: localeController),
+    HanziPracticeApp(
+      localeController: localeController,
+      themeController: themeController,
+    ),
   );
   await tester.pumpAndSettle();
 }

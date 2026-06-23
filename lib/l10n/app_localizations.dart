@@ -63,6 +63,10 @@ abstract class AppLocalizations {
   String get languageChinese;
   String get languageChineseTraditional;
   String get languageEnglish;
+  String get themeTitle;
+  String get themeFollowSystem;
+  String get themeLight;
+  String get themeDark;
   String get featureOverviewTitle;
   String get featureOverviewBody;
   String get strokeDataTitle;

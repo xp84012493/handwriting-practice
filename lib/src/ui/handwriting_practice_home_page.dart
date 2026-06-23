@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import '../l10n/l10n_extension.dart';
 import '../locale/locale_controller.dart';
 import '../locale/practice_sheet_messages.dart';
+import '../theme/theme_controller.dart';
 import '../models/practice_sheet_entry.dart';
 import '../print/practice_sheet_export.dart';
 import '../print/practice_sheet_pdf_service.dart';
@@ -20,9 +21,11 @@ class HandwritingPracticeHomePage extends StatefulWidget {
   const HandwritingPracticeHomePage({
     super.key,
     required this.localeController,
+    required this.themeController,
   });
 
   final LocaleController localeController;
+  final ThemeController themeController;
 
   @override
   State<HandwritingPracticeHomePage> createState() =>
@@ -164,6 +167,7 @@ class _HandwritingPracticeHomePageState
                   MaterialPageRoute<void>(
                     builder: (context) => SettingsPage(
                       localeController: widget.localeController,
+                      themeController: widget.themeController,
                     ),
                   ),
                 );
