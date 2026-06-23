@@ -5,6 +5,8 @@
     "description": "Application title"
   },
   "aboutTooltip": "About",
+  "settingsTooltip": "Settings",
+  "settingsTitle": "Settings",
   "exportPdfTooltip": "Export PDF",
   "exportSystemPrint": "Print…",
   "exportSaveFile": "Save PDF to file",

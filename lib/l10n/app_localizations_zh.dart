@@ -13,6 +13,12 @@ class AppLocalizationsZh extends AppLocalizations {
   String get aboutTooltip => '关于';
 
   @override
+  String get settingsTooltip => '设置';
+
+  @override
+  String get settingsTitle => '设置';
+
+  @override
   String get exportPdfTooltip => '导出 PDF';
 
   @override

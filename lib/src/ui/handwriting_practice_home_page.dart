@@ -9,9 +9,9 @@ import '../locale/practice_sheet_messages.dart';
 import '../models/practice_sheet_entry.dart';
 import '../print/practice_sheet_export.dart';
 import '../print/practice_sheet_pdf_service.dart';
-import 'about_page.dart';
 import 'a4_practice_sheet_preview.dart';
 import 'practice_sheet_controller.dart';
+import 'settings_page.dart';
 
 enum _PdfExportAction { systemPrint, saveFile, share }
 
@@ -156,20 +156,20 @@ class _HandwritingPracticeHomePageState
           appBar: AppBar(
             title: Text(l10n.appTitle),
             centerTitle: true,
-            actions: [
-              IconButton(
-                tooltip: l10n.aboutTooltip,
-                icon: const Icon(Icons.info_outline),
-                onPressed: () {
-                  Navigator.of(context).push(
-                    MaterialPageRoute<void>(
-                      builder: (context) => AboutPage(
-                        localeController: widget.localeController,
-                      ),
+            leading: IconButton(
+              tooltip: l10n.settingsTooltip,
+              icon: const Icon(Icons.settings_outlined),
+              onPressed: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute<void>(
+                    builder: (context) => SettingsPage(
+                      localeController: widget.localeController,
                     ),
-                  );
-                },
-              ),
+                  ),
+                );
+              },
+            ),
+            actions: [
               PopupMenuButton<_PdfExportAction>(
                 tooltip: l10n.exportPdfTooltip,
                 enabled: _controller.hasSheet && !_controller.loading,

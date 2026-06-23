@@ -3,15 +3,10 @@ import 'package:flutter/services.dart';
 
 import '../app_build_info.dart';
 import '../l10n/l10n_extension.dart';
-import '../locale/locale_controller.dart';
 
-enum _LanguageChoice { system, chinese, english }
-
-/// 关于：简介、版本、语言、第三方数据说明、系统许可页。
+/// 关于：简介、版本、第三方数据说明、系统许可页。
 class AboutPage extends StatelessWidget {
-  const AboutPage({super.key, required this.localeController});
-
-  final LocaleController localeController;
+  const AboutPage({super.key});
 
   void _openLicensePage(BuildContext context) {
     final l10n = context.l10n;
@@ -23,123 +18,70 @@ class AboutPage extends StatelessWidget {
     );
   }
 
-  _LanguageChoice _currentChoice() {
-    final locale = localeController.locale;
-    if (locale == null) return _LanguageChoice.system;
-    if (locale.languageCode == 'zh') return _LanguageChoice.chinese;
-    return _LanguageChoice.english;
-  }
-
-  Future<void> _setLanguage(_LanguageChoice choice) async {
-    switch (choice) {
-      case _LanguageChoice.system:
-        await localeController.setLocale(null);
-      case _LanguageChoice.chinese:
-        await localeController.setLocale(LocaleController.chinese);
-      case _LanguageChoice.english:
-        await localeController.setLocale(LocaleController.english);
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    return ListenableBuilder(
-      listenable: localeController,
-      builder: (context, _) {
-        final l10n = context.l10n;
-        final languageChoice = _currentChoice();
-        return Scaffold(
-          appBar: AppBar(
-            title: Text(l10n.aboutTitle),
+    final l10n = context.l10n;
+    return Scaffold(
+      appBar: AppBar(title: Text(l10n.aboutTitle)),
+      body: ListView(
+        padding: const EdgeInsets.fromLTRB(20, 8, 20, 24),
+        children: [
+          Text(
+            l10n.appTitle,
+            style: theme.textTheme.headlineSmall?.copyWith(
+              fontWeight: FontWeight.w600,
+            ),
           ),
-          body: ListView(
-            padding: const EdgeInsets.fromLTRB(20, 8, 20, 24),
-            children: [
-              Text(
-                l10n.appTitle,
-                style: theme.textTheme.headlineSmall?.copyWith(
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-              const SizedBox(height: 8),
-              Text(
-                l10n.versionLabel(kAppVersion),
-                style: theme.textTheme.bodyLarge,
-              ),
-              const SizedBox(height: 20),
-              Text(l10n.languageTitle, style: theme.textTheme.titleMedium),
-              const SizedBox(height: 4),
-              RadioListTile<_LanguageChoice>(
-                title: Text(l10n.languageFollowSystem),
-                value: _LanguageChoice.system,
-                groupValue: languageChoice,
-                onChanged: (value) {
-                  if (value != null) _setLanguage(value);
-                },
-              ),
-              RadioListTile<_LanguageChoice>(
-                title: Text(l10n.languageChinese),
-                value: _LanguageChoice.chinese,
-                groupValue: languageChoice,
-                onChanged: (value) {
-                  if (value != null) _setLanguage(value);
-                },
-              ),
-              RadioListTile<_LanguageChoice>(
-                title: Text(l10n.languageEnglish),
-                value: _LanguageChoice.english,
-                groupValue: languageChoice,
-                onChanged: (value) {
-                  if (value != null) _setLanguage(value);
-                },
-              ),
-              const SizedBox(height: 12),
-              Text(l10n.featureOverviewTitle, style: theme.textTheme.titleMedium),
-              const SizedBox(height: 8),
-              Text(
-                l10n.featureOverviewBody,
-                style: theme.textTheme.bodyMedium?.copyWith(height: 1.45),
-              ),
-              const SizedBox(height: 20),
-              Text(l10n.strokeDataTitle, style: theme.textTheme.titleMedium),
-              const SizedBox(height: 8),
-              Text(
-                l10n.strokeDataBody,
-                style: theme.textTheme.bodyMedium?.copyWith(height: 1.45),
-              ),
-              const SizedBox(height: 16),
-              FilledButton.tonalIcon(
-                onPressed: () {
-                  Navigator.of(context).push(
-                    MaterialPageRoute<void>(
-                      builder: (context) => const _ThirdPartyNoticesViewPage(),
-                    ),
-                  );
-                },
-                icon: const Icon(Icons.article_outlined),
-                label: Text(l10n.thirdPartyNoticesButton),
-              ),
-              const SizedBox(height: 12),
-              OutlinedButton.icon(
-                onPressed: () => _openLicensePage(context),
-                icon: const Icon(Icons.gavel_outlined),
-                label: Text(l10n.openSourceLicensesButton),
-              ),
-              const SizedBox(height: 24),
-              Text(l10n.notesTitle, style: theme.textTheme.titleSmall),
-              const SizedBox(height: 8),
-              Text(
-                l10n.notesBody,
-                style: theme.textTheme.bodySmall?.copyWith(
-                  color: theme.colorScheme.onSurfaceVariant,
-                  height: 1.4,
-                ),
-              ),
-            ],
+          const SizedBox(height: 8),
+          Text(
+            l10n.versionLabel(kAppVersion),
+            style: theme.textTheme.bodyLarge,
           ),
-        );
-      },
+          const SizedBox(height: 20),
+          Text(l10n.featureOverviewTitle, style: theme.textTheme.titleMedium),
+          const SizedBox(height: 8),
+          Text(
+            l10n.featureOverviewBody,
+            style: theme.textTheme.bodyMedium?.copyWith(height: 1.45),
+          ),
+          const SizedBox(height: 20),
+          Text(l10n.strokeDataTitle, style: theme.textTheme.titleMedium),
+          const SizedBox(height: 8),
+          Text(
+            l10n.strokeDataBody,
+            style: theme.textTheme.bodyMedium?.copyWith(height: 1.45),
+          ),
+          const SizedBox(height: 16),
+          FilledButton.tonalIcon(
+            onPressed: () {
+              Navigator.of(context).push(
+                MaterialPageRoute<void>(
+                  builder: (context) => const _ThirdPartyNoticesViewPage(),
+                ),
+              );
+            },
+            icon: const Icon(Icons.article_outlined),
+            label: Text(l10n.thirdPartyNoticesButton),
+          ),
+          const SizedBox(height: 12),
+          OutlinedButton.icon(
+            onPressed: () => _openLicensePage(context),
+            icon: const Icon(Icons.gavel_outlined),
+            label: Text(l10n.openSourceLicensesButton),
+          ),
+          const SizedBox(height: 24),
+          Text(l10n.notesTitle, style: theme.textTheme.titleSmall),
+          const SizedBox(height: 8),
+          Text(
+            l10n.notesBody,
+            style: theme.textTheme.bodySmall?.copyWith(
+              color: theme.colorScheme.onSurfaceVariant,
+              height: 1.4,
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
@@ -161,9 +103,7 @@ class _ThirdPartyNoticesViewPageState extends State<_ThirdPartyNoticesViewPage> 
   Widget build(BuildContext context) {
     final l10n = context.l10n;
     return Scaffold(
-      appBar: AppBar(
-        title: Text(l10n.thirdPartyNoticesTitle),
-      ),
+      appBar: AppBar(title: Text(l10n.thirdPartyNoticesTitle)),
       body: FutureBuilder<String>(
         future: _load,
         builder: (context, snapshot) {

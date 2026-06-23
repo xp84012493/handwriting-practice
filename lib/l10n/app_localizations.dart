@@ -38,6 +38,8 @@ abstract class AppLocalizations {
 
   String get appTitle;
   String get aboutTooltip;
+  String get settingsTooltip;
+  String get settingsTitle;
   String get exportPdfTooltip;
   String get exportSystemPrint;
   String get exportSaveFile;

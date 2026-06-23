@@ -1,6 +1,6 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:hanzi_practice_engine/l10n/app_localizations.dart';
 import 'package:hanzi_practice_engine/main.dart';
 import 'package:hanzi_practice_engine/src/locale/locale_controller.dart';
 
@@ -31,14 +31,18 @@ void main() {
     expect(find.text('Generate sheet'), findsOneWidget);
   });
 
-  testWidgets('about opens from app bar', (WidgetTester tester) async {
+  testWidgets('about opens from settings', (WidgetTester tester) async {
     await _pumpApp(tester, locale: const Locale('zh'));
 
-    await tester.tap(find.byTooltip('关于'));
+    await tester.tap(find.byTooltip('设置'));
     await tester.pumpAndSettle();
 
-    expect(find.text('关于'), findsOneWidget);
+    expect(find.text('设置'), findsOneWidget);
+
+    await tester.tap(find.text('关于'));
+    await tester.pumpAndSettle();
+
     expect(find.textContaining('Make Me a Hanzi'), findsOneWidget);
-    expect(find.text('语言'), findsOneWidget);
+    expect(find.text('语言'), findsNothing);
   });
 }

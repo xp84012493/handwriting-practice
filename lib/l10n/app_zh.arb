@@ -2,6 +2,8 @@
   "@@locale": "zh",
   "appTitle": "汉字笔顺字帖",
   "aboutTooltip": "关于",
+  "settingsTooltip": "设置",
+  "settingsTitle": "设置",
   "exportPdfTooltip": "导出 PDF",
   "exportSystemPrint": "系统打印…",
   "exportSaveFile": "保存 PDF 到文件",

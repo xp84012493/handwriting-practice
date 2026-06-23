@@ -13,6 +13,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get aboutTooltip => 'About';
 
   @override
+  String get settingsTooltip => 'Settings';
+
+  @override
+  String get settingsTitle => 'Settings';
+
+  @override
   String get exportPdfTooltip => 'Export PDF';
 
   @override
