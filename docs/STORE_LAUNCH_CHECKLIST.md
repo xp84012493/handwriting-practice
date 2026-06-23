@@ -36,7 +36,7 @@
 
 - [ ] **App Store Connect**：应用记录、Bundle ID、定价/销售范围、年龄分级问卷。
 - [ ] **隐私**：**App 隐私** 标签与实际情况一致（数据收集、用途、是否关联用户等）。
-- [ ] **出口合规**：加密与出口法规问卷按实填写。
+- [ ] **出口合规**：`Info.plist` 已设 `ITSAppUsesNonExemptEncryption = false`（仅使用豁免加密时）；若日后加入自定义加密，须改回并重新申报。
 - [ ] **截图与预览**：符合尺寸要求，展示真实 UI（勿误导）。
 - [ ] **审核备注**：如需测试账号、特殊操作步骤，在「审核信息」中写清。
 - [ ] **iOS 桌面显示名**：`en.lproj` / `zh-Hans.lproj` 的 `InfoPlist.strings`（英文 **Hanzi Practice**，中文 **汉字练字**）。
