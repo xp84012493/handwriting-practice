@@ -7,6 +7,7 @@ import 'package:intl/intl.dart' as intl;
 
 import 'app_localizations_en.dart';
 import 'app_localizations_zh.dart';
+import 'app_localizations_zh_hant.dart';
 
 /// Callers can lookup localized strings with an instance of AppLocalizations
 /// returned by `AppLocalizations.of(context)`.
@@ -34,6 +35,7 @@ abstract class AppLocalizations {
   static const List<Locale> supportedLocales = <Locale>[
     Locale('en'),
     Locale('zh'),
+    Locale.fromSubtags(languageCode: 'zh', scriptCode: 'Hant'),
   ];
 
   String get appTitle;
@@ -59,6 +61,7 @@ abstract class AppLocalizations {
   String get languageTitle;
   String get languageFollowSystem;
   String get languageChinese;
+  String get languageChineseTraditional;
   String get languageEnglish;
   String get featureOverviewTitle;
   String get featureOverviewBody;
@@ -92,19 +95,31 @@ class _AppLocalizationsDelegate
   }
 
   @override
-  bool isSupported(Locale locale) =>
-      <String>['en', 'zh'].contains(locale.languageCode);
+  bool isSupported(Locale locale) {
+    if (locale.languageCode == 'en') return true;
+    if (locale.languageCode == 'zh') return true;
+    return false;
+  }
 
   @override
   bool shouldReload(_AppLocalizationsDelegate old) => false;
 }
 
+bool _isTraditionalChineseLocale(Locale locale) {
+  return locale.languageCode == 'zh' &&
+      (locale.scriptCode == 'Hant' ||
+          const {'TW', 'HK', 'MO'}.contains(locale.countryCode));
+}
+
 AppLocalizations lookupAppLocalizations(Locale locale) {
-  switch (locale.languageCode) {
-    case 'en':
-      return AppLocalizationsEn();
-    case 'zh':
-      return AppLocalizationsZh();
+  if (locale.languageCode == 'en') {
+    return AppLocalizationsEn();
+  }
+  if (locale.languageCode == 'zh') {
+    if (_isTraditionalChineseLocale(locale)) {
+      return AppLocalizationsZhHant();
+    }
+    return AppLocalizationsZh();
   }
   throw FlutterError(
     'AppLocalizations.delegate failed to load unsupported locale "$locale".',

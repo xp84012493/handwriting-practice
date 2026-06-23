@@ -85,7 +85,10 @@ class AppLocalizationsZh extends AppLocalizations {
   String get languageFollowSystem => '跟随系统';
 
   @override
-  String get languageChinese => '中文';
+  String get languageChinese => '简体中文';
+
+  @override
+  String get languageChineseTraditional => '繁體中文';
 
   @override
   String get languageEnglish => 'English';

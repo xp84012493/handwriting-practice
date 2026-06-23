@@ -26,7 +26,7 @@ flutter run -t lib/main.dart
 
 - 文案定义在 [`lib/l10n/app_en.arb`](lib/l10n/app_en.arb)（模板）与 [`lib/l10n/app_zh.arb`](lib/l10n/app_zh.arb)。
 - 生成代码：`flutter gen-l10n`（配置见 [`l10n.yaml`](l10n.yaml)；`pubspec.yaml` 已开启 `generate: true`）。
-- **关于 → 语言**：跟随系统 / 中文 / English；选择会写入 `shared_preferences` 并在下次启动恢复。
+- **关于 → 语言**：跟随系统 / **简体中文** / **繁體中文** / English；选择会写入 `shared_preferences` 并在下次启动恢复。
 - 代码中通过 `context.l10n`（[`lib/src/l10n/l10n_extension.dart`](lib/src/l10n/l10n_extension.dart)）取字符串；字帖生成提示使用 [`practice_sheet_messages.dart`](lib/src/locale/practice_sheet_messages.dart) 结构化消息再本地化。
 
 ## `pubspec.yaml`：PDF / 导出依赖

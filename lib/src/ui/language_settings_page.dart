@@ -4,7 +4,7 @@ import '../../l10n/app_localizations.dart';
 import '../l10n/l10n_extension.dart';
 import '../locale/locale_controller.dart';
 
-enum _LanguageChoice { system, chinese, english }
+enum _LanguageChoice { system, chineseSimplified, chineseTraditional, english }
 
 /// 设置 → 语言。
 class LanguageSettingsPage extends StatelessWidget {
@@ -15,7 +15,11 @@ class LanguageSettingsPage extends StatelessWidget {
   _LanguageChoice _currentChoice() {
     final locale = localeController.locale;
     if (locale == null) return _LanguageChoice.system;
-    if (locale.languageCode == 'zh') return _LanguageChoice.chinese;
+    if (locale.languageCode == 'en') return _LanguageChoice.english;
+    if (LocaleController.isTraditionalChinese(locale)) {
+      return _LanguageChoice.chineseTraditional;
+    }
+    if (locale.languageCode == 'zh') return _LanguageChoice.chineseSimplified;
     return _LanguageChoice.english;
   }
 
@@ -23,8 +27,10 @@ class LanguageSettingsPage extends StatelessWidget {
     switch (choice) {
       case _LanguageChoice.system:
         await localeController.setLocale(null);
-      case _LanguageChoice.chinese:
-        await localeController.setLocale(LocaleController.chinese);
+      case _LanguageChoice.chineseSimplified:
+        await localeController.setLocale(LocaleController.chineseSimplified);
+      case _LanguageChoice.chineseTraditional:
+        await localeController.setLocale(LocaleController.chineseTraditional);
       case _LanguageChoice.english:
         await localeController.setLocale(LocaleController.english);
     }
@@ -36,6 +42,10 @@ class LanguageSettingsPage extends StatelessWidget {
   ) {
     final locale = controller.locale;
     if (locale == null) return l10n.languageFollowSystem;
+    if (locale.languageCode == 'en') return l10n.languageEnglish;
+    if (LocaleController.isTraditionalChinese(locale)) {
+      return l10n.languageChineseTraditional;
+    }
     if (locale.languageCode == 'zh') return l10n.languageChinese;
     return l10n.languageEnglish;
   }
@@ -61,7 +71,15 @@ class LanguageSettingsPage extends StatelessWidget {
               ),
               RadioListTile<_LanguageChoice>(
                 title: Text(l10n.languageChinese),
-                value: _LanguageChoice.chinese,
+                value: _LanguageChoice.chineseSimplified,
+                groupValue: languageChoice,
+                onChanged: (value) {
+                  if (value != null) _setLanguage(value);
+                },
+              ),
+              RadioListTile<_LanguageChoice>(
+                title: Text(l10n.languageChineseTraditional),
+                value: _LanguageChoice.chineseTraditional,
                 groupValue: languageChoice,
                 onChanged: (value) {
                   if (value != null) _setLanguage(value);
