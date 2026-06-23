@@ -22,6 +22,13 @@ flutter run -t lib/main.dart
 
 状态管理使用 [PracticeSheetController](lib/src/ui/practice_sheet_controller.dart)（`ChangeNotifier`）+ 页面内 `AnimatedBuilder` 刷新。
 
+## 多语言（中 / 英）
+
+- 文案定义在 [`lib/l10n/app_en.arb`](lib/l10n/app_en.arb)（模板）与 [`lib/l10n/app_zh.arb`](lib/l10n/app_zh.arb)。
+- 生成代码：`flutter gen-l10n`（配置见 [`l10n.yaml`](l10n.yaml)；`pubspec.yaml` 已开启 `generate: true`）。
+- **关于 → 语言**：跟随系统 / 中文 / English；选择会写入 `shared_preferences` 并在下次启动恢复。
+- 代码中通过 `context.l10n`（[`lib/src/l10n/l10n_extension.dart`](lib/src/l10n/l10n_extension.dart)）取字符串；字帖生成提示使用 [`practice_sheet_messages.dart`](lib/src/locale/practice_sheet_messages.dart) 结构化消息再本地化。
+
 ## `pubspec.yaml`：PDF / 导出依赖
 
 在 `dependencies` 下加入（与仓库当前版本一致即可）：
@@ -30,6 +37,7 @@ flutter run -t lib/main.dart
   pdf: ^3.11.1
   printing: ^5.13.4
   file_saver: ^0.2.14
+  shared_preferences: ^2.3.0
 ```
 
 笔画在 PDF 中通过 **SVG path 字符串 + `PdfGraphics.drawShape`** 输出为矢量路径；页面格式为 **`PdfPageFormat.a4`**。主界面 AppBar 右侧 **「导出 PDF」** 菜单：`Printing.layoutPdf()` 系统打印、`file_saver` 另存为、`Printing.sharePdf()` 分享。

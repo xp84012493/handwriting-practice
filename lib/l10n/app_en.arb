@@ -1,0 +1,141 @@
+{
+  "@@locale": "en",
+  "appTitle": "Hanzi Stroke Practice",
+  "@appTitle": {
+    "description": "Application title"
+  },
+  "aboutTooltip": "About",
+  "exportPdfTooltip": "Export PDF",
+  "exportSystemPrint": "Print…",
+  "exportSaveFile": "Save PDF to file",
+  "exportShare": "Share PDF",
+  "inputHint": "Enter Chinese characters",
+  "generateButton": "Generate sheet",
+  "emptyStateBody": "Enter multiple characters above (one row per character on the sheet).\nAbout {maxChars} characters fit on one A4 page; extra characters are ignored.",
+  "@emptyStateBody": {
+    "placeholders": {
+      "maxChars": {
+        "type": "int"
+      }
+    }
+  },
+  "sheetRowSummary": "「{character}」{strokeCount} strokes",
+  "@sheetRowSummary": {
+    "placeholders": {
+      "character": {
+        "type": "String"
+      },
+      "strokeCount": {
+        "type": "int"
+      }
+    }
+  },
+  "printFailed": "Print failed: {error}",
+  "@printFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "pdfSaved": "PDF saved",
+  "pdfSaveCancelled": "Save cancelled",
+  "pdfSaveFailed": "Save failed: {error}",
+  "@pdfSaveFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "pdfShareFailed": "Share failed: {error}",
+  "@pdfShareFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "pdfFileNamePrefix": "PracticeSheet",
+  "aboutTitle": "About",
+  "versionLabel": "Version {version}",
+  "@versionLabel": {
+    "placeholders": {
+      "version": {
+        "type": "String"
+      }
+    }
+  },
+  "languageTitle": "Language",
+  "languageFollowSystem": "System default",
+  "languageChinese": "中文",
+  "languageEnglish": "English",
+  "featureOverviewTitle": "Overview",
+  "featureOverviewBody": "Generate stroke-order practice sheets from the built-in dictionary, preview them in the app, and print or export PDF via the system.",
+  "strokeDataTitle": "Stroke data",
+  "strokeDataBody": "Stroke outlines come from Make Me a Hanzi graphics.txt, derived from Arphic PL fonts under the Arphic Public License (1999). See Third-party notices below for the full statement.",
+  "thirdPartyNoticesButton": "Third-party notices",
+  "openSourceLicensesButton": "Open-source licenses",
+  "notesTitle": "Note",
+  "notesBody": "The open-source licenses screen lists this app and its dependencies. Stroke data is governed by the third-party notices above.",
+  "thirdPartyNoticesTitle": "Third-party notices",
+  "thirdPartyNoticesLoadError": "Could not load THIRD_PARTY_NOTICES.md: {error}",
+  "@thirdPartyNoticesLoadError": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "licenseLegalese": "Application source code is under the MIT License (see repository LICENSE).\nStroke outline data is from Make Me a Hanzi (graphics.txt) and must comply with the Arphic Public License; see Third-party notices in the app.",
+  "hintSeparator": "; ",
+  "listSeparator": ", ",
+  "hintEmptyInput": "Please enter Chinese characters",
+  "hintDictionaryLoadFailed": "Failed to load dictionary: {error}",
+  "@hintDictionaryLoadFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "hintInvalidInput": "Enter at least one Chinese character (Basic Multilingual Plane U+4E00–U+9FFF)",
+  "hintNoMatchingChars": "No selected characters are in the dictionary. Check your input or add entries to {path}.",
+  "@hintNoMatchingChars": {
+    "placeholders": {
+      "path": {
+        "type": "String"
+      }
+    }
+  },
+  "hintMissingChars": "Not in dictionary: {chars}",
+  "@hintMissingChars": {
+    "placeholders": {
+      "chars": {
+        "type": "String"
+      }
+    }
+  },
+  "hintSkippedOverflow": "Wrapped layout exceeds one A4 page (~{maxRows} rows); ignored the last {skipped} character(s)",
+  "@hintSkippedOverflow": {
+    "placeholders": {
+      "maxRows": {
+        "type": "int"
+      },
+      "skipped": {
+        "type": "int"
+      }
+    }
+  },
+  "hintPhysicalOverflow": "Wrapped layout uses {usedRows} rows, exceeding one A4 page (~{maxRows} rows); the bottom may be clipped when printing",
+  "@hintPhysicalOverflow": {
+    "placeholders": {
+      "usedRows": {
+        "type": "int"
+      },
+      "maxRows": {
+        "type": "int"
+      }
+    }
+  }
+}

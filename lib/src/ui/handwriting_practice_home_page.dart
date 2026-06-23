@@ -3,6 +3,9 @@ import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 
+import '../l10n/l10n_extension.dart';
+import '../locale/locale_controller.dart';
+import '../locale/practice_sheet_messages.dart';
 import '../models/practice_sheet_entry.dart';
 import '../print/practice_sheet_export.dart';
 import '../print/practice_sheet_pdf_service.dart';
@@ -14,7 +17,12 @@ enum _PdfExportAction { systemPrint, saveFile, share }
 
 /// 练字帖主界面：顶部输入 + 生成，下方 A4 横向比例字帖预览。
 class HandwritingPracticeHomePage extends StatefulWidget {
-  const HandwritingPracticeHomePage({super.key});
+  const HandwritingPracticeHomePage({
+    super.key,
+    required this.localeController,
+  });
+
+  final LocaleController localeController;
 
   @override
   State<HandwritingPracticeHomePage> createState() =>
@@ -32,21 +40,25 @@ class _HandwritingPracticeHomePageState
   }
 
   Future<void> _onGenerate() async {
-    // 先收键盘再生成：避免「字帖已出、下一帧才关键盘」导致 viewInsets 突变、面板抖动。
     FocusManager.instance.primaryFocus?.unfocus();
     await _controller.generate();
     if (!mounted) return;
-    final hint = _controller.hint;
-    if (hint != null) {
+    if (_controller.messages.isNotEmpty) {
+      final text = formatPracticeSheetMessages(
+        context.l10n,
+        _controller.messages,
+      );
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(hint)),
+        SnackBar(content: Text(text)),
       );
     }
   }
 
   String _sheetPdfBaseName() {
+    final l10n = context.l10n;
     final rows = _controller.sheetRows;
-    return '练字帖_${rows.map((e) => e.character.character).join()}';
+    final chars = rows.map((e) => e.character.character).join();
+    return '${l10n.pdfFileNamePrefix}_$chars';
   }
 
   Future<Uint8List> _buildSheetPdfBytes() {
@@ -59,6 +71,7 @@ class _HandwritingPracticeHomePageState
 
   Future<void> _onSystemPrint() async {
     if (!_controller.hasSheet) return;
+    final l10n = context.l10n;
     try {
       await PracticeSheetPdfService.layoutPrint(
         rows: _controller.sheetRows,
@@ -70,13 +83,14 @@ class _HandwritingPracticeHomePageState
       debugPrint('Print failed: $e\n$st');
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('打印失败：$e')),
+        SnackBar(content: Text(l10n.printFailed('$e'))),
       );
     }
   }
 
   Future<void> _savePdfToFile() async {
     if (!_controller.hasSheet) return;
+    final l10n = context.l10n;
     try {
       final bytes = await _buildSheetPdfBytes();
       final ok = await PracticeSheetExport.savePdfToFile(
@@ -85,19 +99,20 @@ class _HandwritingPracticeHomePageState
       );
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(ok ? '已保存 PDF' : '已取消保存')),
+        SnackBar(content: Text(ok ? l10n.pdfSaved : l10n.pdfSaveCancelled)),
       );
     } catch (e, st) {
       debugPrint('Save PDF failed: $e\n$st');
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('保存失败：$e')),
+        SnackBar(content: Text(l10n.pdfSaveFailed('$e'))),
       );
     }
   }
 
   Future<void> _sharePdf() async {
     if (!_controller.hasSheet) return;
+    final l10n = context.l10n;
     try {
       final bytes = await _buildSheetPdfBytes();
       await PracticeSheetExport.sharePdf(
@@ -109,7 +124,7 @@ class _HandwritingPracticeHomePageState
       debugPrint('Share PDF failed: $e\n$st');
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('分享失败：$e')),
+        SnackBar(content: Text(l10n.pdfShareFailed('$e'))),
       );
     }
   }
@@ -131,34 +146,37 @@ class _HandwritingPracticeHomePageState
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final l10n = context.l10n;
 
     return AnimatedBuilder(
       animation: _controller,
       builder: (context, _) {
         return Scaffold(
-          // 键盘不挤压 body：与 Android adjustNothing 一致，避免 viewInsets 动画导致字帖区域高度抖动。
           resizeToAvoidBottomInset: false,
           appBar: AppBar(
-            title: const Text('汉字笔顺字帖'),
+            title: Text(l10n.appTitle),
             centerTitle: true,
             actions: [
               IconButton(
-                tooltip: '关于',
+                tooltip: l10n.aboutTooltip,
                 icon: const Icon(Icons.info_outline),
                 onPressed: () {
                   Navigator.of(context).push(
                     MaterialPageRoute<void>(
-                      builder: (context) => const AboutPage(),
+                      builder: (context) => AboutPage(
+                        localeController: widget.localeController,
+                      ),
                     ),
                   );
                 },
               ),
               PopupMenuButton<_PdfExportAction>(
-                tooltip: '导出 PDF',
+                tooltip: l10n.exportPdfTooltip,
                 enabled: _controller.hasSheet && !_controller.loading,
                 icon: const Icon(Icons.upload_file_outlined),
                 onSelected: _onPdfExportMenu,
                 itemBuilder: (menuContext) {
+                  final menuL10n = menuContext.l10n;
                   final t = Theme.of(menuContext);
                   final onSurface = t.colorScheme.onSurface;
                   return [
@@ -168,7 +186,7 @@ class _HandwritingPracticeHomePageState
                         children: [
                           Icon(Icons.print_outlined, size: 22, color: onSurface),
                           const SizedBox(width: 12),
-                          const Expanded(child: Text('系统打印…')),
+                          Expanded(child: Text(menuL10n.exportSystemPrint)),
                         ],
                       ),
                     ),
@@ -178,7 +196,7 @@ class _HandwritingPracticeHomePageState
                         children: [
                           Icon(Icons.save_alt_outlined, size: 22, color: onSurface),
                           const SizedBox(width: 12),
-                          const Expanded(child: Text('保存 PDF 到文件')),
+                          Expanded(child: Text(menuL10n.exportSaveFile)),
                         ],
                       ),
                     ),
@@ -188,7 +206,7 @@ class _HandwritingPracticeHomePageState
                         children: [
                           Icon(Icons.share_outlined, size: 22, color: onSurface),
                           const SizedBox(width: 12),
-                          const Expanded(child: Text('分享 PDF')),
+                          Expanded(child: Text(menuL10n.exportShare)),
                         ],
                       ),
                     ),
@@ -206,7 +224,6 @@ class _HandwritingPracticeHomePageState
                   onGenerate: _onGenerate,
                   theme: theme,
                 ),
-                // 固定高度占位，避免生成时进度条插入导致 Column 高度跳变、字帖区域抖动。
                 SizedBox(
                   height: 3,
                   width: double.infinity,
@@ -239,6 +256,7 @@ class _ControlBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     final mq = MediaQuery.of(context);
     final isNarrow = mq.size.width < 420;
 
@@ -251,7 +269,7 @@ class _ControlBar extends StatelessWidget {
         letterSpacing: 2,
       ),
       decoration: InputDecoration(
-        hintText: '输入汉字（多字）',
+        hintText: l10n.inputHint,
         filled: true,
         fillColor: theme.colorScheme.surfaceContainerHighest.withValues(
           alpha: 0.35,
@@ -279,7 +297,7 @@ class _ControlBar extends StatelessWidget {
     final button = FilledButton.icon(
       onPressed: controller.loading ? null : onGenerate,
       icon: const Icon(Icons.auto_fix_high_outlined),
-      label: const Text('生成字帖'),
+      label: Text(l10n.generateButton),
       style: FilledButton.styleFrom(
         padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 14),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
@@ -324,14 +342,16 @@ class _PreviewBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // 空状态与有字帖时共用「顶对齐 + 同宽滚动」外壳，避免首次生成从 Center 垂直居中
-    // 切到字帖顶对齐时的整段位移抖动。生成中仍用顶栏细进度条，不在此切全屏转圈。
+    final l10n = context.l10n;
     final rows = controller.hasSheet ? controller.sheetRows : const <PracticeSheetEntry>[];
     final subtitle = !controller.hasSheet
         ? null
         : rows
             .map(
-              (e) => '「${e.character.character}」${e.prepared.strokeCount}笔',
+              (e) => l10n.sheetRowSummary(
+                e.character.character,
+                e.prepared.strokeCount,
+              ),
             )
             .join(' · ');
 
@@ -367,7 +387,7 @@ class _PreviewBody extends StatelessWidget {
                   : Padding(
                       padding: const EdgeInsets.fromLTRB(12, 32, 12, 24),
                       child: Text(
-                        '在上方输入多个汉字（每字一行字帖，\nA4 单页约限 ${controller.maxMultiCharacters} 字，超出部分将忽略）。',
+                        l10n.emptyStateBody(controller.maxMultiCharacters),
                         textAlign: TextAlign.center,
                         style: theme.textTheme.bodyLarge?.copyWith(
                           color: theme.colorScheme.onSurfaceVariant,

@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import '../engine/prepared_hanzi_strokes.dart';
 import '../engine/stroke_path_cache.dart';
 import '../layout/a4_sheet_layout.dart';
+import '../locale/practice_sheet_messages.dart';
 import '../models/hanzi_character.dart';
 import '../models/practice_sheet_entry.dart';
 import '../parsers/hanzi_graphics_parser.dart';
@@ -61,11 +62,11 @@ class PracticeSheetController extends ChangeNotifier {
 
   Map<String, HanziCharacter>? _dictionary;
   List<PracticeSheetEntry> _entries = const [];
-  String? _hint;
+  List<PracticeSheetMessage> _messages = const [];
   bool _loading = false;
 
   List<PracticeSheetEntry> get entries => _entries;
-  String? get hint => _hint;
+  List<PracticeSheetMessage> get messages => _messages;
   bool get loading => _loading;
   bool get hasSheet => _entries.isNotEmpty;
 
@@ -88,13 +89,13 @@ class PracticeSheetController extends ChangeNotifier {
   Future<void> generate() async {
     final raw = textController.text.trim();
     if (raw.isEmpty) {
-      _hint = '请输入汉字';
+      _messages = const [HintEmptyInput()];
       notifyListeners();
       return;
     }
 
     _loading = true;
-    _hint = null;
+    _messages = const [];
     notifyListeners();
 
     try {
@@ -103,14 +104,14 @@ class PracticeSheetController extends ChangeNotifier {
     } catch (e, st) {
       debugPrint('PracticeSheetController.generate failed: $e\n$st');
       _entries = const [];
-      _hint = '加载字库失败：$e';
+      _messages = [HintDictionaryLoadFailed(e)];
     } finally {
       _loading = false;
       notifyListeners();
     }
   }
 
-  String? _pageOverflowHint(List<PracticeSheetEntry> logicalRows) {
+  HintPhysicalOverflow? _pageOverflowMessage(List<PracticeSheetEntry> logicalRows) {
     final colsPerLine = A4SheetLayout.columnsPerLine(
       A4SheetLayout.pdfInnerWidthPt,
       A4SheetLayout.practiceCellSizePt,
@@ -126,7 +127,7 @@ class PracticeSheetController extends ChangeNotifier {
       );
     }
     if (used <= maxPhysical) return null;
-    return '折行后共 $used 行，超出 A4 单页约 $maxPhysical 行，打印时底部可能被裁切';
+    return HintPhysicalOverflow(usedRows: used, maxRows: maxPhysical);
   }
 
   Future<void> _generateMulti(String raw) async {
@@ -135,7 +136,7 @@ class PracticeSheetController extends ChangeNotifier {
         .toList(growable: false);
     if (chars.isEmpty) {
       _entries = const [];
-      _hint = '请输入至少一个汉字（基本区 U+4E00–U+9FFF）';
+      _messages = const [HintInvalidInput()];
       return;
     }
 
@@ -179,24 +180,26 @@ class PracticeSheetController extends ChangeNotifier {
 
     if (built.isEmpty) {
       _entries = const [];
-      _hint = '字库中暂无所选汉字，请检查输入或扩充 $dictionaryAssetPath。';
+      _messages = [HintNoMatchingChars(dictionaryAssetPath)];
       return;
     }
 
     _entries = built;
 
-    final hints = <String>[];
+    final hints = <PracticeSheetMessage>[];
     if (missing.isNotEmpty) {
-      hints.add('字库中暂无：${missing.join('、')}');
+      hints.add(HintMissingChars(missing));
     }
     if (skippedForPage > 0) {
-      hints.add('折行后超出 A4 单页（约 $maxPhysical 行），已忽略后 $skippedForPage 字');
+      hints.add(
+        HintSkippedOverflow(maxRows: maxPhysical, skipped: skippedForPage),
+      );
     }
-    final overflowHint = _pageOverflowHint(built);
-    if (overflowHint != null) {
-      hints.add(overflowHint);
+    final overflow = _pageOverflowMessage(built);
+    if (overflow != null) {
+      hints.add(overflow);
     }
-    _hint = hints.isEmpty ? null : hints.join('；');
+    _messages = hints;
   }
 
   Future<void> _ensureDictionaryLoaded() async {
