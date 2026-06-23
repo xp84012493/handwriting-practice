@@ -80,6 +80,8 @@ final list = HanziGraphicsParser().parseGraphicsTxt(contents);
 
 商店与合规项见 **[上架前 Checklist](docs/STORE_LAUNCH_CHECKLIST.md)**（产品、测试、版权、App Store / Play / 国内渠道等）。
 
+**隐私政策（中英模板）：** [docs/legal/](docs/legal/) — 替换占位符后可用 GitHub Pages 托管，将 URL 填入 App Store Connect。
+
 ## 许可
 
 ### 本仓库源代码

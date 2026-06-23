@@ -39,6 +39,7 @@
 - [ ] **出口合规**：加密与出口法规问卷按实填写。
 - [ ] **截图与预览**：符合尺寸要求，展示真实 UI（勿误导）。
 - [ ] **审核备注**：如需测试账号、特殊操作步骤，在「审核信息」中写清。
+- [ ] **iOS 桌面显示名**：`en.lproj` / `zh-Hans.lproj` 的 `InfoPlist.strings`（英文 **Hanzi Practice**，中文 **汉字练字**）。
 - [ ] **Privacy Manifest**：若使用需声明的 SDK / API，按 Apple 要求提供 `PrivacyInfo.xcprivacy`（随 Flutter/Xcode 版本更新核对）。
 
 ---
@@ -63,7 +64,7 @@
 ## 7. 运营与支持
 
 - [ ] **支持 URL / 邮箱**：商店必填项可访问，有人回复。
-- [ ] **隐私政策页面**：即使「几乎不收集数据」，也建议提供简短 HTTPS 页面说明数据实践。
+- [ ] **隐私政策 URL**：可访问的 HTTPS 页面；模板见 [`docs/legal/privacy-policy-en.md`](legal/privacy-policy-en.md) / [`privacy-policy-zh.md`](legal/privacy-policy-zh.md)，发布说明见 [`docs/legal/README.md`](legal/README.md)。
 - [ ] **更新日志**：首版或后续版本在商店「新功能」中简述。
 
 ---
