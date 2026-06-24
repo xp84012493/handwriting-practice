@@ -20,6 +20,7 @@
 ### 1. Apple 开发者后台
 
 - **Bundle ID**：`com.leoxp.handwritingpractice`（与 `ios/Runner.xcodeproj` 中 `PRODUCT_BUNDLE_IDENTIFIER` 一致）
+- **设备**：**仅 iPhone**（`TARGETED_DEVICE_FAMILY = 1`）；App Store Connect 创建应用时选 iPhone，**无需 iPad 截图**
 - 在 [App Store Connect](https://appstoreconnect.apple.com/) 创建应用，Bundle ID 同上
 - 准备 **Apple Distribution** 证书（导出 `.p12`）
 - 准备两份描述文件：
