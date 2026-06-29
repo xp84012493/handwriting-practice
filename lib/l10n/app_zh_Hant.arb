@@ -62,5 +62,14 @@
   "upgradePurchaseFailed": "購買失敗：{error}",
   "settingsUpgradeTitle": "字帖生成",
   "settingsUpgradeSubtitleRemaining": "免費剩餘 {remaining}/{limit} 次",
-  "settingsUpgradeSubtitleUnlocked": "已解鎖，無限次"
+  "settingsUpgradeSubtitleUnlocked": "已解鎖，無限次",
+  "settingsShareTitle": "分享得免費次數",
+  "settingsShareSubtitleAvailable": "分享給好友：每次 +{bonus} 次（還可分享 {remaining} 次）",
+  "settingsShareSubtitleDone": "分享獎勵已領完",
+  "shareAppMessage": "我在用「{appTitle}」練漢字筆順字帖，推薦給你：\n{url}",
+  "shareRewardGranted": "感謝分享！已增加 {bonus} 次免費生成",
+  "shareRewardLimitReached": "分享獎勵次數已用完",
+  "shareRewardCancelled": "已取消分享",
+  "shareRewardUnavailable": "目前裝置無法分享",
+  "upgradeShareButton": "分享獲得 +{bonus} 次（剩餘 {remaining} 次機會）"
 }

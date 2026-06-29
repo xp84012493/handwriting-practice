@@ -62,5 +62,14 @@
   "upgradePurchaseFailed": "购买失败：{error}",
   "settingsUpgradeTitle": "字帖生成",
   "settingsUpgradeSubtitleRemaining": "免费剩余 {remaining}/{limit} 次",
-  "settingsUpgradeSubtitleUnlocked": "已解锁，无限次"
+  "settingsUpgradeSubtitleUnlocked": "已解锁，无限次",
+  "settingsShareTitle": "分享得免费次数",
+  "settingsShareSubtitleAvailable": "分享给好友：每次 +{bonus} 次（还可分享 {remaining} 次）",
+  "settingsShareSubtitleDone": "分享奖励已领完",
+  "shareAppMessage": "我在用「{appTitle}」练汉字笔顺字帖，推荐给你：\n{url}",
+  "shareRewardGranted": "感谢分享！已增加 {bonus} 次免费生成",
+  "shareRewardLimitReached": "分享奖励次数已用完",
+  "shareRewardCancelled": "已取消分享",
+  "shareRewardUnavailable": "当前设备无法分享",
+  "upgradeShareButton": "分享获得 +{bonus} 次（剩余 {remaining} 次机会）"
 }

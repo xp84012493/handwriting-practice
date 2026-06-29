@@ -234,6 +234,41 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get settingsUpgradeSubtitleUnlocked => '已解锁，无限次';
+
+  @override
+  String get settingsShareTitle => '分享得免费次数';
+
+  @override
+  String settingsShareSubtitleAvailable(int bonus, int remaining) {
+    return '分享给好友：每次 +$bonus 次（还可分享 $remaining 次）';
+  }
+
+  @override
+  String get settingsShareSubtitleDone => '分享奖励已领完';
+
+  @override
+  String shareAppMessage(String appTitle, String url) {
+    return '我在用「$appTitle」练汉字笔顺字帖，推荐给你：\n$url';
+  }
+
+  @override
+  String shareRewardGranted(int bonus) {
+    return '感谢分享！已增加 $bonus 次免费生成';
+  }
+
+  @override
+  String get shareRewardLimitReached => '分享奖励次数已用完';
+
+  @override
+  String get shareRewardCancelled => '已取消分享';
+
+  @override
+  String get shareRewardUnavailable => '当前设备无法分享';
+
+  @override
+  String upgradeShareButton(int bonus, int remaining) {
+    return '分享获得 +$bonus 次（剩余 $remaining 次机会）';
+  }
 }
 
 /// The translations for Chinese, using the Han script (`zh_Hant`).
@@ -466,4 +501,39 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String get settingsUpgradeSubtitleUnlocked => '已解鎖，無限次';
+
+  @override
+  String get settingsShareTitle => '分享得免費次數';
+
+  @override
+  String settingsShareSubtitleAvailable(int bonus, int remaining) {
+    return '分享給好友：每次 +$bonus 次（還可分享 $remaining 次）';
+  }
+
+  @override
+  String get settingsShareSubtitleDone => '分享獎勵已領完';
+
+  @override
+  String shareAppMessage(String appTitle, String url) {
+    return '我在用「$appTitle」練漢字筆順字帖，推薦給你：\n$url';
+  }
+
+  @override
+  String shareRewardGranted(int bonus) {
+    return '感謝分享！已增加 $bonus 次免費生成';
+  }
+
+  @override
+  String get shareRewardLimitReached => '分享獎勵次數已用完';
+
+  @override
+  String get shareRewardCancelled => '已取消分享';
+
+  @override
+  String get shareRewardUnavailable => '目前裝置無法分享';
+
+  @override
+  String upgradeShareButton(int bonus, int remaining) {
+    return '分享獲得 +$bonus 次（剩餘 $remaining 次機會）';
+  }
 }

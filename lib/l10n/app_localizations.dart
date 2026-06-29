@@ -476,6 +476,60 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Unlimited access'**
   String get settingsUpgradeSubtitleUnlocked;
+
+  /// No description provided for @settingsShareTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Share for free uses'**
+  String get settingsShareTitle;
+
+  /// No description provided for @settingsShareSubtitleAvailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Share the app: +{bonus} uses each time ({remaining} shares left)'**
+  String settingsShareSubtitleAvailable(int bonus, int remaining);
+
+  /// No description provided for @settingsShareSubtitleDone.
+  ///
+  /// In en, this message translates to:
+  /// **'Share rewards used up'**
+  String get settingsShareSubtitleDone;
+
+  /// No description provided for @shareAppMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'I\'m using {appTitle} for Hanzi stroke-order practice sheets — try it:\n{url}'**
+  String shareAppMessage(String appTitle, String url);
+
+  /// No description provided for @shareRewardGranted.
+  ///
+  /// In en, this message translates to:
+  /// **'Thanks for sharing! +{bonus} free generations added.'**
+  String shareRewardGranted(int bonus);
+
+  /// No description provided for @shareRewardLimitReached.
+  ///
+  /// In en, this message translates to:
+  /// **'You\'ve used all share rewards.'**
+  String get shareRewardLimitReached;
+
+  /// No description provided for @shareRewardCancelled.
+  ///
+  /// In en, this message translates to:
+  /// **'Share cancelled.'**
+  String get shareRewardCancelled;
+
+  /// No description provided for @shareRewardUnavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Sharing is not available on this device.'**
+  String get shareRewardUnavailable;
+
+  /// No description provided for @upgradeShareButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Share for +{bonus} free uses ({remaining} left)'**
+  String upgradeShareButton(int bonus, int remaining);
 }
 
 class _AppLocalizationsDelegate

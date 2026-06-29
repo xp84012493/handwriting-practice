@@ -237,4 +237,40 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get settingsUpgradeSubtitleUnlocked => 'Unlimited access';
+
+  @override
+  String get settingsShareTitle => 'Share for free uses';
+
+  @override
+  String settingsShareSubtitleAvailable(int bonus, int remaining) {
+    return 'Share the app: +$bonus uses each time ($remaining shares left)';
+  }
+
+  @override
+  String get settingsShareSubtitleDone => 'Share rewards used up';
+
+  @override
+  String shareAppMessage(String appTitle, String url) {
+    return 'I\'m using $appTitle for Hanzi stroke-order practice sheets — try it:\n$url';
+  }
+
+  @override
+  String shareRewardGranted(int bonus) {
+    return 'Thanks for sharing! +$bonus free generations added.';
+  }
+
+  @override
+  String get shareRewardLimitReached => 'You\'ve used all share rewards.';
+
+  @override
+  String get shareRewardCancelled => 'Share cancelled.';
+
+  @override
+  String get shareRewardUnavailable =>
+      'Sharing is not available on this device.';
+
+  @override
+  String upgradeShareButton(int bonus, int remaining) {
+    return 'Share for +$bonus free uses ($remaining left)';
+  }
 }

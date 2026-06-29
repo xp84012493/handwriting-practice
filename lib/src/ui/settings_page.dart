@@ -6,6 +6,7 @@ import '../theme/theme_controller.dart';
 import '../services/usage_quota_service.dart';
 import 'about_page.dart';
 import 'language_settings_page.dart';
+import 'share_reward_action.dart';
 import 'theme_settings_page.dart';
 import 'upgrade_page.dart';
 
@@ -43,8 +44,14 @@ class SettingsPage extends StatelessWidget {
             ? l10n.settingsUpgradeSubtitleUnlocked
             : l10n.settingsUpgradeSubtitleRemaining(
                 quota.remainingFree,
-                UsageQuotaService.freeGenerationLimit,
+                quota.effectiveFreeLimit,
               );
+        final shareSubtitle = quota.canClaimShareReward
+            ? l10n.settingsShareSubtitleAvailable(
+                UsageQuotaService.bonusGenerationsPerShare,
+                quota.shareRewardsRemaining,
+              )
+            : l10n.settingsShareSubtitleDone;
         return Scaffold(
           appBar: AppBar(title: Text(l10n.settingsTitle)),
           body: ListView(
@@ -69,6 +76,16 @@ class SettingsPage extends StatelessWidget {
                             ),
                           );
                         },
+                ),
+              if (quota.billingEnforced && !quota.isUnlocked)
+                ListTile(
+                  leading: const Icon(Icons.share_outlined),
+                  title: Text(l10n.settingsShareTitle),
+                  subtitle: Text(shareSubtitle),
+                  enabled: quota.canClaimShareReward,
+                  onTap: quota.canClaimShareReward
+                      ? () => runShareForBonus(context)
+                      : null,
                 ),
               ListTile(
                 leading: const Icon(Icons.translate_outlined),

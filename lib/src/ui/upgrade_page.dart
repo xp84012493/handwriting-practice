@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../l10n/l10n_extension.dart';
 import '../services/unlock_billing_service.dart';
 import '../services/usage_quota_service.dart';
+import 'share_reward_action.dart';
 
 /// Paywall: unlimited sheet generation after free quota.
 class UpgradePage extends StatefulWidget {
@@ -42,6 +43,9 @@ class _UpgradePageState extends State<UpgradePage> {
 
   void _onQuotaChanged() {
     if (mounted) setState(() {});
+    if (_quota.canGenerate && mounted) {
+      Navigator.of(context).maybePop(true);
+    }
   }
 
   Future<void> _buy() async {
@@ -64,7 +68,7 @@ class _UpgradePageState extends State<UpgradePage> {
     final l10n = context.l10n;
     final theme = Theme.of(context);
     final product = _billing.unlockProduct;
-    final limit = UsageQuotaService.freeGenerationLimit;
+    final limit = _quota.effectiveFreeLimit;
 
     return Scaffold(
       appBar: AppBar(title: Text(l10n.upgradeTitle)),
@@ -121,6 +125,19 @@ class _UpgradePageState extends State<UpgradePage> {
                 minimumSize: const Size.fromHeight(44),
               ),
               child: Text(l10n.upgradeRestoreButton),
+            ),
+          ],
+          if (_quota.canClaimShareReward) ...[
+            const SizedBox(height: 20),
+            TextButton.icon(
+              onPressed: () => runShareForBonus(context),
+              icon: const Icon(Icons.share_outlined),
+              label: Text(
+                l10n.upgradeShareButton(
+                  UsageQuotaService.bonusGenerationsPerShare,
+                  _quota.shareRewardsRemaining,
+                ),
+              ),
             ),
           ],
           if (_billing.lastPurchaseError != null) ...[

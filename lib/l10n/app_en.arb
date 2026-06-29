@@ -184,5 +184,37 @@
       "limit": { "type": "int" }
     }
   },
-  "settingsUpgradeSubtitleUnlocked": "Unlimited access"
+  "settingsUpgradeSubtitleUnlocked": "Unlimited access",
+  "settingsShareTitle": "Share for free uses",
+  "settingsShareSubtitleAvailable": "Share the app: +{bonus} uses each time ({remaining} shares left)",
+  "@settingsShareSubtitleAvailable": {
+    "placeholders": {
+      "bonus": { "type": "int" },
+      "remaining": { "type": "int" }
+    }
+  },
+  "settingsShareSubtitleDone": "Share rewards used up",
+  "shareAppMessage": "I'm using {appTitle} for Hanzi stroke-order practice sheets — try it:\n{url}",
+  "@shareAppMessage": {
+    "placeholders": {
+      "appTitle": { "type": "String" },
+      "url": { "type": "String" }
+    }
+  },
+  "shareRewardGranted": "Thanks for sharing! +{bonus} free generations added.",
+  "@shareRewardGranted": {
+    "placeholders": {
+      "bonus": { "type": "int" }
+    }
+  },
+  "shareRewardLimitReached": "You've used all share rewards.",
+  "shareRewardCancelled": "Share cancelled.",
+  "shareRewardUnavailable": "Sharing is not available on this device.",
+  "upgradeShareButton": "Share for +{bonus} free uses ({remaining} left)",
+  "@upgradeShareButton": {
+    "placeholders": {
+      "bonus": { "type": "int" },
+      "remaining": { "type": "int" }
+    }
+  }
 }

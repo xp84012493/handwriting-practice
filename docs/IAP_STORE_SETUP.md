@@ -14,7 +14,15 @@ iOS / Android 走商店内购；Windows / Web 开发版不限制次数。
 
 代码使用 `flutter_secure_storage`（见 [`UsageQuotaService`](../lib/src/services/usage_quota_service.dart)）。
 
-## 商品 ID
+### 分享得免费次数
+
+- **设置 → 分享得免费次数**：调起系统分享面板，分享推荐文案 + App Store 链接
+- 每成功分享 1 次 → **+10 次**免费生成额度
+- 最多奖励 **10 次分享**（合计最多 +100 次，即 30+100=130 次免费）
+- 上架后请在 [`AppShareConfig`](../lib/src/config/app_share_config.dart) 中替换正式 App Store URL
+- 无法验证对方是否安装；奖励在用户使用系统分享并关闭面板后发放（防无限刷：有次数上限）
+
+---
 
 | 平台 | Product ID | 类型 |
 |------|------------|------|

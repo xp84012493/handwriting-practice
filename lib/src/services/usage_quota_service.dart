@@ -4,7 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-/// Tracks free sheet generations; after [freeGenerationLimit], requires IAP unlock.
+/// Tracks free sheet generations; after [freeGenerationLimit] (+ share bonus), requires IAP.
 ///
 /// Persisted in **Keychain / Encrypted storage** so iOS reinstall usually keeps
 /// the count. Android clears app data on uninstall (platform limitation).
@@ -15,10 +15,16 @@ class UsageQuotaService extends ChangeNotifier {
 
   static const int freeGenerationLimit = 30;
 
+  /// Each successful share grants this many extra free generations.
+  static const int bonusGenerationsPerShare = 10;
+
+  /// Maximum number of share rewards (10 × 10 = +100 extra).
+  static const int maxShareRewards = 10;
+
   static const _keyCount = 'sheet_generation_count';
   static const _keyUnlocked = 'sheet_generation_unlocked';
+  static const _keyShareRewards = 'share_rewards_claimed';
 
-  /// Legacy keys from SharedPreferences (migrated once on load).
   static const _legacyKeyCount = 'sheet_generation_count';
   static const _legacyKeyUnlocked = 'sheet_generation_unlocked';
 
@@ -28,11 +34,11 @@ class UsageQuotaService extends ChangeNotifier {
 
   int _generationCount = 0;
   bool _unlocked = false;
+  int _shareRewardsClaimed = 0;
   bool _loaded = false;
 
   bool get isLoaded => _loaded;
 
-  /// iOS / Android store builds enforce quota; desktop & web are unrestricted.
   bool get billingEnforced =>
       !kIsWeb && (Platform.isIOS || Platform.isAndroid);
 
@@ -40,18 +46,30 @@ class UsageQuotaService extends ChangeNotifier {
 
   int get generationCount => _generationCount;
 
+  int get shareRewardsClaimed => _shareRewardsClaimed;
+
+  int get bonusGenerations => _shareRewardsClaimed * bonusGenerationsPerShare;
+
+  int get effectiveFreeLimit => freeGenerationLimit + bonusGenerations;
+
+  int get shareRewardsRemaining =>
+      (maxShareRewards - _shareRewardsClaimed).clamp(0, maxShareRewards);
+
+  bool get canClaimShareReward =>
+      billingEnforced && !isUnlocked && _shareRewardsClaimed < maxShareRewards;
+
   int get remainingFree => isUnlocked
       ? 0
-      : (freeGenerationLimit - _generationCount).clamp(0, freeGenerationLimit);
+      : (effectiveFreeLimit - _generationCount).clamp(0, effectiveFreeLimit);
 
-  bool get canGenerate =>
-      isUnlocked || _generationCount < freeGenerationLimit;
+  bool get canGenerate => isUnlocked || _generationCount < effectiveFreeLimit;
 
   bool get quotaExceeded => billingEnforced && !isUnlocked && !canGenerate;
 
   Future<void> load() async {
     final countStr = await _storage.read(key: _keyCount);
     final unlockedStr = await _storage.read(key: _keyUnlocked);
+    final shareStr = await _storage.read(key: _keyShareRewards);
 
     if (countStr != null) {
       _generationCount = int.tryParse(countStr) ?? 0;
@@ -59,8 +77,11 @@ class UsageQuotaService extends ChangeNotifier {
     if (unlockedStr != null) {
       _unlocked = unlockedStr == 'true';
     }
+    if (shareStr != null) {
+      _shareRewardsClaimed = int.tryParse(shareStr) ?? 0;
+    }
 
-    if (countStr == null && unlockedStr == null) {
+    if (countStr == null && unlockedStr == null && shareStr == null) {
       await _migrateFromSharedPreferences();
     }
 
@@ -84,6 +105,18 @@ class UsageQuotaService extends ChangeNotifier {
     }
     await prefs.remove(_legacyKeyCount);
     await prefs.remove(_legacyKeyUnlocked);
+  }
+
+  /// Returns true if a share reward was applied.
+  Future<bool> claimShareReward() async {
+    if (!canClaimShareReward) return false;
+    _shareRewardsClaimed += 1;
+    notifyListeners();
+    await _storage.write(
+      key: _keyShareRewards,
+      value: '$_shareRewardsClaimed',
+    );
+    return true;
   }
 
   Future<void> recordSuccessfulGeneration() async {
