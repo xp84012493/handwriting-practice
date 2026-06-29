@@ -48,5 +48,19 @@
   "hintNoMatchingChars": "字庫中暫無所選漢字，請檢查輸入或擴充 {path}。",
   "hintMissingChars": "字庫中暫無：{chars}",
   "hintSkippedOverflow": "折行後超出 A4 單頁（約 {maxRows} 行），已忽略後 {skipped} 字",
-  "hintPhysicalOverflow": "折行後共 {usedRows} 行，超出 A4 單頁約 {maxRows} 行，列印時底部可能被裁切"
+  "hintPhysicalOverflow": "折行後共 {usedRows} 行，超出 A4 單頁約 {maxRows} 行，列印時底部可能被裁切",
+  "quotaRemaining": "剩餘 {count} 次免費生成",
+  "quotaUnlocked": "已解鎖，無限次使用",
+  "quotaExceededTitle": "免費次數已用完",
+  "quotaExceededBody": "你已使用完 {limit} 次免費生成字帖。一次性購買後可無限生成。",
+  "upgradeTitle": "解鎖無限次",
+  "upgradeBuyButton": "購買解鎖（{price}）",
+  "upgradeRestoreButton": "恢復購買",
+  "upgradeStoreUnavailable": "目前裝置無法連線 App Store。",
+  "upgradeProductNotConfigured": "商店尚未設定 App 內購買項目，請稍後再試。",
+  "upgradePurchaseSuccess": "已解鎖，感謝支持！",
+  "upgradePurchaseFailed": "購買失敗：{error}",
+  "settingsUpgradeTitle": "字帖生成",
+  "settingsUpgradeSubtitleRemaining": "免費剩餘 {remaining}/{limit} 次",
+  "settingsUpgradeSubtitleUnlocked": "已解鎖，無限次"
 }

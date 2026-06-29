@@ -2,9 +2,11 @@
 import 'package:intl/intl.dart' as intl;
 import 'app_localizations.dart';
 
+// ignore_for_file: type=lint
+
 /// The translations for English (`en`).
 class AppLocalizationsEn extends AppLocalizations {
-  AppLocalizationsEn() : super('en');
+  AppLocalizationsEn([String locale = 'en']) : super(locale);
 
   @override
   String get appTitle => 'Hanzi Stroke Practice';
@@ -181,4 +183,58 @@ class AppLocalizationsEn extends AppLocalizations {
   String hintPhysicalOverflow(int usedRows, int maxRows) {
     return 'Wrapped layout uses $usedRows rows, exceeding one A4 page (~$maxRows rows); the bottom may be clipped when printing';
   }
+
+  @override
+  String quotaRemaining(int count) {
+    return '$count free generations left';
+  }
+
+  @override
+  String get quotaUnlocked => 'Unlimited access';
+
+  @override
+  String get quotaExceededTitle => 'Free limit reached';
+
+  @override
+  String quotaExceededBody(int limit) {
+    return 'You have used all $limit free sheet generations. Purchase once to unlock unlimited use.';
+  }
+
+  @override
+  String get upgradeTitle => 'Unlock unlimited';
+
+  @override
+  String upgradeBuyButton(String price) {
+    return 'Unlock for $price';
+  }
+
+  @override
+  String get upgradeRestoreButton => 'Restore purchase';
+
+  @override
+  String get upgradeStoreUnavailable =>
+      'The app store is not available on this device.';
+
+  @override
+  String get upgradeProductNotConfigured =>
+      'In-app purchase is not configured in the store yet.';
+
+  @override
+  String get upgradePurchaseSuccess => 'Unlocked. Thank you!';
+
+  @override
+  String upgradePurchaseFailed(String error) {
+    return 'Purchase failed: $error';
+  }
+
+  @override
+  String get settingsUpgradeTitle => 'Sheet generation';
+
+  @override
+  String settingsUpgradeSubtitleRemaining(int remaining, int limit) {
+    return '$remaining of $limit free uses left';
+  }
+
+  @override
+  String get settingsUpgradeSubtitleUnlocked => 'Unlimited access';
 }

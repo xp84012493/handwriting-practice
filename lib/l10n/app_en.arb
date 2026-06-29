@@ -144,5 +144,45 @@
         "type": "int"
       }
     }
-  }
+  },
+  "quotaRemaining": "{count} free generations left",
+  "@quotaRemaining": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "quotaUnlocked": "Unlimited access",
+  "quotaExceededTitle": "Free limit reached",
+  "quotaExceededBody": "You have used all {limit} free sheet generations. Purchase once to unlock unlimited use.",
+  "@quotaExceededBody": {
+    "placeholders": {
+      "limit": { "type": "int" }
+    }
+  },
+  "upgradeTitle": "Unlock unlimited",
+  "upgradeBuyButton": "Unlock for {price}",
+  "@upgradeBuyButton": {
+    "placeholders": {
+      "price": { "type": "String" }
+    }
+  },
+  "upgradeRestoreButton": "Restore purchase",
+  "upgradeStoreUnavailable": "The app store is not available on this device.",
+  "upgradeProductNotConfigured": "In-app purchase is not configured in the store yet.",
+  "upgradePurchaseSuccess": "Unlocked. Thank you!",
+  "upgradePurchaseFailed": "Purchase failed: {error}",
+  "@upgradePurchaseFailed": {
+    "placeholders": {
+      "error": { "type": "String" }
+    }
+  },
+  "settingsUpgradeTitle": "Sheet generation",
+  "settingsUpgradeSubtitleRemaining": "{remaining} of {limit} free uses left",
+  "@settingsUpgradeSubtitleRemaining": {
+    "placeholders": {
+      "remaining": { "type": "int" },
+      "limit": { "type": "int" }
+    }
+  },
+  "settingsUpgradeSubtitleUnlocked": "Unlimited access"
 }

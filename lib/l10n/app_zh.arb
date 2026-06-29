@@ -48,5 +48,19 @@
   "hintNoMatchingChars": "字库中暂无所选汉字，请检查输入或扩充 {path}。",
   "hintMissingChars": "字库中暂无：{chars}",
   "hintSkippedOverflow": "折行后超出 A4 单页（约 {maxRows} 行），已忽略后 {skipped} 字",
-  "hintPhysicalOverflow": "折行后共 {usedRows} 行，超出 A4 单页约 {maxRows} 行，打印时底部可能被裁切"
+  "hintPhysicalOverflow": "折行后共 {usedRows} 行，超出 A4 单页约 {maxRows} 行，打印时底部可能被裁切",
+  "quotaRemaining": "剩余 {count} 次免费生成",
+  "quotaUnlocked": "已解锁，无限次使用",
+  "quotaExceededTitle": "免费次数已用完",
+  "quotaExceededBody": "你已使用完 {limit} 次免费生成字帖。一次性购买后可无限生成。",
+  "upgradeTitle": "解锁无限次",
+  "upgradeBuyButton": "购买解锁（{price}）",
+  "upgradeRestoreButton": "恢复购买",
+  "upgradeStoreUnavailable": "当前设备无法连接应用商店。",
+  "upgradeProductNotConfigured": "商店尚未配置内购商品，请稍后再试。",
+  "upgradePurchaseSuccess": "已解锁，感谢支持！",
+  "upgradePurchaseFailed": "购买失败：{error}",
+  "settingsUpgradeTitle": "字帖生成",
+  "settingsUpgradeSubtitleRemaining": "免费剩余 {remaining}/{limit} 次",
+  "settingsUpgradeSubtitleUnlocked": "已解锁，无限次"
 }

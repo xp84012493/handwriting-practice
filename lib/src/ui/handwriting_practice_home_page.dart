@@ -10,9 +10,11 @@ import '../theme/theme_controller.dart';
 import '../models/practice_sheet_entry.dart';
 import '../print/practice_sheet_export.dart';
 import '../print/practice_sheet_pdf_service.dart';
+import '../services/usage_quota_service.dart';
 import 'a4_practice_sheet_preview.dart';
 import 'practice_sheet_controller.dart';
 import 'settings_page.dart';
+import 'upgrade_page.dart';
 
 enum _PdfExportAction { systemPrint, saveFile, share }
 
@@ -35,17 +37,49 @@ class HandwritingPracticeHomePage extends StatefulWidget {
 class _HandwritingPracticeHomePageState
     extends State<HandwritingPracticeHomePage> {
   late final PracticeSheetController _controller = PracticeSheetController();
+  final _quota = UsageQuotaService.instance;
+
+  @override
+  void initState() {
+    super.initState();
+    _quota.addListener(_onQuotaChanged);
+  }
 
   @override
   void dispose() {
+    _quota.removeListener(_onQuotaChanged);
     _controller.dispose();
     super.dispose();
   }
 
+  void _onQuotaChanged() {
+    if (mounted) setState(() {});
+  }
+
+  Future<bool> _openUpgradePage() async {
+    final unlocked = await Navigator.of(context).push<bool>(
+      MaterialPageRoute<bool>(builder: (context) => const UpgradePage()),
+    );
+    return unlocked == true || _quota.isUnlocked;
+  }
+
   Future<void> _onGenerate() async {
     FocusManager.instance.primaryFocus?.unfocus();
+    if (!_quota.canGenerate) {
+      await _openUpgradePage();
+      if (!_quota.canGenerate) return;
+    }
+
+    final countBefore = _quota.generationCount;
     await _controller.generate();
     if (!mounted) return;
+
+    if (_controller.hasSheet &&
+        !_quota.isUnlocked &&
+        _quota.generationCount == countBefore) {
+      await _quota.recordSuccessfulGeneration();
+    }
+
     if (_controller.messages.isNotEmpty) {
       final text = formatPracticeSheetMessages(
         context.l10n,
@@ -152,7 +186,7 @@ class _HandwritingPracticeHomePageState
     final l10n = context.l10n;
 
     return AnimatedBuilder(
-      animation: _controller,
+      animation: Listenable.merge([_controller, _quota]),
       builder: (context, _) {
         return Scaffold(
           resizeToAvoidBottomInset: false,
@@ -227,6 +261,7 @@ class _HandwritingPracticeHomePageState
                   controller: _controller,
                   onGenerate: _onGenerate,
                   theme: theme,
+                  quota: _quota,
                 ),
                 SizedBox(
                   height: 3,
@@ -252,11 +287,13 @@ class _ControlBar extends StatelessWidget {
     required this.controller,
     required this.onGenerate,
     required this.theme,
+    required this.quota,
   });
 
   final PracticeSheetController controller;
   final VoidCallback onGenerate;
   final ThemeData theme;
+  final UsageQuotaService quota;
 
   @override
   Widget build(BuildContext context) {
@@ -313,23 +350,39 @@ class _ControlBar extends StatelessWidget {
       color: theme.colorScheme.surface,
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-        child: isNarrow
-            ? Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  field,
-                  const SizedBox(height: 10),
-                  button,
-                ],
-              )
-            : Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Expanded(child: field),
-                  const SizedBox(width: 12),
-                  button,
-                ],
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            if (quota.billingEnforced && !quota.isUnlocked)
+              Padding(
+                padding: const EdgeInsets.only(bottom: 8),
+                child: Text(
+                  l10n.quotaRemaining(quota.remainingFree),
+                  textAlign: TextAlign.center,
+                  style: theme.textTheme.labelMedium?.copyWith(
+                    color: theme.colorScheme.primary,
+                  ),
+                ),
               ),
+            isNarrow
+                ? Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      field,
+                      const SizedBox(height: 10),
+                      button,
+                    ],
+                  )
+                : Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Expanded(child: field),
+                      const SizedBox(width: 12),
+                      button,
+                    ],
+                  ),
+          ],
+        ),
       ),
     );
   }

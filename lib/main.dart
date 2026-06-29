@@ -4,6 +4,8 @@ import 'package:flutter/services.dart';
 
 import 'l10n/app_localizations.dart';
 import 'src/locale/locale_controller.dart';
+import 'src/services/unlock_billing_service.dart';
+import 'src/services/usage_quota_service.dart';
 import 'src/theme/app_theme.dart';
 import 'src/theme/theme_controller.dart';
 import 'src/ui/handwriting_practice_home_page.dart';
@@ -21,7 +23,9 @@ void main() async {
   await Future.wait([
     localeController.load(),
     themeController.load(),
+    UsageQuotaService.instance.load(),
   ]);
+  await UnlockBillingService.instance.start();
   runApp(
     HanziPracticeApp(
       localeController: localeController,
