@@ -28,7 +28,7 @@ void main() {
   testWidgets('home screen smoke (Chinese)', (WidgetTester tester) async {
     await _pumpApp(tester, locale: const Locale('zh'));
 
-    expect(find.text('汉字笔顺字帖'), findsOneWidget);
+    expect(find.text('笔顺练字帖'), findsOneWidget);
     expect(find.text('生成字帖'), findsOneWidget);
   });
 

@@ -1,6 +1,6 @@
 {
   "@@locale": "zh_Hant",
-  "appTitle": "漢字筆順字帖",
+  "appTitle": "筆順練字帖",
   "aboutTooltip": "關於",
   "settingsTooltip": "設定",
   "settingsTitle": "設定",
@@ -66,7 +66,7 @@
   "settingsShareTitle": "分享得免費次數",
   "settingsShareSubtitleAvailable": "分享給好友：每次 +{bonus} 次（還可分享 {remaining} 次）",
   "settingsShareSubtitleDone": "分享獎勵已領完",
-  "shareAppMessage": "我在用「{appTitle}」練漢字筆順字帖，推薦給你：\n{url}",
+  "shareAppMessage": "我在用「{appTitle}」練筆順字帖，推薦給你：\n{url}",
   "shareRewardGranted": "感謝分享！已增加 {bonus} 次免費生成",
   "shareRewardLimitReached": "分享獎勵次數已用完",
   "shareRewardCancelled": "已取消分享",

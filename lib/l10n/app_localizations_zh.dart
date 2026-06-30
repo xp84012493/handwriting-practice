@@ -9,7 +9,7 @@ class AppLocalizationsZh extends AppLocalizations {
   AppLocalizationsZh([String locale = 'zh']) : super(locale);
 
   @override
-  String get appTitle => '汉字笔顺字帖';
+  String get appTitle => '笔顺练字帖';
 
   @override
   String get aboutTooltip => '关于';
@@ -248,7 +248,7 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String shareAppMessage(String appTitle, String url) {
-    return '我在用「$appTitle」练汉字笔顺字帖，推荐给你：\n$url';
+    return '我在用「$appTitle」练笔顺字帖，推荐给你：\n$url';
   }
 
   @override
@@ -276,7 +276,7 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
   AppLocalizationsZhHant() : super('zh_Hant');
 
   @override
-  String get appTitle => '漢字筆順字帖';
+  String get appTitle => '筆順練字帖';
 
   @override
   String get aboutTooltip => '關於';
@@ -515,7 +515,7 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String shareAppMessage(String appTitle, String url) {
-    return '我在用「$appTitle」練漢字筆順字帖，推薦給你：\n$url';
+    return '我在用「$appTitle」練筆順字帖，推薦給你：\n$url';
   }
 
   @override

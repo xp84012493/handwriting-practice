@@ -1,4 +1,4 @@
-# 上架前 Checklist（汉字笔顺练字帖）
+# 上架前 Checklist（笔顺练字帖）
 
 面向 **App Store / Google Play / 国内商店** 的通用核对清单；具体以各平台当期规则为准。完成项可在 PR 或发版前打勾。
 
@@ -39,13 +39,14 @@
 - [ ] **出口合规**：`Info.plist` 已设 `ITSAppUsesNonExemptEncryption = false`（仅使用豁免加密时）；若日后加入自定义加密，须改回并重新申报。
 - [ ] **截图与预览**：仅需 **iPhone** 截图（如 6.9" 1290×2796），展示真实 UI（勿误导）。本应用为 **iPhone-only**，无需 iPad 截图。
 - [ ] **审核备注**：如需测试账号、特殊操作步骤，在「审核信息」中写清。
-- [ ] **iOS 桌面显示名**：`en.lproj` / `zh-Hans.lproj` 的 `InfoPlist.strings`（英文 **Hanzi Practice**，中文 **汉字练字**）。
+- [ ] **iOS 桌面显示名**：`en.lproj` / `zh-Hans.lproj` / `zh-Hant.lproj` 的 `InfoPlist.strings`（英文 **Hanzi Practice**，简中 **笔顺练字帖**，繁中 **筆順練字帖**）；Android `android:label` 与简中一致。
 - [ ] **Privacy Manifest**：若使用需声明的 SDK / API，按 Apple 要求提供 `PrivacyInfo.xcprivacy`（随 Flutter/Xcode 版本更新核对）。
 
 ---
 
-## 5. Google Play
+## 5. Google Play / 国内安卓
 
+- [ ] **Application ID**：`com.leoxp.handwritingpractice`（与 iOS Bundle ID 一致）；Release 签名见 `android/key.properties.example`。
 - [ ] **商店详情**：短说明、完整说明、截图、功能图。
 - [ ] **数据安全表单**：与网络、分析、崩溃上报等实际情况一致。
 - [ ] **内容分级**：问卷完成。

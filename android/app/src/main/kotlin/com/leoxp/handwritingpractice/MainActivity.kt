@@ -1,4 +1,4 @@
-package com.example.hanzi_practice_engine
+package com.leoxp.handwritingpractice
 
 import io.flutter.embedding.android.FlutterActivity
 

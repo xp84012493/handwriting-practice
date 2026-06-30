@@ -1,0 +1,15 @@
+# Copy this file to android/key.properties and replace the placeholders.
+# Do not commit key.properties or *.jks (already listed in android/.gitignore).
+#
+# Generate a release keystore (run from the android/ directory):
+#   keytool -genkey -v -keystore upload-keystore.jks -keyalg RSA -keysize 2048 -validity 10000 -alias upload
+#
+# Then build a signed release APK:
+#   cd .. && flutter build apk --release
+#
+# Use that APK (or upload-keystore.jks via keytool / jadx) for Tencent Cloud APP filing.
+
+storePassword=your-store-password
+keyPassword=your-key-password
+keyAlias=upload
+storeFile=upload-keystore.jks
