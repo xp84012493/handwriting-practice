@@ -34,13 +34,15 @@ class AppShareService {
         return ShareRewardOutcome.unavailable;
       }
 
-      // iOS 常返回 dismissed；用户已打开并完成分享流程即发放（总次数有上限）。
-      if (result.status == ShareResultStatus.success ||
-          result.status == ShareResultStatus.dismissed) {
+      if (result.status == ShareResultStatus.success) {
         final granted = await quota.claimShareReward();
         return granted
             ? ShareRewardOutcome.granted
             : ShareRewardOutcome.limitReached;
+      }
+
+      if (result.status == ShareResultStatus.dismissed) {
+        return ShareRewardOutcome.cancelled;
       }
 
       return ShareRewardOutcome.cancelled;

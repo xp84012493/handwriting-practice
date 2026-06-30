@@ -20,7 +20,7 @@ iOS / Android 走商店内购；Windows / Web 开发版不限制次数。
 - 每成功分享 1 次 → **+5 次**免费生成额度
 - 最多奖励 **10 次分享**（合计最多 +50 次，即 30+50=80 次免费）
 - 上架后请在 [`AppShareConfig`](../lib/src/config/app_share_config.dart) 中替换正式 App Store URL
-- 无法验证对方是否安装；奖励在用户使用系统分享并关闭面板后发放（防无限刷：有次数上限）
+- 无法验证对方是否已安装或读完；仅在系统返回 **已选择分享目标**（`ShareResultStatus.success`）时发放，用户直接关闭面板不计入
 
 ---
 
