@@ -185,6 +185,8 @@
     }
   },
   "settingsUpgradeSubtitleUnlocked": "Unlimited access",
+  "settingsPurchaseTitle": "Purchase unlock",
+  "settingsPurchaseSubtitle": "One-time purchase for unlimited sheets",
   "settingsShareTitle": "Share for free uses",
   "settingsShareSubtitleAvailable": "Share the app: +{bonus} uses each time ({remaining} shares left)",
   "@settingsShareSubtitleAvailable": {

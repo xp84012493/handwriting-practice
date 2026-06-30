@@ -63,6 +63,8 @@
   "settingsUpgradeTitle": "字帖生成",
   "settingsUpgradeSubtitleRemaining": "免费剩余 {remaining}/{limit} 次",
   "settingsUpgradeSubtitleUnlocked": "已解锁，无限次",
+  "settingsPurchaseTitle": "购买解锁",
+  "settingsPurchaseSubtitle": "一次性购买，无限生成字帖",
   "settingsShareTitle": "分享得免费次数",
   "settingsShareSubtitleAvailable": "分享给好友：每次 +{bonus} 次（还可分享 {remaining} 次）",
   "settingsShareSubtitleDone": "分享奖励已领完",

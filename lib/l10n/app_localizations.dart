@@ -477,6 +477,18 @@ abstract class AppLocalizations {
   /// **'Unlimited access'**
   String get settingsUpgradeSubtitleUnlocked;
 
+  /// No description provided for @settingsPurchaseTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Purchase unlock'**
+  String get settingsPurchaseTitle;
+
+  /// No description provided for @settingsPurchaseSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'One-time purchase for unlimited sheets'**
+  String get settingsPurchaseSubtitle;
+
   /// No description provided for @settingsShareTitle.
   ///
   /// In en, this message translates to:

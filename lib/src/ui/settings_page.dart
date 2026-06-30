@@ -66,16 +66,21 @@ class SettingsPage extends StatelessWidget {
                           Icons.check_circle_outline,
                           color: Theme.of(context).colorScheme.primary,
                         )
-                      : const Icon(Icons.chevron_right),
-                  onTap: quota.isUnlocked
-                      ? null
-                      : () {
-                          Navigator.of(context).push(
-                            MaterialPageRoute<void>(
-                              builder: (context) => const UpgradePage(),
-                            ),
-                          );
-                        },
+                      : null,
+                ),
+              if (quota.billingEnforced && !quota.isUnlocked)
+                ListTile(
+                  leading: const Icon(Icons.lock_open_outlined),
+                  title: Text(l10n.settingsPurchaseTitle),
+                  subtitle: Text(l10n.settingsPurchaseSubtitle),
+                  trailing: const Icon(Icons.chevron_right),
+                  onTap: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute<void>(
+                        builder: (context) => const UpgradePage(),
+                      ),
+                    );
+                  },
                 ),
               if (quota.billingEnforced && !quota.isUnlocked)
                 Builder(

@@ -236,6 +236,12 @@ class AppLocalizationsZh extends AppLocalizations {
   String get settingsUpgradeSubtitleUnlocked => '已解锁，无限次';
 
   @override
+  String get settingsPurchaseTitle => '购买解锁';
+
+  @override
+  String get settingsPurchaseSubtitle => '一次性购买，无限生成字帖';
+
+  @override
   String get settingsShareTitle => '分享得免费次数';
 
   @override
@@ -501,6 +507,12 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String get settingsUpgradeSubtitleUnlocked => '已解鎖，無限次';
+
+  @override
+  String get settingsPurchaseTitle => '購買解鎖';
+
+  @override
+  String get settingsPurchaseSubtitle => '一次性購買，無限生成字帖';
 
   @override
   String get settingsShareTitle => '分享得免費次數';

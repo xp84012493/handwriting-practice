@@ -239,6 +239,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get settingsUpgradeSubtitleUnlocked => 'Unlimited access';
 
   @override
+  String get settingsPurchaseTitle => 'Purchase unlock';
+
+  @override
+  String get settingsPurchaseSubtitle =>
+      'One-time purchase for unlimited sheets';
+
+  @override
   String get settingsShareTitle => 'Share for free uses';
 
   @override
