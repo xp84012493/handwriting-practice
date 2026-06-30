@@ -56,7 +56,6 @@
   "upgradeTitle": "解鎖無限次",
   "upgradeOptionalBody": "你還剩餘 {remaining}/{limit} 次免費生成。如需不限次數，可一次性購買解鎖。",
   "upgradeBuyButton": "購買解鎖（{price}）",
-  "upgradeRestoreButton": "恢復購買",
   "upgradeStoreUnavailable": "目前裝置無法連線 App Store。",
   "upgradeProductNotConfigured": "商店尚未設定 App 內購買項目，請稍後再試。",
   "upgradePurchaseSuccess": "已解鎖，感謝支持！",

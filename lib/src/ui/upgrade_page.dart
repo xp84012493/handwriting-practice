@@ -55,17 +55,6 @@ class _UpgradePageState extends State<UpgradePage> {
     await _billing.buyUnlock();
   }
 
-  Future<void> _restore() async {
-    await _billing.restorePurchases();
-    if (!mounted) return;
-    final l10n = context.l10n;
-    if (_quota.isUnlocked) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(l10n.upgradePurchaseSuccess)),
-      );
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
@@ -123,14 +112,6 @@ class _UpgradePageState extends State<UpgradePage> {
                 minimumSize: const Size.fromHeight(48),
               ),
               child: Text(l10n.upgradeBuyButton(product.price)),
-            ),
-            const SizedBox(height: 12),
-            OutlinedButton(
-              onPressed: _restore,
-              style: OutlinedButton.styleFrom(
-                minimumSize: const Size.fromHeight(44),
-              ),
-              child: Text(l10n.upgradeRestoreButton),
             ),
           ],
           if (_quota.canClaimShareReward) ...[

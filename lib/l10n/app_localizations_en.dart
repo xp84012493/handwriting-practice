@@ -214,9 +214,6 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get upgradeRestoreButton => 'Restore purchase';
-
-  @override
   String get upgradeStoreUnavailable =>
       'The app store is not available on this device.';
 

@@ -213,9 +213,6 @@ class AppLocalizationsZh extends AppLocalizations {
   }
 
   @override
-  String get upgradeRestoreButton => '恢复购买';
-
-  @override
   String get upgradeStoreUnavailable => '当前设备无法连接应用商店。';
 
   @override
@@ -489,9 +486,6 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
   String upgradeBuyButton(String price) {
     return '購買解鎖（$price）';
   }
-
-  @override
-  String get upgradeRestoreButton => '恢復購買';
 
   @override
   String get upgradeStoreUnavailable => '目前裝置無法連線 App Store。';

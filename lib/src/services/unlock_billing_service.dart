@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/foundation.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../config/iap_products.dart';
 import 'usage_quota_service.dart';
@@ -14,6 +15,8 @@ class UnlockBillingService extends ChangeNotifier {
 
   final InAppPurchase _iap = InAppPurchase.instance;
   StreamSubscription<List<PurchaseDetails>>? _purchaseSub;
+
+  static const _keySilentRestoreAttempted = 'iap_silent_restore_attempted';
 
   bool _started = false;
   bool _storeAvailable = false;
@@ -51,11 +54,14 @@ class UnlockBillingService extends ChangeNotifier {
         (list) => unawaited(_handlePurchases(list)),
         onError: (Object e, StackTrace st) {
           debugPrint('IAP purchaseStream error: $e\n$st');
-          lastPurchaseError = e.toString();
-          purchaseInFlight = false;
-          notifyListeners();
+          if (purchaseInFlight) {
+            lastPurchaseError = e.toString();
+            purchaseInFlight = false;
+            notifyListeners();
+          }
         },
       );
+      _scheduleSilentRestore();
     } catch (e, st) {
       debugPrint('UnlockBillingService.start failed: $e\n$st');
       _storeAvailable = false;
@@ -107,36 +113,45 @@ class UnlockBillingService extends ChangeNotifier {
     }
   }
 
-  Future<void> restorePurchases() async {
+  /// Runs once per install (first launch) to recover a prior non-consumable purchase.
+  void _scheduleSilentRestore() {
+    if (UsageQuotaService.instance.isUnlocked) return;
+    unawaited(_silentRestoreOnFirstLaunchIfNeeded());
+  }
+
+  Future<void> _silentRestoreOnFirstLaunchIfNeeded() async {
     if (!_storeAvailable) return;
-    purchaseInFlight = true;
-    lastPurchaseError = null;
-    notifyListeners();
+
+    final prefs = await SharedPreferences.getInstance();
+    if (prefs.getBool(_keySilentRestoreAttempted) == true) return;
+
     try {
       await _iap.restorePurchases();
     } catch (e, st) {
-      debugPrint('restorePurchases: $e\n$st');
-      lastPurchaseError = e.toString();
+      debugPrint('silentRestorePurchases: $e\n$st');
     } finally {
-      purchaseInFlight = false;
-      notifyListeners();
+      await prefs.setBool(_keySilentRestoreAttempted, true);
     }
   }
 
   Future<void> _handlePurchases(List<PurchaseDetails> detailsList) async {
     for (final purchase in detailsList) {
       if (purchase.status == PurchaseStatus.pending) {
-        purchaseInFlight = true;
-        notifyListeners();
+        if (purchaseInFlight) {
+          notifyListeners();
+        }
         continue;
       }
 
+      final userInitiated = purchaseInFlight;
       purchaseInFlight = false;
 
       if (purchase.status == PurchaseStatus.error) {
-        lastPurchaseError = purchase.error?.message ??
-            purchase.error?.code ??
-            'purchase_error';
+        if (userInitiated) {
+          lastPurchaseError = purchase.error?.message ??
+              purchase.error?.code ??
+              'purchase_error';
+        }
       } else if (purchase.status == PurchaseStatus.purchased ||
           purchase.status == PurchaseStatus.restored) {
         if (IapProducts.unlocksApp(purchase.productID)) {
@@ -144,9 +159,15 @@ class UnlockBillingService extends ChangeNotifier {
           lastPurchaseError = null;
         }
       } else if (purchase.status == PurchaseStatus.canceled) {
-        lastPurchaseError = null;
+        if (userInitiated) {
+          lastPurchaseError = null;
+        }
       }
-      notifyListeners();
+      if (userInitiated ||
+          purchase.status == PurchaseStatus.purchased ||
+          purchase.status == PurchaseStatus.restored) {
+        notifyListeners();
+      }
 
       if (purchase.pendingCompletePurchase) {
         await _iap.completePurchase(purchase);

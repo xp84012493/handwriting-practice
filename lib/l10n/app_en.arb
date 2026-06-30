@@ -173,7 +173,6 @@
       "price": { "type": "String" }
     }
   },
-  "upgradeRestoreButton": "Restore purchase",
   "upgradeStoreUnavailable": "The app store is not available on this device.",
   "upgradeProductNotConfigured": "In-app purchase is not configured in the store yet.",
   "upgradePurchaseSuccess": "Unlocked. Thank you!",
