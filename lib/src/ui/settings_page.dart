@@ -78,14 +78,18 @@ class SettingsPage extends StatelessWidget {
                         },
                 ),
               if (quota.billingEnforced && !quota.isUnlocked)
-                ListTile(
-                  leading: const Icon(Icons.share_outlined),
-                  title: Text(l10n.settingsShareTitle),
-                  subtitle: Text(shareSubtitle),
-                  enabled: quota.canClaimShareReward,
-                  onTap: quota.canClaimShareReward
-                      ? () => runShareForBonus(context)
-                      : null,
+                Builder(
+                  builder: (shareContext) {
+                    return ListTile(
+                      leading: const Icon(Icons.share_outlined),
+                      title: Text(l10n.settingsShareTitle),
+                      subtitle: Text(shareSubtitle),
+                      enabled: quota.canClaimShareReward,
+                      onTap: quota.canClaimShareReward
+                          ? () => runShareForBonus(shareContext)
+                          : null,
+                    );
+                  },
                 ),
               ListTile(
                 leading: const Icon(Icons.translate_outlined),

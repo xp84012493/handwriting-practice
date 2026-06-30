@@ -16,9 +16,9 @@ class UsageQuotaService extends ChangeNotifier {
   static const int freeGenerationLimit = 30;
 
   /// Each successful share grants this many extra free generations.
-  static const int bonusGenerationsPerShare = 10;
+  static const int bonusGenerationsPerShare = 5;
 
-  /// Maximum number of share rewards (10 × 10 = +100 extra).
+  /// Maximum number of share rewards (10 × 5 = +50 extra).
   static const int maxShareRewards = 10;
 
   static const _keyCount = 'sheet_generation_count';

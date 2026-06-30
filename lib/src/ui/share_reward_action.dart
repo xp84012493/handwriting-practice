@@ -4,6 +4,7 @@ import '../config/app_share_config.dart';
 import '../l10n/l10n_extension.dart';
 import '../services/app_share_service.dart';
 import '../services/usage_quota_service.dart';
+import 'share_position_origin.dart';
 
 /// 调起系统分享并在成功后发放免费次数奖励。
 Future<void> runShareForBonus(BuildContext context) async {
@@ -14,6 +15,7 @@ Future<void> runShareForBonus(BuildContext context) async {
   );
   final outcome = await AppShareService.instance.shareForBonus(
     message: message,
+    sharePositionOrigin: sharePositionOriginFor(context),
   );
   if (!context.mounted) return;
 

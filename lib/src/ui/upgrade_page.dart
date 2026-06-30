@@ -129,15 +129,19 @@ class _UpgradePageState extends State<UpgradePage> {
           ],
           if (_quota.canClaimShareReward) ...[
             const SizedBox(height: 20),
-            TextButton.icon(
-              onPressed: () => runShareForBonus(context),
-              icon: const Icon(Icons.share_outlined),
-              label: Text(
-                l10n.upgradeShareButton(
-                  UsageQuotaService.bonusGenerationsPerShare,
-                  _quota.shareRewardsRemaining,
-                ),
-              ),
+            Builder(
+              builder: (shareContext) {
+                return TextButton.icon(
+                  onPressed: () => runShareForBonus(shareContext),
+                  icon: const Icon(Icons.share_outlined),
+                  label: Text(
+                    l10n.upgradeShareButton(
+                      UsageQuotaService.bonusGenerationsPerShare,
+                      _quota.shareRewardsRemaining,
+                    ),
+                  ),
+                );
+              },
             ),
           ],
           if (_billing.lastPurchaseError != null) ...[
