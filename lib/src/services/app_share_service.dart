@@ -24,12 +24,10 @@ class AppShareService {
     }
 
     try {
-      final result = await SharePlus.instance.share(
-        ShareParams(
-          text: message,
-          subject: message.split('\n').first,
-          sharePositionOrigin: sharePositionOrigin,
-        ),
+      final result = await Share.share(
+        message,
+        subject: message.split('\n').first,
+        sharePositionOrigin: sharePositionOrigin,
       );
 
       if (result.status == ShareResultStatus.unavailable) {
