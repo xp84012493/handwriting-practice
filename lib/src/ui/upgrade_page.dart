@@ -5,9 +5,12 @@ import '../services/unlock_billing_service.dart';
 import '../services/usage_quota_service.dart';
 import 'share_reward_action.dart';
 
-/// Paywall: unlimited sheet generation after free quota.
+/// Paywall or voluntary purchase for unlimited sheet generation.
 class UpgradePage extends StatefulWidget {
-  const UpgradePage({super.key});
+  const UpgradePage({super.key, this.asPaywall = false});
+
+  /// True when opened because free quota is exhausted; false from settings.
+  final bool asPaywall;
 
   @override
   State<UpgradePage> createState() => _UpgradePageState();
@@ -43,7 +46,7 @@ class _UpgradePageState extends State<UpgradePage> {
 
   void _onQuotaChanged() {
     if (mounted) setState(() {});
-    if (_quota.canGenerate && mounted) {
+    if (widget.asPaywall && _quota.canGenerate && mounted) {
       Navigator.of(context).maybePop(true);
     }
   }
@@ -69,6 +72,7 @@ class _UpgradePageState extends State<UpgradePage> {
     final theme = Theme.of(context);
     final product = _billing.unlockProduct;
     final limit = _quota.effectiveFreeLimit;
+    final quotaExceeded = _quota.quotaExceeded;
 
     return Scaffold(
       appBar: AppBar(title: Text(l10n.upgradeTitle)),
@@ -82,13 +86,15 @@ class _UpgradePageState extends State<UpgradePage> {
           ),
           const SizedBox(height: 16),
           Text(
-            l10n.quotaExceededTitle,
+            quotaExceeded ? l10n.quotaExceededTitle : l10n.upgradeTitle,
             style: theme.textTheme.headlineSmall,
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 12),
           Text(
-            l10n.quotaExceededBody(limit),
+            quotaExceeded
+                ? l10n.quotaExceededBody(limit)
+                : l10n.upgradeOptionalBody(_quota.remainingFree, limit),
             style: theme.textTheme.bodyLarge?.copyWith(
               color: theme.colorScheme.onSurfaceVariant,
               height: 1.45,

@@ -204,6 +204,11 @@ class AppLocalizationsEn extends AppLocalizations {
   String get upgradeTitle => 'Unlock unlimited';
 
   @override
+  String upgradeOptionalBody(int remaining, int limit) {
+    return 'You still have $remaining of $limit free uses. Purchase once for unlimited sheet generation.';
+  }
+
+  @override
   String upgradeBuyButton(String price) {
     return 'Unlock for $price';
   }

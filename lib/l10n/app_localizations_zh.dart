@@ -203,6 +203,11 @@ class AppLocalizationsZh extends AppLocalizations {
   String get upgradeTitle => '解锁无限次';
 
   @override
+  String upgradeOptionalBody(int remaining, int limit) {
+    return '你还剩余 $remaining/$limit 次免费生成。如需不限次数，可一次性购买解锁。';
+  }
+
+  @override
   String upgradeBuyButton(String price) {
     return '购买解锁（$price）';
   }
@@ -474,6 +479,11 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String get upgradeTitle => '解鎖無限次';
+
+  @override
+  String upgradeOptionalBody(int remaining, int limit) {
+    return '你還剩餘 $remaining/$limit 次免費生成。如需不限次數，可一次性購買解鎖。';
+  }
 
   @override
   String upgradeBuyButton(String price) {

@@ -58,7 +58,9 @@ class _HandwritingPracticeHomePageState
 
   Future<bool> _openUpgradePage() async {
     final unlocked = await Navigator.of(context).push<bool>(
-      MaterialPageRoute<bool>(builder: (context) => const UpgradePage()),
+      MaterialPageRoute<bool>(
+        builder: (context) => const UpgradePage(asPaywall: true),
+      ),
     );
     return unlocked == true || _quota.isUnlocked;
   }

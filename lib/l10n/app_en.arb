@@ -160,6 +160,13 @@
     }
   },
   "upgradeTitle": "Unlock unlimited",
+  "upgradeOptionalBody": "You still have {remaining} of {limit} free uses. Purchase once for unlimited sheet generation.",
+  "@upgradeOptionalBody": {
+    "placeholders": {
+      "remaining": { "type": "int" },
+      "limit": { "type": "int" }
+    }
+  },
   "upgradeBuyButton": "Unlock for {price}",
   "@upgradeBuyButton": {
     "placeholders": {

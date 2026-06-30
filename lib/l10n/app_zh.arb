@@ -54,6 +54,7 @@
   "quotaExceededTitle": "免费次数已用完",
   "quotaExceededBody": "你已使用完 {limit} 次免费生成字帖。一次性购买后可无限生成。",
   "upgradeTitle": "解锁无限次",
+  "upgradeOptionalBody": "你还剩余 {remaining}/{limit} 次免费生成。如需不限次数，可一次性购买解锁。",
   "upgradeBuyButton": "购买解锁（{price}）",
   "upgradeRestoreButton": "恢复购买",
   "upgradeStoreUnavailable": "当前设备无法连接应用商店。",
