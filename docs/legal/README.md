@@ -1,29 +1,32 @@
 # Legal & store documents
 
-## Privacy policy (App Store / GitHub Pages)
+## Published website (primary)
+
+Deployable HTML lives in [`website/`](../../website/) — host at **https://www.leo-app.cn**
+
+Each app uses a short path prefix (e.g. `/hp/` for 笔顺练字帖).
+
+### 笔顺练字帖 (`/hp/`)
+
+| Page | URL |
+|------|-----|
+| 隐私政策（中文） | https://www.leo-app.cn/hp/privacy-zh.html |
+| Privacy Policy (EN) | https://www.leo-app.cn/hp/privacy-en.html |
+| Support | https://www.leo-app.cn/hp/support.html |
+| App home | https://www.leo-app.cn/hp/ |
+| Site hub | https://www.leo-app.cn/ |
+
+**Support email:** xp84012493@163.com
+
+## Markdown sources (reference)
 
 | Language | File |
 |----------|------|
 | English | [privacy-policy-en.md](privacy-policy-en.md) |
 | 简体中文 | [privacy-policy-zh.md](privacy-policy-zh.md) |
 
-### Before you publish
+### App Store Connect (笔顺练字帖)
 
-1. Replace placeholders: `[EFFECTIVE_DATE]`, `[SUPPORT_EMAIL]`, and any `[YOUR_NAME_OR_COMPANY]` if you add one.
-2. Host the files over **HTTPS** (App Store Connect requires a privacy policy URL).
-
-### GitHub Pages (example)
-
-1. Repository **Settings → Pages → Build and deployment → Source:** Deploy from branch **`main`**, folder **`/docs`** (or copy `legal/*.md` to your Pages root).
-2. After GitHub Pages is enabled, typical URLs:
-   - English: `https://<GITHUB_USERNAME>.github.io/<REPO_NAME>/legal/privacy-policy-en`
-   - 中文: `https://<GITHUB_USERNAME>.github.io/<REPO_NAME>/legal/privacy-policy-zh`
-3. In **App Store Connect → App Privacy → Privacy Policy URL**, use the English page (or a single landing page that links to both).
-
-> GitHub Pages renders Markdown automatically. If a path 404s, confirm Pages source folder and wait a few minutes after the first deploy.
-
-### Suggested App Store fields
-
-- **Privacy Policy URL:** English URL above  
-- **Support URL:** project homepage or `mailto:[SUPPORT_EMAIL]`  
-- **Marketing URL:** optional — repository or product page
+- **Privacy Policy URL:** https://www.leo-app.cn/hp/privacy-zh.html
+- **Support URL:** https://www.leo-app.cn/hp/support.html
+- **Marketing URL (optional):** https://www.leo-app.cn/hp/

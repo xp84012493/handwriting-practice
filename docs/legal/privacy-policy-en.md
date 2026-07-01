@@ -1,8 +1,8 @@
 # Privacy Policy — Hanzi Stroke Practice
 
-**Effective date:** [EFFECTIVE_DATE, e.g. 2026-06-23]  
-**App:** Hanzi Stroke Practice (Bundle ID: `com.leoxp.handwritingpractice`)  
-**Contact:** [SUPPORT_EMAIL]
+**Effective date:** June 23, 2026  
+**App:** Hanzi Practice (Bundle ID: `com.leoxp.handwritingpractice`)  
+**Contact:** xp84012493@163.com
 
 This policy describes how the app handles information. It applies to the iOS app distributed on the App Store and to future versions unless we publish an updated policy.
 
@@ -55,7 +55,7 @@ The app does **not** embed third-party analytics or ad networks in the current v
 
 ## Children
 
-The app is suitable for general audiences learning Chinese writing. We do not knowingly collect personal information from children. If you believe a child has provided personal data to us by email, contact [SUPPORT_EMAIL].
+The app is suitable for general audiences learning Chinese writing. We do not knowingly collect personal information from children. If you believe a child has provided personal data to us by email, contact xp84012493@163.com.
 
 ---
 
@@ -81,7 +81,7 @@ We may update this policy. We will post the new version at the same URL and, whe
 
 ## Contact
 
-Questions about this policy: **[SUPPORT_EMAIL]**
+Questions about this policy: **xp84012493@163.com**
 
 ---
 

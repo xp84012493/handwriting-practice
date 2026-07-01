@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="Leo App — 独立开发者的 iOS 应用集合"
+    />
+    <title>Leo App</title>
+    <link rel="stylesheet" href="css/site.css" />
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="site-header__inner">
+        <a class="brand" href="index.html">
+          <span class="brand__mark" aria-hidden="true">L</span>
+          <span>Leo App</span>
+        </a>
+        <nav class="site-nav" aria-label="主导航">
+          <a href="index.html" aria-current="page">应用</a>
+        </nav>
+      </div>
+    </header>
+
+    <main class="page">
+      <section class="hero hero--compact">
+        <h1>应用</h1>
+        <p class="hero__lead">
+          本站展示 Leo 开发的 iOS 应用。每个应用有独立路径（缩写），便于隐私政策与技术支持页面管理。
+        </p>
+      </section>
+
+      <section class="grid" aria-label="应用列表">
+        <article class="card app-card">
+          <p class="app-card__slug mono">/hp/</p>
+          <h2>
+            <a href="hp/index.html">笔顺练字帖</a>
+          </h2>
+          <p>汉字笔顺米字格练字帖，支持 PDF 导出。Hanzi Practice.</p>
+          <p class="app-card__links">
+            <a href="hp/index.html">官网</a> ·
+            <a href="hp/support.html">支持</a> ·
+            <a href="hp/privacy-zh.html">隐私</a>
+          </p>
+        </article>
+        <article class="card app-card">
+          <p class="app-card__slug mono">/pa/</p>
+          <h2>
+            <a href="pa/index.html">关节量角器</a>
+          </h2>
+          <p>摄像头实时估算关节活动度，本地姿态识别与历史对比。Joint Goniometer.</p>
+          <p class="app-card__links">
+            <a href="pa/index.html">官网</a> ·
+            <a href="pa/support.html">支持</a> ·
+            <a href="pa/privacy-zh.html">隐私</a>
+          </p>
+        </article>
+        <!-- 新应用：复制 hp/ 或 pa/ 目录为缩写文件夹，并在此添加卡片 -->
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="site-footer__inner">
+        <p>
+          联系：
+          <a href="mailto:xp84012493@163.com">xp84012493@163.com</a>
+        </p>
+        <!-- <p><a href="https://beian.miit.gov.cn/">京ICP备xxxxxxxx号-1</a></p> -->
+        <p>© 2026 Leo App · www.leo-app.cn</p>
+      </div>
+    </footer>
+  </body>
+</html>
