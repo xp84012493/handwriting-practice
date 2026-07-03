@@ -247,5 +247,6 @@
   "recentSheetsClearAllTitle": "Clear all recent sheets?",
   "recentSheetsClearAllBody": "This removes all saved sheets from this device. It cannot be undone.",
   "recentSheetsClearAllCancel": "Cancel",
-  "recentSheetsClearAllConfirm": "Clear"
+  "recentSheetsClearAllConfirm": "Clear",
+  "navTabPractice": "Practice"
 }

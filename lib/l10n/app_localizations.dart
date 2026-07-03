@@ -614,6 +614,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Clear'**
   String get recentSheetsClearAllConfirm;
+
+  /// No description provided for @navTabPractice.
+  ///
+  /// In en, this message translates to:
+  /// **'Practice'**
+  String get navTabPractice;
 }
 
 class _AppLocalizationsDelegate

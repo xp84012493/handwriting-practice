@@ -39,18 +39,18 @@ void main() {
     expect(find.text('Generate sheet'), findsOneWidget);
   });
 
-  testWidgets('about opens from settings', (WidgetTester tester) async {
+  testWidgets('settings opens from bottom navigation', (WidgetTester tester) async {
     await _pumpApp(tester, locale: const Locale('zh'));
 
-    await tester.tap(find.byTooltip('设置'));
+    await tester.tap(find.text('设置'));
     await tester.pumpAndSettle();
 
-    expect(find.text('设置'), findsOneWidget);
+    expect(find.text('设置'), findsWidgets);
+    expect(find.text('语言'), findsOneWidget);
 
     await tester.tap(find.text('关于'));
     await tester.pumpAndSettle();
 
     expect(find.textContaining('Make Me a Hanzi'), findsOneWidget);
-    expect(find.text('语言'), findsNothing);
   });
 }

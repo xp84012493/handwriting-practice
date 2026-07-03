@@ -9,7 +9,7 @@ import 'src/services/unlock_billing_service.dart';
 import 'src/services/usage_quota_service.dart';
 import 'src/theme/app_theme.dart';
 import 'src/theme/theme_controller.dart';
-import 'src/ui/handwriting_practice_home_page.dart';
+import 'src/ui/app_shell_page.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -60,7 +60,7 @@ class HanziPracticeApp extends StatelessWidget {
           localeResolutionCallback: localeController.localeResolutionCallback,
           localizationsDelegates: AppLocalizations.localizationsDelegates,
           supportedLocales: AppLocalizations.supportedLocales,
-          home: HandwritingPracticeHomePage(
+          home: AppShellPage(
             localeController: localeController,
             themeController: themeController,
           ),

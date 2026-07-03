@@ -324,4 +324,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get recentSheetsClearAllConfirm => 'Clear';
+
+  @override
+  String get navTabPractice => 'Practice';
 }

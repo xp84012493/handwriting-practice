@@ -85,5 +85,6 @@
   "recentSheetsClearAllTitle": "清除全部最近字帖？",
   "recentSheetsClearAllBody": "将删除本机保存的全部字帖记录，且无法恢复。",
   "recentSheetsClearAllCancel": "取消",
-  "recentSheetsClearAllConfirm": "清除"
+  "recentSheetsClearAllConfirm": "清除",
+  "navTabPractice": "字帖"
 }

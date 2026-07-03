@@ -7,7 +7,13 @@ import '../services/recent_sheets_service.dart';
 
 /// Lists locally saved practice sheets; tap to restore, swipe to delete.
 class RecentSheetsPage extends StatelessWidget {
-  const RecentSheetsPage({super.key});
+  const RecentSheetsPage({
+    super.key,
+    this.onSheetSelected,
+  });
+
+  /// When set (bottom tab), restores sheet via callback instead of popping route.
+  final ValueChanged<SavedPracticeSheet>? onSheetSelected;
 
   static String _previewTitle(String characters, {int maxGlyphs = 18}) {
     final runes = characters.runes.toList();
@@ -31,6 +37,7 @@ class RecentSheetsPage extends StatelessWidget {
         return Scaffold(
           appBar: AppBar(
             title: Text(l10n.recentSheetsTitle),
+            automaticallyImplyLeading: false,
             actions: [
               if (items.isNotEmpty)
                 IconButton(
@@ -66,8 +73,14 @@ class RecentSheetsPage extends StatelessWidget {
                         sheet.characterCount,
                         _formatWhen(context, sheet.createdAt),
                       ),
-                      onTap: () =>
-                          Navigator.of(context).pop<SavedPracticeSheet>(sheet),
+                      onTap: () {
+                        if (onSheetSelected != null) {
+                          onSheetSelected!(sheet);
+                        } else {
+                          Navigator.of(context)
+                              .pop<SavedPracticeSheet>(sheet);
+                        }
+                      },
                       onDelete: () => service.remove(sheet.id),
                     );
                   },

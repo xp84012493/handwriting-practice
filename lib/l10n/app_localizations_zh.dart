@@ -317,6 +317,9 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get recentSheetsClearAllConfirm => '清除';
+
+  @override
+  String get navTabPractice => '字帖';
 }
 class AppLocalizationsZhHant extends AppLocalizationsZh {
   AppLocalizationsZhHant() : super('zh_Hant');

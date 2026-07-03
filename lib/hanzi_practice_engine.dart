@@ -11,7 +11,7 @@ export 'src/painters/mizi_grid_painter.dart';
 export 'src/painters/hanzi_strokes_painter.dart';
 export 'src/widgets/hanzi_practice_cell.dart';
 export 'src/widgets/progressive_hanzi_practice.dart';
-export 'src/ui/handwriting_practice_home_page.dart';
+export 'src/ui/app_shell_page.dart';
 export 'src/ui/practice_sheet_controller.dart';
 export 'src/ui/a4_practice_sheet_preview.dart';
 export 'src/print/practice_sheet_pdf_service.dart';

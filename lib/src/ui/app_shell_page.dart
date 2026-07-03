@@ -6,13 +6,13 @@ import 'package:flutter/material.dart';
 import '../l10n/l10n_extension.dart';
 import '../locale/locale_controller.dart';
 import '../locale/practice_sheet_messages.dart';
-import '../theme/theme_controller.dart';
 import '../models/practice_sheet_entry.dart';
+import '../models/saved_practice_sheet.dart';
 import '../print/practice_sheet_export.dart';
 import '../print/practice_sheet_pdf_service.dart';
 import '../services/recent_sheets_service.dart';
-import '../models/saved_practice_sheet.dart';
 import '../services/usage_quota_service.dart';
+import '../theme/theme_controller.dart';
 import 'a4_practice_sheet_preview.dart';
 import 'practice_sheet_controller.dart';
 import 'recent_sheets_page.dart';
@@ -21,9 +21,11 @@ import 'upgrade_page.dart';
 
 enum _PdfExportAction { systemPrint, saveFile, share }
 
-/// 练字帖主界面：顶部输入 + 生成，下方 A4 横向比例字帖预览。
-class HandwritingPracticeHomePage extends StatefulWidget {
-  const HandwritingPracticeHomePage({
+enum _AppTab { practice, recent, settings }
+
+/// 应用主壳：底部导航在字帖、最近字帖与设置之间切换。
+class AppShellPage extends StatefulWidget {
+  const AppShellPage({
     super.key,
     required this.localeController,
     required this.themeController,
@@ -33,15 +35,15 @@ class HandwritingPracticeHomePage extends StatefulWidget {
   final ThemeController themeController;
 
   @override
-  State<HandwritingPracticeHomePage> createState() =>
-      _HandwritingPracticeHomePageState();
+  State<AppShellPage> createState() => _AppShellPageState();
 }
 
-class _HandwritingPracticeHomePageState
-    extends State<HandwritingPracticeHomePage> {
+class _AppShellPageState extends State<AppShellPage> {
   late final PracticeSheetController _controller = PracticeSheetController();
   final _quota = UsageQuotaService.instance;
   final _recentSheets = RecentSheetsService.instance;
+
+  _AppTab _tab = _AppTab.practice;
 
   @override
   void initState() {
@@ -58,6 +60,11 @@ class _HandwritingPracticeHomePageState
 
   void _onQuotaChanged() {
     if (mounted) setState(() {});
+  }
+
+  void _selectTab(_AppTab tab) {
+    FocusManager.instance.primaryFocus?.unfocus();
+    setState(() => _tab = tab);
   }
 
   Future<bool> _openUpgradePage() async {
@@ -204,15 +211,69 @@ class _HandwritingPracticeHomePageState
     }
   }
 
-  Future<void> _openRecentSheets() async {
-    final saved = await Navigator.of(context).push<SavedPracticeSheet>(
-      MaterialPageRoute<SavedPracticeSheet>(
-        builder: (context) => const RecentSheetsPage(),
+  Future<void> _onRecentSheetSelected(SavedPracticeSheet sheet) async {
+    _selectTab(_AppTab.practice);
+    await _restoreSavedSheet(sheet);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = context.l10n;
+
+    return Scaffold(
+      body: IndexedStack(
+        index: _tab.index,
+        children: [
+          _PracticeTab(
+            controller: _controller,
+            quota: _quota,
+            onGenerate: _onGenerate,
+            onPdfExportMenu: _onPdfExportMenu,
+          ),
+          RecentSheetsPage(onSheetSelected: _onRecentSheetSelected),
+          SettingsPage(
+            localeController: widget.localeController,
+            themeController: widget.themeController,
+          ),
+        ],
+      ),
+      bottomNavigationBar: NavigationBar(
+        selectedIndex: _tab.index,
+        onDestinationSelected: (index) => _selectTab(_AppTab.values[index]),
+        destinations: [
+          NavigationDestination(
+            icon: const Icon(Icons.edit_note_outlined),
+            selectedIcon: const Icon(Icons.edit_note),
+            label: l10n.navTabPractice,
+          ),
+          NavigationDestination(
+            icon: const Icon(Icons.history_outlined),
+            selectedIcon: const Icon(Icons.history),
+            label: l10n.recentSheetsTitle,
+          ),
+          NavigationDestination(
+            icon: const Icon(Icons.settings_outlined),
+            selectedIcon: const Icon(Icons.settings),
+            label: l10n.settingsTitle,
+          ),
+        ],
       ),
     );
-    if (!mounted || saved == null) return;
-    await _restoreSavedSheet(saved);
   }
+}
+
+class _PracticeTab extends StatelessWidget {
+  const _PracticeTab({
+    required this.controller,
+    required this.quota,
+    required this.onGenerate,
+    required this.onPdfExportMenu,
+  });
+
+  final PracticeSheetController controller;
+  final UsageQuotaService quota;
+  final VoidCallback onGenerate;
+  final ValueChanged<_PdfExportAction> onPdfExportMenu;
 
   @override
   Widget build(BuildContext context) {
@@ -220,42 +281,20 @@ class _HandwritingPracticeHomePageState
     final l10n = context.l10n;
 
     return AnimatedBuilder(
-      animation: Listenable.merge([_controller, _quota]),
+      animation: Listenable.merge([controller, quota]),
       builder: (context, _) {
         return Scaffold(
           resizeToAvoidBottomInset: false,
           appBar: AppBar(
             title: Text(l10n.appTitle),
             centerTitle: true,
-            leading: IconButton(
-              tooltip: l10n.settingsTooltip,
-              icon: const Icon(Icons.settings_outlined),
-              onPressed: () async {
-                final restored =
-                    await Navigator.of(context).push<SavedPracticeSheet>(
-                  MaterialPageRoute<SavedPracticeSheet>(
-                    builder: (context) => SettingsPage(
-                      localeController: widget.localeController,
-                      themeController: widget.themeController,
-                    ),
-                  ),
-                );
-                if (restored != null && mounted) {
-                  await _restoreSavedSheet(restored);
-                }
-              },
-            ),
+            automaticallyImplyLeading: false,
             actions: [
-              IconButton(
-                tooltip: l10n.recentSheetsTooltip,
-                icon: const Icon(Icons.history_outlined),
-                onPressed: _openRecentSheets,
-              ),
               PopupMenuButton<_PdfExportAction>(
                 tooltip: l10n.exportPdfTooltip,
-                enabled: _controller.hasSheet && !_controller.loading,
+                enabled: controller.hasSheet && !controller.loading,
                 icon: const Icon(Icons.upload_file_outlined),
-                onSelected: _onPdfExportMenu,
+                onSelected: onPdfExportMenu,
                 itemBuilder: (menuContext) {
                   final menuL10n = menuContext.l10n;
                   final t = Theme.of(menuContext);
@@ -301,20 +340,20 @@ class _HandwritingPracticeHomePageState
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 _ControlBar(
-                  controller: _controller,
-                  onGenerate: _onGenerate,
+                  controller: controller,
+                  onGenerate: onGenerate,
                   theme: theme,
-                  quota: _quota,
+                  quota: quota,
                 ),
                 SizedBox(
                   height: 3,
                   width: double.infinity,
-                  child: _controller.loading
+                  child: controller.loading
                       ? const LinearProgressIndicator(minHeight: 3)
                       : const SizedBox.shrink(),
                 ),
                 Expanded(
-                  child: _PreviewBody(controller: _controller, theme: theme),
+                  child: _PreviewBody(controller: controller, theme: theme),
                 ),
               ],
             ),
@@ -443,7 +482,8 @@ class _PreviewBody extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
-    final rows = controller.hasSheet ? controller.sheetRows : const <PracticeSheetEntry>[];
+    final rows =
+        controller.hasSheet ? controller.sheetRows : const <PracticeSheetEntry>[];
     final subtitle = !controller.hasSheet
         ? null
         : rows
