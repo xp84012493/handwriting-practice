@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 
 import 'l10n/app_localizations.dart';
 import 'src/locale/locale_controller.dart';
+import 'src/services/recent_sheets_service.dart';
 import 'src/services/unlock_billing_service.dart';
 import 'src/services/usage_quota_service.dart';
 import 'src/theme/app_theme.dart';
@@ -24,6 +25,7 @@ void main() async {
     localeController.load(),
     themeController.load(),
     UsageQuotaService.instance.load(),
+    RecentSheetsService.instance.load(),
   ]);
   await UnlockBillingService.instance.start();
   runApp(

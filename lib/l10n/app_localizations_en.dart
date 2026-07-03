@@ -282,4 +282,46 @@ class AppLocalizationsEn extends AppLocalizations {
   String upgradeShareButton(int bonus, int remaining) {
     return 'Share for +$bonus free uses ($remaining left)';
   }
+
+  @override
+  String get recentSheetsTooltip => 'Recent sheets';
+
+  @override
+  String get recentSheetsTitle => 'Recent sheets';
+
+  @override
+  String get recentSheetsEmpty =>
+      'No saved sheets yet.\nGenerate a sheet and it will appear here.';
+
+  @override
+  String get recentSheetsRestore => 'Restore sheet';
+
+  @override
+  String recentSheetsItemSubtitle(int count, String when) {
+    return '$count characters · $when';
+  }
+
+  @override
+  String get recentSheetsSettingsEmpty => 'No saved sheets';
+
+  @override
+  String recentSheetsSettingsCount(int count) {
+    return '$count saved';
+  }
+
+  @override
+  String get recentSheetsClearAll => 'Clear all';
+
+  @override
+  String get recentSheetsClearAllTitle => 'Clear all recent sheets?';
+
+  @override
+  String get recentSheetsClearAllBody =>
+      'This removes all saved sheets from this device. It cannot be undone.';
+
+  @override
+  String get recentSheetsClearAllCancel => 'Cancel';
+
+  @override
+  String get recentSheetsClearAllConfirm => 'Clear';
 }

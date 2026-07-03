@@ -277,9 +277,47 @@ class AppLocalizationsZh extends AppLocalizations {
   String upgradeShareButton(int bonus, int remaining) {
     return '分享获得 +$bonus 次（剩余 $remaining 次机会）';
   }
-}
 
-/// The translations for Chinese, using the Han script (`zh_Hant`).
+  @override
+  String get recentSheetsTooltip => '最近字帖';
+
+  @override
+  String get recentSheetsTitle => '最近字帖';
+
+  @override
+  String get recentSheetsEmpty => '暂无保存的字帖。\n生成字帖后会自动出现在这里。';
+
+  @override
+  String get recentSheetsRestore => '恢复字帖';
+
+  @override
+  String recentSheetsItemSubtitle(int count, String when) {
+    return '$count 字 · $when';
+  }
+
+  @override
+  String get recentSheetsSettingsEmpty => '暂无保存';
+
+  @override
+  String recentSheetsSettingsCount(int count) {
+    return '已保存 $count 条';
+  }
+
+  @override
+  String get recentSheetsClearAll => '全部清除';
+
+  @override
+  String get recentSheetsClearAllTitle => '清除全部最近字帖？';
+
+  @override
+  String get recentSheetsClearAllBody => '将删除本机保存的全部字帖记录，且无法恢复。';
+
+  @override
+  String get recentSheetsClearAllCancel => '取消';
+
+  @override
+  String get recentSheetsClearAllConfirm => '清除';
+}
 class AppLocalizationsZhHant extends AppLocalizationsZh {
   AppLocalizationsZhHant() : super('zh_Hant');
 
@@ -552,4 +590,44 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
   String upgradeShareButton(int bonus, int remaining) {
     return '分享獲得 +$bonus 次（剩餘 $remaining 次機會）';
   }
+
+  @override
+  String get recentSheetsTooltip => '最近字帖';
+
+  @override
+  String get recentSheetsTitle => '最近字帖';
+
+  @override
+  String get recentSheetsEmpty => '暫無儲存的字帖。\n生成字帖後會自動出現在這裡。';
+
+  @override
+  String get recentSheetsRestore => '恢復字帖';
+
+  @override
+  String recentSheetsItemSubtitle(int count, String when) {
+    return '$count 字 · $when';
+  }
+
+  @override
+  String get recentSheetsSettingsEmpty => '暫無儲存';
+
+  @override
+  String recentSheetsSettingsCount(int count) {
+    return '已儲存 $count 條';
+  }
+
+  @override
+  String get recentSheetsClearAll => '全部清除';
+
+  @override
+  String get recentSheetsClearAllTitle => '清除全部最近字帖？';
+
+  @override
+  String get recentSheetsClearAllBody => '將刪除本機儲存的全部字帖記錄，且無法復原。';
+
+  @override
+  String get recentSheetsClearAllCancel => '取消';
+
+  @override
+  String get recentSheetsClearAllConfirm => '清除';
 }

@@ -542,6 +542,78 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Share for +{bonus} free uses ({remaining} left)'**
   String upgradeShareButton(int bonus, int remaining);
+
+  /// No description provided for @recentSheetsTooltip.
+  ///
+  /// In en, this message translates to:
+  /// **'Recent sheets'**
+  String get recentSheetsTooltip;
+
+  /// No description provided for @recentSheetsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Recent sheets'**
+  String get recentSheetsTitle;
+
+  /// No description provided for @recentSheetsEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No saved sheets yet.\nGenerate a sheet and it will appear here.'**
+  String get recentSheetsEmpty;
+
+  /// No description provided for @recentSheetsRestore.
+  ///
+  /// In en, this message translates to:
+  /// **'Restore sheet'**
+  String get recentSheetsRestore;
+
+  /// No description provided for @recentSheetsItemSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} characters · {when}'**
+  String recentSheetsItemSubtitle(int count, String when);
+
+  /// No description provided for @recentSheetsSettingsEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No saved sheets'**
+  String get recentSheetsSettingsEmpty;
+
+  /// No description provided for @recentSheetsSettingsCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} saved'**
+  String recentSheetsSettingsCount(int count);
+
+  /// No description provided for @recentSheetsClearAll.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear all'**
+  String get recentSheetsClearAll;
+
+  /// No description provided for @recentSheetsClearAllTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear all recent sheets?'**
+  String get recentSheetsClearAllTitle;
+
+  /// No description provided for @recentSheetsClearAllBody.
+  ///
+  /// In en, this message translates to:
+  /// **'This removes all saved sheets from this device. It cannot be undone.'**
+  String get recentSheetsClearAllBody;
+
+  /// No description provided for @recentSheetsClearAllCancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get recentSheetsClearAllCancel;
+
+  /// No description provided for @recentSheetsClearAllConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear'**
+  String get recentSheetsClearAllConfirm;
 }
 
 class _AppLocalizationsDelegate

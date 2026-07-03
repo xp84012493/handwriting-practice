@@ -84,7 +84,17 @@ class PracticeSheetController extends ChangeNotifier {
   /// 渲染用行列表：每字一行。
   List<PracticeSheetEntry> get sheetRows => _entries;
 
+  /// 当前字帖中的汉字（按行顺序拼接）。
+  String get generatedCharacters =>
+      _entries.map((e) => e.character.character).join();
+
   int get rowsOnSheet => sheetRows.length;
+
+  /// 从历史记录恢复字帖（不消耗新的生成次数）。
+  Future<void> restoreFromCharacters(String characters) async {
+    textController.text = characters;
+    await generate();
+  }
 
   Future<void> generate() async {
     final raw = textController.text.trim();

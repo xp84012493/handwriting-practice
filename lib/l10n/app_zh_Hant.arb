@@ -73,5 +73,17 @@
   "shareRewardLimitReached": "分享獎勵次數已用完",
   "shareRewardCancelled": "已取消分享",
   "shareRewardUnavailable": "目前裝置無法分享",
-  "upgradeShareButton": "分享獲得 +{bonus} 次（剩餘 {remaining} 次機會）"
+  "upgradeShareButton": "分享獲得 +{bonus} 次（剩餘 {remaining} 次機會）",
+  "recentSheetsTooltip": "最近字帖",
+  "recentSheetsTitle": "最近字帖",
+  "recentSheetsEmpty": "暫無儲存的字帖。\n生成字帖後會自動出現在這裡。",
+  "recentSheetsRestore": "恢復字帖",
+  "recentSheetsItemSubtitle": "{count} 字 · {when}",
+  "recentSheetsSettingsEmpty": "暫無儲存",
+  "recentSheetsSettingsCount": "已儲存 {count} 條",
+  "recentSheetsClearAll": "全部清除",
+  "recentSheetsClearAllTitle": "清除全部最近字帖？",
+  "recentSheetsClearAllBody": "將刪除本機儲存的全部字帖記錄，且無法復原。",
+  "recentSheetsClearAllCancel": "取消",
+  "recentSheetsClearAllConfirm": "清除"
 }

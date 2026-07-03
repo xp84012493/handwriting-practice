@@ -224,5 +224,28 @@
       "bonus": { "type": "int" },
       "remaining": { "type": "int" }
     }
-  }
+  },
+  "recentSheetsTooltip": "Recent sheets",
+  "recentSheetsTitle": "Recent sheets",
+  "recentSheetsEmpty": "No saved sheets yet.\nGenerate a sheet and it will appear here.",
+  "recentSheetsRestore": "Restore sheet",
+  "recentSheetsItemSubtitle": "{count} characters · {when}",
+  "@recentSheetsItemSubtitle": {
+    "placeholders": {
+      "count": { "type": "int" },
+      "when": { "type": "String" }
+    }
+  },
+  "recentSheetsSettingsEmpty": "No saved sheets",
+  "recentSheetsSettingsCount": "{count} saved",
+  "@recentSheetsSettingsCount": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "recentSheetsClearAll": "Clear all",
+  "recentSheetsClearAllTitle": "Clear all recent sheets?",
+  "recentSheetsClearAllBody": "This removes all saved sheets from this device. It cannot be undone.",
+  "recentSheetsClearAllCancel": "Cancel",
+  "recentSheetsClearAllConfirm": "Clear"
 }

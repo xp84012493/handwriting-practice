@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 
 import '../l10n/l10n_extension.dart';
+import '../models/saved_practice_sheet.dart';
 import '../locale/locale_controller.dart';
 import '../theme/theme_controller.dart';
+import '../services/recent_sheets_service.dart';
 import '../services/usage_quota_service.dart';
 import 'about_page.dart';
 import 'language_settings_page.dart';
+import 'recent_sheets_page.dart';
 import 'share_reward_action.dart';
 import 'theme_settings_page.dart';
 import 'upgrade_page.dart';
@@ -25,11 +28,13 @@ class SettingsPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = context.l10n;
     final quota = UsageQuotaService.instance;
+    final recentSheets = RecentSheetsService.instance;
     return ListenableBuilder(
       listenable: Listenable.merge([
         localeController,
         themeController,
         quota,
+        recentSheets,
       ]),
       builder: (context, _) {
         final languageSubtitle = LanguageSettingsPage.currentLanguageLabel(
@@ -52,6 +57,9 @@ class SettingsPage extends StatelessWidget {
                 quota.shareRewardsRemaining,
               )
             : l10n.settingsShareSubtitleDone;
+        final recentSubtitle = recentSheets.isEmpty
+            ? l10n.recentSheetsSettingsEmpty
+            : l10n.recentSheetsSettingsCount(recentSheets.items.length);
         return Scaffold(
           appBar: AppBar(title: Text(l10n.settingsTitle)),
           body: ListView(
@@ -96,6 +104,23 @@ class SettingsPage extends StatelessWidget {
                     );
                   },
                 ),
+              ListTile(
+                leading: const Icon(Icons.history_outlined),
+                title: Text(l10n.recentSheetsTitle),
+                subtitle: Text(recentSubtitle),
+                trailing: const Icon(Icons.chevron_right),
+                onTap: () async {
+                  final saved =
+                      await Navigator.of(context).push<SavedPracticeSheet>(
+                    MaterialPageRoute<SavedPracticeSheet>(
+                      builder: (context) => const RecentSheetsPage(),
+                    ),
+                  );
+                  if (saved != null && context.mounted) {
+                    Navigator.of(context).pop(saved);
+                  }
+                },
+              ),
               ListTile(
                 leading: const Icon(Icons.translate_outlined),
                 title: Text(l10n.languageTitle),

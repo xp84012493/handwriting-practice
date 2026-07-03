@@ -73,5 +73,17 @@
   "shareRewardLimitReached": "分享奖励次数已用完",
   "shareRewardCancelled": "已取消分享",
   "shareRewardUnavailable": "当前设备无法分享",
-  "upgradeShareButton": "分享获得 +{bonus} 次（剩余 {remaining} 次机会）"
+  "upgradeShareButton": "分享获得 +{bonus} 次（剩余 {remaining} 次机会）",
+  "recentSheetsTooltip": "最近字帖",
+  "recentSheetsTitle": "最近字帖",
+  "recentSheetsEmpty": "暂无保存的字帖。\n生成字帖后会自动出现在这里。",
+  "recentSheetsRestore": "恢复字帖",
+  "recentSheetsItemSubtitle": "{count} 字 · {when}",
+  "recentSheetsSettingsEmpty": "暂无保存",
+  "recentSheetsSettingsCount": "已保存 {count} 条",
+  "recentSheetsClearAll": "全部清除",
+  "recentSheetsClearAllTitle": "清除全部最近字帖？",
+  "recentSheetsClearAllBody": "将删除本机保存的全部字帖记录，且无法恢复。",
+  "recentSheetsClearAllCancel": "取消",
+  "recentSheetsClearAllConfirm": "清除"
 }

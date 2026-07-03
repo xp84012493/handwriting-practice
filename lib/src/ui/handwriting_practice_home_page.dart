@@ -10,9 +10,12 @@ import '../theme/theme_controller.dart';
 import '../models/practice_sheet_entry.dart';
 import '../print/practice_sheet_export.dart';
 import '../print/practice_sheet_pdf_service.dart';
+import '../services/recent_sheets_service.dart';
+import '../models/saved_practice_sheet.dart';
 import '../services/usage_quota_service.dart';
 import 'a4_practice_sheet_preview.dart';
 import 'practice_sheet_controller.dart';
+import 'recent_sheets_page.dart';
 import 'settings_page.dart';
 import 'upgrade_page.dart';
 
@@ -38,6 +41,7 @@ class _HandwritingPracticeHomePageState
     extends State<HandwritingPracticeHomePage> {
   late final PracticeSheetController _controller = PracticeSheetController();
   final _quota = UsageQuotaService.instance;
+  final _recentSheets = RecentSheetsService.instance;
 
   @override
   void initState() {
@@ -80,6 +84,10 @@ class _HandwritingPracticeHomePageState
         !_quota.isUnlocked &&
         _quota.generationCount == countBefore) {
       await _quota.recordSuccessfulGeneration();
+    }
+
+    if (_controller.hasSheet) {
+      await _recentSheets.add(_controller.generatedCharacters);
     }
 
     if (_controller.messages.isNotEmpty) {
@@ -182,6 +190,30 @@ class _HandwritingPracticeHomePageState
     }
   }
 
+  Future<void> _restoreSavedSheet(SavedPracticeSheet saved) async {
+    await _controller.restoreFromCharacters(saved.characters);
+    if (!mounted) return;
+    if (_controller.messages.isNotEmpty) {
+      final text = formatPracticeSheetMessages(
+        context.l10n,
+        _controller.messages,
+      );
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(text)),
+      );
+    }
+  }
+
+  Future<void> _openRecentSheets() async {
+    final saved = await Navigator.of(context).push<SavedPracticeSheet>(
+      MaterialPageRoute<SavedPracticeSheet>(
+        builder: (context) => const RecentSheetsPage(),
+      ),
+    );
+    if (!mounted || saved == null) return;
+    await _restoreSavedSheet(saved);
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -198,18 +230,27 @@ class _HandwritingPracticeHomePageState
             leading: IconButton(
               tooltip: l10n.settingsTooltip,
               icon: const Icon(Icons.settings_outlined),
-              onPressed: () {
-                Navigator.of(context).push(
-                  MaterialPageRoute<void>(
+              onPressed: () async {
+                final restored =
+                    await Navigator.of(context).push<SavedPracticeSheet>(
+                  MaterialPageRoute<SavedPracticeSheet>(
                     builder: (context) => SettingsPage(
                       localeController: widget.localeController,
                       themeController: widget.themeController,
                     ),
                   ),
                 );
+                if (restored != null && mounted) {
+                  await _restoreSavedSheet(restored);
+                }
               },
             ),
             actions: [
+              IconButton(
+                tooltip: l10n.recentSheetsTooltip,
+                icon: const Icon(Icons.history_outlined),
+                onPressed: _openRecentSheets,
+              ),
               PopupMenuButton<_PdfExportAction>(
                 tooltip: l10n.exportPdfTooltip,
                 enabled: _controller.hasSheet && !_controller.loading,
