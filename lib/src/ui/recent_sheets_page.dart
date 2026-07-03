@@ -5,7 +5,7 @@ import '../l10n/l10n_extension.dart';
 import '../models/saved_practice_sheet.dart';
 import '../services/recent_sheets_service.dart';
 
-/// Lists locally saved practice sheets; tap to restore, swipe to reveal delete.
+/// Lists locally saved practice sheets; tap to restore, batch delete via selection.
 class RecentSheetsPage extends StatefulWidget {
   const RecentSheetsPage({
     super.key,
@@ -21,6 +21,10 @@ class RecentSheetsPage extends StatefulWidget {
 
 class _RecentSheetsPageState extends State<RecentSheetsPage> {
   final Set<String> _selectedIds = {};
+
+  static const _listTilePadding = EdgeInsets.symmetric(horizontal: 16);
+  static const _minLeadingWidth = 40.0;
+  static const _horizontalTitleGap = 8.0;
 
   static String _previewTitle(String characters, {int maxGlyphs = 18}) {
     final runes = characters.runes.toList();
@@ -137,60 +141,52 @@ class _RecentSheetsPageState extends State<RecentSheetsPage> {
                     ),
                   ),
                 )
-              : Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    CheckboxListTile(
-                      value: _selectAllValue(items),
-                      tristate: true,
-                      onChanged: (_) => _toggleSelectAll(items),
-                      title: Text(l10n.recentSheetsSelectAll),
-                      controlAffinity: ListTileControlAffinity.leading,
-                      dense: true,
-                    ),
-                    const Divider(height: 1),
-                    Expanded(
-                      child: ListView.separated(
-                        padding: const EdgeInsets.only(bottom: 8),
-                        itemCount: items.length,
-                        separatorBuilder: (_, __) => const Divider(height: 1),
-                        itemBuilder: (context, index) {
-                          final sheet = items[index];
-                          final selected = _selectedIds.contains(sheet.id);
-                          return _SwipeRevealDeleteTile(
-                            onDelete: () async {
-                              await service.remove(sheet.id);
-                              if (mounted) {
-                                setState(() => _selectedIds.remove(sheet.id));
-                              }
-                            },
-                            deleteLabel: l10n.recentSheetsDelete,
-                            child: ListTile(
-                              leading: Checkbox(
-                                value: selected,
-                                onChanged: (_) => _toggleItem(sheet.id),
-                              ),
-                              title: Text(
-                                _previewTitle(sheet.characters),
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .titleMedium
-                                    ?.copyWith(letterSpacing: 1.5),
-                              ),
-                              subtitle: Text(
-                                l10n.recentSheetsItemSubtitle(
-                                  sheet.characterCount,
-                                  _formatWhen(context, sheet.createdAt),
-                                ),
-                              ),
-                              trailing: const Icon(Icons.chevron_right),
-                              onTap: () => _openSheet(sheet),
-                            ),
-                          );
-                        },
+              : ListView.separated(
+                  padding: const EdgeInsets.only(bottom: 8),
+                  itemCount: items.length + 1,
+                  separatorBuilder: (_, __) => const Divider(height: 1),
+                  itemBuilder: (context, index) {
+                    if (index == 0) {
+                      return ListTile(
+                        contentPadding: _listTilePadding,
+                        minLeadingWidth: _minLeadingWidth,
+                        horizontalTitleGap: _horizontalTitleGap,
+                        leading: _RoundCheckbox(
+                          value: _selectAllValue(items),
+                          tristate: true,
+                          onChanged: (_) => _toggleSelectAll(items),
+                        ),
+                        title: Text(l10n.recentSheetsSelectAll),
+                        onTap: () => _toggleSelectAll(items),
+                      );
+                    }
+
+                    final sheet = items[index - 1];
+                    final selected = _selectedIds.contains(sheet.id);
+                    return ListTile(
+                      contentPadding: _listTilePadding,
+                      minLeadingWidth: _minLeadingWidth,
+                      horizontalTitleGap: _horizontalTitleGap,
+                      leading: _RoundCheckbox(
+                        value: selected,
+                        onChanged: (_) => _toggleItem(sheet.id),
                       ),
-                    ),
-                  ],
+                      title: Text(
+                        _previewTitle(sheet.characters),
+                        style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                              letterSpacing: 1.5,
+                            ),
+                      ),
+                      subtitle: Text(
+                        l10n.recentSheetsItemSubtitle(
+                          sheet.characterCount,
+                          _formatWhen(context, sheet.createdAt),
+                        ),
+                      ),
+                      trailing: const Icon(Icons.chevron_right),
+                      onTap: () => _openSheet(sheet),
+                    );
+                  },
                 ),
         );
       },
@@ -198,98 +194,26 @@ class _RecentSheetsPageState extends State<RecentSheetsPage> {
   }
 }
 
-/// 左滑露出删除按钮；点击按钮后才删除（不随滑动手势直接删除）。
-class _SwipeRevealDeleteTile extends StatefulWidget {
-  const _SwipeRevealDeleteTile({
-    required this.child,
-    required this.onDelete,
-    required this.deleteLabel,
+class _RoundCheckbox extends StatelessWidget {
+  const _RoundCheckbox({
+    required this.value,
+    required this.onChanged,
+    this.tristate = false,
   });
 
-  final Widget child;
-  final Future<void> Function() onDelete;
-  final String deleteLabel;
-
-  @override
-  State<_SwipeRevealDeleteTile> createState() => _SwipeRevealDeleteTileState();
-}
-
-class _SwipeRevealDeleteTileState extends State<_SwipeRevealDeleteTile> {
-  static const _actionWidth = 80.0;
-
-  double _offset = 0;
-
-  void _close() => setState(() => _offset = 0);
-
-  Future<void> _onDeletePressed() async {
-    await widget.onDelete();
-    if (mounted) _close();
-  }
+  final bool? value;
+  final bool tristate;
+  final ValueChanged<bool?> onChanged;
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final offset = _offset.clamp(-_actionWidth, 0.0);
-
-    return ClipRect(
-      child: Stack(
-        children: [
-          Positioned.fill(
-            child: Align(
-              alignment: Alignment.centerRight,
-              child: SizedBox(
-                width: _actionWidth,
-                child: Material(
-                  color: theme.colorScheme.errorContainer,
-                  child: InkWell(
-                    onTap: _onDeletePressed,
-                    child: Center(
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Icon(
-                            Icons.delete_outline,
-                            color: theme.colorScheme.onErrorContainer,
-                          ),
-                          const SizedBox(height: 2),
-                          Text(
-                            widget.deleteLabel,
-                            style: theme.textTheme.labelSmall?.copyWith(
-                              color: theme.colorScheme.onErrorContainer,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          ),
-          GestureDetector(
-            onHorizontalDragUpdate: (details) {
-              setState(() {
-                _offset =
-                    (_offset + details.delta.dx).clamp(-_actionWidth, 0.0);
-              });
-            },
-            onHorizontalDragEnd: (details) {
-              setState(() {
-                final velocity = details.primaryVelocity ?? 0;
-                final open = _offset < -_actionWidth / 2 || velocity < -200;
-                _offset = open ? -_actionWidth : 0;
-              });
-            },
-            child: ColoredBox(
-              color: theme.colorScheme.surface,
-              child: Transform.translate(
-                offset: Offset(offset, 0),
-                child: widget.child,
-              ),
-            ),
-          ),
-        ],
-      ),
+    return Checkbox(
+      value: value,
+      tristate: tristate,
+      shape: const CircleBorder(),
+      materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+      visualDensity: VisualDensity.compact,
+      onChanged: onChanged,
     );
   }
 }
