@@ -37,6 +37,20 @@ void main() {
     expect(service.isEmpty, isTrue);
   });
 
+  test('removeMany deletes only selected ids', () async {
+    final service = RecentSheetsService.instance;
+    await service.clear();
+    await service.add('一');
+    await service.add('二');
+    await service.add('三');
+
+    final ids = service.items.map((s) => s.id).toList();
+    await service.removeMany([ids[0], ids[2]]);
+
+    expect(service.items.length, 1);
+    expect(service.items.single.characters, '二');
+  });
+
   test('SavedPracticeSheet json roundtrip', () {
     final sheet = SavedPracticeSheet.create('测试');
     final restored = SavedPracticeSheet.fromJson(sheet.toJson());

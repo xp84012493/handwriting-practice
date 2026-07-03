@@ -248,6 +248,16 @@
   "recentSheetsClearAllBody": "This removes all saved sheets from this device. It cannot be undone.",
   "recentSheetsClearAllCancel": "Cancel",
   "recentSheetsClearAllConfirm": "Clear",
+  "recentSheetsSelectAll": "Select all",
+  "recentSheetsDelete": "Delete",
+  "recentSheetsDeleteSelected": "Delete selected",
+  "recentSheetsDeleteSelectedTitle": "Delete selected sheets?",
+  "recentSheetsDeleteSelectedBody": "Delete {count} saved sheet(s)? This cannot be undone.",
+  "@recentSheetsDeleteSelectedBody": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
   "navTabPractice": "Practice",
   "sheetConfigTooltip": "Sheet layout",
   "sheetConfigTitle": "Sheet layout",

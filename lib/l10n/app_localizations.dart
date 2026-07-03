@@ -615,6 +615,36 @@ abstract class AppLocalizations {
   /// **'Clear'**
   String get recentSheetsClearAllConfirm;
 
+  /// No description provided for @recentSheetsSelectAll.
+  ///
+  /// In en, this message translates to:
+  /// **'Select all'**
+  String get recentSheetsSelectAll;
+
+  /// No description provided for @recentSheetsDelete.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete'**
+  String get recentSheetsDelete;
+
+  /// No description provided for @recentSheetsDeleteSelected.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete selected'**
+  String get recentSheetsDeleteSelected;
+
+  /// No description provided for @recentSheetsDeleteSelectedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete selected sheets?'**
+  String get recentSheetsDeleteSelectedTitle;
+
+  /// No description provided for @recentSheetsDeleteSelectedBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete {count} saved sheet(s)? This cannot be undone.'**
+  String recentSheetsDeleteSelectedBody(int count);
+
   /// No description provided for @navTabPractice.
   ///
   /// In en, this message translates to:

@@ -67,6 +67,17 @@ class RecentSheetsService extends ChangeNotifier {
     notifyListeners();
   }
 
+  Future<void> removeMany(Iterable<String> ids) async {
+    await _ensureLoaded();
+    final idSet = ids.toSet();
+    if (idSet.isEmpty) return;
+    final next = _items.where((s) => !idSet.contains(s.id)).toList(growable: false);
+    if (next.length == _items.length) return;
+    _items = next;
+    await _persist();
+    notifyListeners();
+  }
+
   Future<void> clear() async {
     await _ensureLoaded();
     if (_items.isEmpty) return;

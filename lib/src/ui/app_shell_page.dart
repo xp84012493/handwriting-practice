@@ -245,8 +245,6 @@ class _AppShellPageState extends State<AppShellPage> {
         ),
       ),
       bottomNavigationBar: NavigationBar(
-        height: 58,
-        labelBehavior: NavigationDestinationLabelBehavior.alwaysShow,
         selectedIndex: _tab.index,
         onDestinationSelected: (index) => _selectTab(_AppTab.values[index]),
         destinations: [

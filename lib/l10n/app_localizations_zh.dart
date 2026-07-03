@@ -319,6 +319,23 @@ class AppLocalizationsZh extends AppLocalizations {
   String get recentSheetsClearAllConfirm => '清除';
 
   @override
+  String get recentSheetsSelectAll => '全选';
+
+  @override
+  String get recentSheetsDelete => '删除';
+
+  @override
+  String get recentSheetsDeleteSelected => '删除所选';
+
+  @override
+  String get recentSheetsDeleteSelectedTitle => '删除所选字帖？';
+
+  @override
+  String recentSheetsDeleteSelectedBody(int count) {
+    return '将删除 $count 条记录，且无法恢复。';
+  }
+
+  @override
   String get navTabPractice => '字帖';
 
   @override
@@ -657,6 +674,23 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String get recentSheetsClearAllConfirm => '清除';
+
+  @override
+  String get recentSheetsSelectAll => '全選';
+
+  @override
+  String get recentSheetsDelete => '刪除';
+
+  @override
+  String get recentSheetsDeleteSelected => '刪除所選';
+
+  @override
+  String get recentSheetsDeleteSelectedTitle => '刪除所選字帖？';
+
+  @override
+  String recentSheetsDeleteSelectedBody(int count) {
+    return '將刪除 $count 條記錄，且無法復原。';
+  }
 
   @override
   String get sheetConfigTooltip => '字帖設定';

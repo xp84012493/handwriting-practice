@@ -11,7 +11,6 @@ abstract final class AppTheme {
         brightness: Brightness.light,
       ),
       useMaterial3: true,
-      navigationBarTheme: _navigationBarTheme,
     );
   }
 
@@ -22,17 +21,6 @@ abstract final class AppTheme {
         brightness: Brightness.dark,
       ),
       useMaterial3: true,
-      navigationBarTheme: _navigationBarTheme,
     );
   }
-
-  /// 比 Material 3 默认（80）更紧凑的底部导航。
-  static const NavigationBarThemeData _navigationBarTheme =
-      NavigationBarThemeData(
-    height: 58,
-    iconTheme: WidgetStatePropertyAll(IconThemeData(size: 22)),
-    labelTextStyle: WidgetStatePropertyAll(
-      TextStyle(fontSize: 11, height: 1.1, fontWeight: FontWeight.w500),
-    ),
-  );
 }

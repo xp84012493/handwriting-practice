@@ -326,6 +326,23 @@ class AppLocalizationsEn extends AppLocalizations {
   String get recentSheetsClearAllConfirm => 'Clear';
 
   @override
+  String get recentSheetsSelectAll => 'Select all';
+
+  @override
+  String get recentSheetsDelete => 'Delete';
+
+  @override
+  String get recentSheetsDeleteSelected => 'Delete selected';
+
+  @override
+  String get recentSheetsDeleteSelectedTitle => 'Delete selected sheets?';
+
+  @override
+  String recentSheetsDeleteSelectedBody(int count) {
+    return 'Delete $count saved sheet(s)? This cannot be undone.';
+  }
+
+  @override
   String get navTabPractice => 'Practice';
 
   @override
