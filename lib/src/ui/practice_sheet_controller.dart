@@ -1,6 +1,9 @@
+import 'dart:math' as math;
+
 import 'package:characters/characters.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../engine/prepared_hanzi_strokes.dart';
 import '../engine/stroke_path_cache.dart';
@@ -42,18 +45,67 @@ class HanziOnlyTextInputFormatter extends TextInputFormatter {
 class PracticeSheetController extends ChangeNotifier {
   PracticeSheetController({
     this.dictionaryAssetPath = 'assets/hanzi_dictionary.json',
-    this.traceSlots = 3,
-    this.blankSlots = 3,
-  });
+    int traceSlots = defaultTraceSlots,
+    int blankSlots = defaultBlankSlots,
+  })  : _traceSlots = traceSlots.clamp(minSlots, maxSlots),
+        _blankSlots = blankSlots.clamp(minSlots, maxSlots);
+
+  static const int defaultTraceSlots = 3;
+  static const int defaultBlankSlots = 3;
+  static const int minSlots = 0;
+  static const int maxSlots = 10;
+
+  static const _prefTraceSlots = 'sheet_trace_slots';
+  static const _prefBlankSlots = 'sheet_blank_slots';
 
   /// 笔画字典（JSON 数组），见 [HanziGraphicsParser.loadDictionaryFromAsset]。
   final String dictionaryAssetPath;
 
+  int _traceSlots;
+  int _blankSlots;
+
   /// 每行末尾「描红」完整叠字的格数。
-  final int traceSlots;
+  int get traceSlots => _traceSlots;
 
   /// 每行末尾仅米字格（临摹）的格数。
-  final int blankSlots;
+  int get blankSlots => _blankSlots;
+
+  Future<void> load() async {
+    final prefs = await SharedPreferences.getInstance();
+    final trace = prefs.getInt(_prefTraceSlots);
+    final blank = prefs.getInt(_prefBlankSlots);
+    if (trace != null) {
+      _traceSlots = trace.clamp(minSlots, maxSlots);
+    }
+    if (blank != null) {
+      _blankSlots = blank.clamp(minSlots, maxSlots);
+    }
+    notifyListeners();
+  }
+
+  Future<void> applyLayout({
+    required int traceSlots,
+    required int blankSlots,
+  }) async {
+    final nextTrace = traceSlots.clamp(minSlots, maxSlots);
+    final nextBlank = blankSlots.clamp(minSlots, maxSlots);
+    if (nextTrace == _traceSlots && nextBlank == _blankSlots) {
+      return;
+    }
+    _traceSlots = nextTrace;
+    _blankSlots = nextBlank;
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setInt(_prefTraceSlots, _traceSlots);
+    await prefs.setInt(_prefBlankSlots, _blankSlots);
+
+    final raw = textController.text.trim();
+    if (raw.isNotEmpty) {
+      await _ensureDictionaryLoaded();
+      await _generateMulti(raw);
+    } else {
+      notifyListeners();
+    }
+  }
 
   final TextEditingController textController = TextEditingController();
   final StrokePathCache pathCache = StrokePathCache();
@@ -71,7 +123,17 @@ class PracticeSheetController extends ChangeNotifier {
   bool get hasSheet => _entries.isNotEmpty;
 
   /// 输入上限（按每字至少占 1 物理行估算）。
-  int get maxMultiCharacters => A4SheetLayout.maxPhysicalRowsOnSheet();
+  int get maxMultiCharacters {
+    final colsPerLine = A4SheetLayout.columnsPerLine(
+      A4SheetLayout.pdfInnerWidthPt,
+      A4SheetLayout.practiceCellSizePt,
+    );
+    final maxPhysical = A4SheetLayout.maxPhysicalRowsOnSheet();
+    final minColsPerChar = 1 + 1 + _traceSlots + _blankSlots;
+    final minPhysPerChar =
+        (minColsPerChar + colsPerLine - 1) ~/ colsPerLine;
+    return math.max(1, maxPhysical ~/ minPhysPerChar);
+  }
 
   /// 兼容：首字。
   HanziCharacter? get character =>

@@ -86,5 +86,13 @@
   "recentSheetsClearAllBody": "将删除本机保存的全部字帖记录，且无法恢复。",
   "recentSheetsClearAllCancel": "取消",
   "recentSheetsClearAllConfirm": "清除",
-  "navTabPractice": "字帖"
+  "navTabPractice": "字帖",
+  "sheetConfigTooltip": "字帖配置",
+  "sheetConfigTitle": "字帖配置",
+  "sheetConfigSubtitle": "每字一行：递进笔顺 → 描红 → 空白临摹格。",
+  "sheetConfigTraceSlots": "描红格数",
+  "sheetConfigTraceHint": "半透明叠字，供描红练习。",
+  "sheetConfigBlankSlots": "空白格数",
+  "sheetConfigBlankHint": "仅米字格，供临摹书写。",
+  "sheetConfigDone": "完成"
 }

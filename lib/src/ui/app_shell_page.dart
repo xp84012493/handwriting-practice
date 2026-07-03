@@ -17,6 +17,7 @@ import 'a4_practice_sheet_preview.dart';
 import 'practice_sheet_controller.dart';
 import 'recent_sheets_page.dart';
 import 'settings_page.dart';
+import 'sheet_config_sheet.dart';
 import 'upgrade_page.dart';
 
 enum _PdfExportAction { systemPrint, saveFile, share }
@@ -49,6 +50,7 @@ class _AppShellPageState extends State<AppShellPage> {
   void initState() {
     super.initState();
     _quota.addListener(_onQuotaChanged);
+    _controller.load();
   }
 
   @override
@@ -288,7 +290,11 @@ class _PracticeTab extends StatelessWidget {
           appBar: AppBar(
             title: Text(l10n.appTitle),
             centerTitle: true,
-            automaticallyImplyLeading: false,
+            leading: IconButton(
+              tooltip: l10n.sheetConfigTooltip,
+              icon: const Icon(Icons.tune_outlined),
+              onPressed: () => showSheetConfigSheet(context, controller),
+            ),
             actions: [
               PopupMenuButton<_PdfExportAction>(
                 tooltip: l10n.exportPdfTooltip,

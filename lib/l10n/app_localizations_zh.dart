@@ -320,6 +320,30 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get navTabPractice => '字帖';
+
+  @override
+  String get sheetConfigTooltip => '字帖配置';
+
+  @override
+  String get sheetConfigTitle => '字帖配置';
+
+  @override
+  String get sheetConfigSubtitle => '每字一行：递进笔顺 → 描红 → 空白临摹格。';
+
+  @override
+  String get sheetConfigTraceSlots => '描红格数';
+
+  @override
+  String get sheetConfigTraceHint => '半透明叠字，供描红练习。';
+
+  @override
+  String get sheetConfigBlankSlots => '空白格数';
+
+  @override
+  String get sheetConfigBlankHint => '仅米字格，供临摹书写。';
+
+  @override
+  String get sheetConfigDone => '完成';
 }
 class AppLocalizationsZhHant extends AppLocalizationsZh {
   AppLocalizationsZhHant() : super('zh_Hant');
@@ -633,4 +657,28 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String get recentSheetsClearAllConfirm => '清除';
+
+  @override
+  String get sheetConfigTooltip => '字帖設定';
+
+  @override
+  String get sheetConfigTitle => '字帖設定';
+
+  @override
+  String get sheetConfigSubtitle => '每字一行：遞進筆順 → 描紅 → 空白臨摹格。';
+
+  @override
+  String get sheetConfigTraceSlots => '描紅格數';
+
+  @override
+  String get sheetConfigTraceHint => '半透明疊字，供描紅練習。';
+
+  @override
+  String get sheetConfigBlankSlots => '空白格數';
+
+  @override
+  String get sheetConfigBlankHint => '僅米字格，供臨摹書寫。';
+
+  @override
+  String get sheetConfigDone => '完成';
 }

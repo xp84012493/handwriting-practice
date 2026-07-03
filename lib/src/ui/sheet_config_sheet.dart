@@ -1,0 +1,159 @@
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+
+import '../l10n/l10n_extension.dart';
+import 'practice_sheet_controller.dart';
+
+/// 字帖描红 / 空白格数配置（底部弹层）。
+Future<void> showSheetConfigSheet(
+  BuildContext context,
+  PracticeSheetController controller,
+) {
+  return showModalBottomSheet<void>(
+    context: context,
+    isScrollControlled: true,
+    showDragHandle: true,
+    builder: (sheetContext) {
+      return _SheetConfigSheet(controller: controller);
+    },
+  );
+}
+
+class _SheetConfigSheet extends StatefulWidget {
+  const _SheetConfigSheet({required this.controller});
+
+  final PracticeSheetController controller;
+
+  @override
+  State<_SheetConfigSheet> createState() => _SheetConfigSheetState();
+}
+
+class _SheetConfigSheetState extends State<_SheetConfigSheet> {
+  late int _traceSlots = widget.controller.traceSlots;
+  late int _blankSlots = widget.controller.blankSlots;
+
+  Future<void> _apply() async {
+    await widget.controller.applyLayout(
+      traceSlots: _traceSlots,
+      blankSlots: _blankSlots,
+    );
+    if (mounted) Navigator.of(context).pop();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = context.l10n;
+    final bottom = MediaQuery.paddingOf(context).bottom;
+
+    return Padding(
+      padding: EdgeInsets.fromLTRB(20, 0, 20, 16 + bottom),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Text(
+            l10n.sheetConfigTitle,
+            style: Theme.of(context).textTheme.titleLarge,
+          ),
+          const SizedBox(height: 8),
+          Text(
+            l10n.sheetConfigSubtitle,
+            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
+                ),
+          ),
+          const SizedBox(height: 20),
+          _SlotStepper(
+            label: l10n.sheetConfigTraceSlots,
+            hint: l10n.sheetConfigTraceHint,
+            value: _traceSlots,
+            min: PracticeSheetController.minSlots,
+            max: PracticeSheetController.maxSlots,
+            onChanged: (v) => setState(() => _traceSlots = v),
+          ),
+          const SizedBox(height: 16),
+          _SlotStepper(
+            label: l10n.sheetConfigBlankSlots,
+            hint: l10n.sheetConfigBlankHint,
+            value: _blankSlots,
+            min: PracticeSheetController.minSlots,
+            max: PracticeSheetController.maxSlots,
+            onChanged: (v) => setState(() => _blankSlots = v),
+          ),
+          const SizedBox(height: 24),
+          FilledButton(
+            onPressed: _apply,
+            child: Text(l10n.sheetConfigDone),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _SlotStepper extends StatelessWidget {
+  const _SlotStepper({
+    required this.label,
+    required this.hint,
+    required this.value,
+    required this.min,
+    required this.max,
+    required this.onChanged,
+  });
+
+  final String label;
+  final String hint;
+  final int value;
+  final int min;
+  final int max;
+  final ValueChanged<int> onChanged;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Text(label, style: Theme.of(context).textTheme.titleSmall),
+        const SizedBox(height: 4),
+        Text(
+          hint,
+          style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                color: Theme.of(context).colorScheme.onSurfaceVariant,
+              ),
+        ),
+        const SizedBox(height: 8),
+        Row(
+          children: [
+            IconButton.filledTonal(
+              tooltip: '-1',
+              onPressed: value <= min
+                  ? null
+                  : () {
+                      HapticFeedback.selectionClick();
+                      onChanged(value - 1);
+                    },
+              icon: const Icon(Icons.remove),
+            ),
+            Expanded(
+              child: Text(
+                '$value',
+                textAlign: TextAlign.center,
+                style: Theme.of(context).textTheme.headlineSmall,
+              ),
+            ),
+            IconButton.filledTonal(
+              tooltip: '+1',
+              onPressed: value >= max
+                  ? null
+                  : () {
+                      HapticFeedback.selectionClick();
+                      onChanged(value + 1);
+                    },
+              icon: const Icon(Icons.add),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+}

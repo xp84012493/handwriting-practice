@@ -620,6 +620,54 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Practice'**
   String get navTabPractice;
+
+  /// No description provided for @sheetConfigTooltip.
+  ///
+  /// In en, this message translates to:
+  /// **'Sheet layout'**
+  String get sheetConfigTooltip;
+
+  /// No description provided for @sheetConfigTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Sheet layout'**
+  String get sheetConfigTitle;
+
+  /// No description provided for @sheetConfigSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Each character row: stroke order → trace → blank grids.'**
+  String get sheetConfigSubtitle;
+
+  /// No description provided for @sheetConfigTraceSlots.
+  ///
+  /// In en, this message translates to:
+  /// **'Trace grids'**
+  String get sheetConfigTraceSlots;
+
+  /// No description provided for @sheetConfigTraceHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Semi-transparent character overlays for tracing.'**
+  String get sheetConfigTraceHint;
+
+  /// No description provided for @sheetConfigBlankSlots.
+  ///
+  /// In en, this message translates to:
+  /// **'Blank grids'**
+  String get sheetConfigBlankSlots;
+
+  /// No description provided for @sheetConfigBlankHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Empty mi zi grids for freehand practice.'**
+  String get sheetConfigBlankHint;
+
+  /// No description provided for @sheetConfigDone.
+  ///
+  /// In en, this message translates to:
+  /// **'Done'**
+  String get sheetConfigDone;
 }
 
 class _AppLocalizationsDelegate

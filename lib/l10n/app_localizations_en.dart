@@ -327,4 +327,31 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get navTabPractice => 'Practice';
+
+  @override
+  String get sheetConfigTooltip => 'Sheet layout';
+
+  @override
+  String get sheetConfigTitle => 'Sheet layout';
+
+  @override
+  String get sheetConfigSubtitle =>
+      'Each character row: stroke order → trace → blank grids.';
+
+  @override
+  String get sheetConfigTraceSlots => 'Trace grids';
+
+  @override
+  String get sheetConfigTraceHint =>
+      'Semi-transparent character overlays for tracing.';
+
+  @override
+  String get sheetConfigBlankSlots => 'Blank grids';
+
+  @override
+  String get sheetConfigBlankHint =>
+      'Empty mi zi grids for freehand practice.';
+
+  @override
+  String get sheetConfigDone => 'Done';
 }

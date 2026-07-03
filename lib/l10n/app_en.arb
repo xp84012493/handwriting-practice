@@ -248,5 +248,13 @@
   "recentSheetsClearAllBody": "This removes all saved sheets from this device. It cannot be undone.",
   "recentSheetsClearAllCancel": "Cancel",
   "recentSheetsClearAllConfirm": "Clear",
-  "navTabPractice": "Practice"
+  "navTabPractice": "Practice",
+  "sheetConfigTooltip": "Sheet layout",
+  "sheetConfigTitle": "Sheet layout",
+  "sheetConfigSubtitle": "Each character row: stroke order → trace → blank grids.",
+  "sheetConfigTraceSlots": "Trace grids",
+  "sheetConfigTraceHint": "Semi-transparent character overlays for tracing.",
+  "sheetConfigBlankSlots": "Blank grids",
+  "sheetConfigBlankHint": "Empty mi zi grids for freehand practice.",
+  "sheetConfigDone": "Done"
 }
