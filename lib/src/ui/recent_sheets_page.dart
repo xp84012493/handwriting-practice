@@ -35,6 +35,7 @@ class RecentSheetsPage extends StatelessWidget {
       builder: (context, _) {
         final items = service.items;
         return Scaffold(
+          resizeToAvoidBottomInset: false,
           appBar: AppBar(
             title: Text(l10n.recentSheetsTitle),
             automaticallyImplyLeading: false,

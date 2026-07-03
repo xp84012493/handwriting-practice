@@ -79,7 +79,7 @@ class _AppShellPageState extends State<AppShellPage> {
   }
 
   Future<void> _onGenerate() async {
-    FocusManager.instance.primaryFocus?.unfocus();
+    FocusScope.of(context).unfocus();
     if (!_quota.canGenerate) {
       await _openUpgradePage();
       if (!_quota.canGenerate) return;
@@ -223,23 +223,30 @@ class _AppShellPageState extends State<AppShellPage> {
     final l10n = context.l10n;
 
     return Scaffold(
-      body: IndexedStack(
-        index: _tab.index,
-        children: [
-          _PracticeTab(
-            controller: _controller,
-            quota: _quota,
-            onGenerate: _onGenerate,
-            onPdfExportMenu: _onPdfExportMenu,
-          ),
-          RecentSheetsPage(onSheetSelected: _onRecentSheetSelected),
-          SettingsPage(
-            localeController: widget.localeController,
-            themeController: widget.themeController,
-          ),
-        ],
+      resizeToAvoidBottomInset: false,
+      body: MediaQuery.removeViewInsets(
+        context: context,
+        removeBottom: true,
+        child: IndexedStack(
+          index: _tab.index,
+          children: [
+            _PracticeTab(
+              controller: _controller,
+              quota: _quota,
+              onGenerate: _onGenerate,
+              onPdfExportMenu: _onPdfExportMenu,
+            ),
+            RecentSheetsPage(onSheetSelected: _onRecentSheetSelected),
+            SettingsPage(
+              localeController: widget.localeController,
+              themeController: widget.themeController,
+            ),
+          ],
+        ),
       ),
       bottomNavigationBar: NavigationBar(
+        height: 58,
+        labelBehavior: NavigationDestinationLabelBehavior.alwaysShow,
         selectedIndex: _tab.index,
         onDestinationSelected: (index) => _selectTab(_AppTab.values[index]),
         destinations: [
@@ -341,28 +348,26 @@ class _PracticeTab extends StatelessWidget {
               ),
             ],
           ),
-          body: SafeArea(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                _ControlBar(
-                  controller: controller,
-                  onGenerate: onGenerate,
-                  theme: theme,
-                  quota: quota,
-                ),
-                SizedBox(
-                  height: 3,
-                  width: double.infinity,
-                  child: controller.loading
-                      ? const LinearProgressIndicator(minHeight: 3)
-                      : const SizedBox.shrink(),
-                ),
-                Expanded(
-                  child: _PreviewBody(controller: controller, theme: theme),
-                ),
-              ],
-            ),
+          body: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              _ControlBar(
+                controller: controller,
+                onGenerate: onGenerate,
+                theme: theme,
+                quota: quota,
+              ),
+              SizedBox(
+                height: 3,
+                width: double.infinity,
+                child: controller.loading
+                    ? const LinearProgressIndicator(minHeight: 3)
+                    : const SizedBox.shrink(),
+              ),
+              Expanded(
+                child: _PreviewBody(controller: controller, theme: theme),
+              ),
+            ],
           ),
         );
       },

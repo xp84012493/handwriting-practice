@@ -53,6 +53,7 @@ class SettingsPage extends StatelessWidget {
               )
             : l10n.settingsShareSubtitleDone;
         return Scaffold(
+          resizeToAvoidBottomInset: false,
           appBar: AppBar(
             title: Text(l10n.settingsTitle),
             automaticallyImplyLeading: false,
