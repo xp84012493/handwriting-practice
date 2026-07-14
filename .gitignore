@@ -84,3 +84,6 @@ coverage/
 .env.*
 !.env.example
 *.p8
+keys/
+*.mobileprovision
+*.mobileprovision.b64.txt
