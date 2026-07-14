@@ -13,7 +13,7 @@ class UsageQuotaService extends ChangeNotifier {
 
   static final UsageQuotaService instance = UsageQuotaService._();
 
-  static const int freeGenerationLimit = 30;
+  static const int freeGenerationLimit = 20;
 
   /// Each successful share grants this many extra free generations.
   static const int bonusGenerationsPerShare = 5;
