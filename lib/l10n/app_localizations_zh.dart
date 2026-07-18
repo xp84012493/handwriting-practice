@@ -213,6 +213,9 @@ class AppLocalizationsZh extends AppLocalizations {
   }
 
   @override
+  String get upgradeRestoreButton => '恢复购买';
+
+  @override
   String get upgradeStoreUnavailable => '当前设备无法连接应用商店。';
 
   @override
@@ -362,6 +365,8 @@ class AppLocalizationsZh extends AppLocalizations {
   @override
   String get sheetConfigDone => '完成';
 }
+
+/// The translations for Chinese, using the Han script (`zh_Hant`).
 class AppLocalizationsZhHant extends AppLocalizationsZh {
   AppLocalizationsZhHant() : super('zh_Hant');
 
@@ -570,6 +575,9 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
   }
 
   @override
+  String get upgradeRestoreButton => '恢復購買';
+
+  @override
   String get upgradeStoreUnavailable => '目前裝置無法連線 App Store。';
 
   @override
@@ -691,6 +699,9 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
   String recentSheetsDeleteSelectedBody(int count) {
     return '將刪除 $count 條記錄，且無法復原。';
   }
+
+  @override
+  String get navTabPractice => '字帖';
 
   @override
   String get sheetConfigTooltip => '字帖設定';

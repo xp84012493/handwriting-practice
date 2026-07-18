@@ -214,6 +214,9 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String get upgradeRestoreButton => 'Restore purchase';
+
+  @override
   String get upgradeStoreUnavailable =>
       'The app store is not available on this device.';
 
@@ -366,8 +369,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get sheetConfigBlankSlots => 'Blank grids';
 
   @override
-  String get sheetConfigBlankHint =>
-      'Empty mi zi grids for freehand practice.';
+  String get sheetConfigBlankHint => 'Empty mi zi grids for freehand practice.';
 
   @override
   String get sheetConfigDone => 'Done';

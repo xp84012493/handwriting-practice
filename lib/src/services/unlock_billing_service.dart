@@ -113,6 +113,22 @@ class UnlockBillingService extends ChangeNotifier {
     }
   }
 
+  Future<void> restorePurchases() async {
+    if (!_storeAvailable) return;
+    purchaseInFlight = true;
+    lastPurchaseError = null;
+    notifyListeners();
+    try {
+      await _iap.restorePurchases();
+    } catch (e, st) {
+      debugPrint('restorePurchases: $e\n$st');
+      lastPurchaseError = e.toString();
+    } finally {
+      purchaseInFlight = false;
+      notifyListeners();
+    }
+  }
+
   /// Runs once per install (first launch) to recover a prior non-consumable purchase.
   void _scheduleSilentRestore() {
     if (UsageQuotaService.instance.isUnlocked) return;

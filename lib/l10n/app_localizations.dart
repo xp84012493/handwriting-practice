@@ -435,6 +435,12 @@ abstract class AppLocalizations {
   /// **'Unlock for {price}'**
   String upgradeBuyButton(String price);
 
+  /// No description provided for @upgradeRestoreButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Restore purchase'**
+  String get upgradeRestoreButton;
+
   /// No description provided for @upgradeStoreUnavailable.
   ///
   /// In en, this message translates to:
