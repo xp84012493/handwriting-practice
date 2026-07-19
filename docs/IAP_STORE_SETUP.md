@@ -1,6 +1,6 @@
 # In-app purchase setup（20 次免费 → 一次性解锁）
 
-应用内 **每成功生成一次字帖** 计 1 次；前 **20 次免费**，之后需购买 **非消耗型** 内购 `handwriting_practice_unlock` 解锁无限次。
+应用内 **每成功生成一次字帖** 计 1 次；前 **20 次免费**，之后需购买 **非消耗型** 内购 `unlock_handwriting_practice` 解锁无限次。
 
 iOS / Android 走商店内购；Windows / Web 开发版不限制次数。
 
@@ -26,8 +26,8 @@ iOS / Android 走商店内购；Windows / Web 开发版不限制次数。
 
 | 平台 | Product ID | 类型 |
 |------|------------|------|
-| App Store Connect | `handwriting_practice_unlock` | 非消耗型（Non-Consumable） |
-| Google Play Console | `handwriting_practice_unlock` | 一次性商品（One-time product） |
+| App Store Connect | `unlock_handwriting_practice` | 非消耗型（Non-Consumable） |
+| Google Play Console | `unlock_handwriting_practice` | 一次性商品（One-time product） |
 
 代码见 [`lib/src/config/iap_products.dart`](../lib/src/config/iap_products.dart)。
 
@@ -38,7 +38,7 @@ iOS / Android 走商店内购；Windows / Web 开发版不限制次数。
 1. 你的 App → **功能** → **App 内购买项目** → **+**
 2. 类型选 **非消耗型项目**
 3. **参考名称**：例如 `Unlimited sheet generation`
-4. **产品 ID**：`handwriting_practice_unlock`（必须与代码一致）
+4. **产品 ID**：`unlock_handwriting_practice`（必须与代码一致）
 5. 设置 **价格**（如 ¥12 / ¥18，按你的定价）
 6. 添加 **本地化显示名称与描述**（审核会看）
 7. 状态变为 **准备提交** 后，随 App 版本一并提交审核
@@ -50,7 +50,7 @@ iOS / Android 走商店内购；Windows / Web 开发版不限制次数。
 ## Google Play（若上架）
 
 1. **Monetize → Products → One-time products**
-2. Product ID：`handwriting_practice_unlock`
+2. Product ID：`unlock_handwriting_practice`
 3. 激活并定价
 
 ---
