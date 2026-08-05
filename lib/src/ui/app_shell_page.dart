@@ -7,14 +7,17 @@ import '../l10n/l10n_extension.dart';
 import '../locale/locale_controller.dart';
 import '../locale/practice_sheet_messages.dart';
 import '../models/practice_sheet_entry.dart';
+import '../models/preset_sheet_list.dart';
 import '../models/saved_practice_sheet.dart';
 import '../print/practice_sheet_export.dart';
 import '../print/practice_sheet_pdf_service.dart';
+import '../services/preset_list_service.dart';
 import '../services/recent_sheets_service.dart';
 import '../services/usage_quota_service.dart';
 import '../theme/theme_controller.dart';
 import 'a4_practice_sheet_preview.dart';
 import 'practice_sheet_controller.dart';
+import 'preset_list_sheet.dart';
 import 'recent_sheets_page.dart';
 import 'settings_page.dart';
 import 'sheet_config_sheet.dart';
@@ -43,6 +46,7 @@ class _AppShellPageState extends State<AppShellPage> {
   late final PracticeSheetController _controller = PracticeSheetController();
   final _quota = UsageQuotaService.instance;
   final _recentSheets = RecentSheetsService.instance;
+  final _presets = PresetListService.instance;
 
   _AppTab _tab = _AppTab.practice;
 
@@ -51,6 +55,7 @@ class _AppShellPageState extends State<AppShellPage> {
     super.initState();
     _quota.addListener(_onQuotaChanged);
     _controller.load();
+    _presets.load();
   }
 
   @override
@@ -76,6 +81,32 @@ class _AppShellPageState extends State<AppShellPage> {
       ),
     );
     return unlocked == true || _quota.isUnlocked;
+  }
+
+  Future<void> _applyPreset(PresetSheetList preset) async {
+    await _presets.recordUse(preset.id);
+    _controller.textController.text = preset.text;
+    await _onGenerate();
+  }
+
+  Future<void> _openPresetSheet({String? initialCategoryId}) async {
+    final catalog = _presets.catalog;
+    if (catalog == null) {
+      if (_presets.isLoading) return;
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(context.l10n.presetLoadFailed)),
+      );
+      return;
+    }
+    if (!mounted) return;
+    await showPresetListSheet(
+      context,
+      catalog: catalog,
+      recentPresets: _presets.recentPresets,
+      initialCategoryId: initialCategoryId,
+      onSelected: _applyPreset,
+    );
   }
 
   Future<void> _onGenerate() async {
@@ -233,8 +264,11 @@ class _AppShellPageState extends State<AppShellPage> {
             _PracticeTab(
               controller: _controller,
               quota: _quota,
+              presets: _presets,
               onGenerate: _onGenerate,
               onPdfExportMenu: _onPdfExportMenu,
+              onPresetSelected: _applyPreset,
+              onOpenPresetSheet: _openPresetSheet,
             ),
             RecentSheetsPage(onSheetSelected: _onRecentSheetSelected),
             SettingsPage(
@@ -273,14 +307,20 @@ class _PracticeTab extends StatelessWidget {
   const _PracticeTab({
     required this.controller,
     required this.quota,
+    required this.presets,
     required this.onGenerate,
     required this.onPdfExportMenu,
+    required this.onPresetSelected,
+    required this.onOpenPresetSheet,
   });
 
   final PracticeSheetController controller;
   final UsageQuotaService quota;
+  final PresetListService presets;
   final VoidCallback onGenerate;
   final ValueChanged<_PdfExportAction> onPdfExportMenu;
+  final ValueChanged<PresetSheetList> onPresetSelected;
+  final Future<void> Function({String? initialCategoryId}) onOpenPresetSheet;
 
   @override
   Widget build(BuildContext context) {
@@ -288,7 +328,7 @@ class _PracticeTab extends StatelessWidget {
     final l10n = context.l10n;
 
     return AnimatedBuilder(
-      animation: Listenable.merge([controller, quota]),
+      animation: Listenable.merge([controller, quota, presets]),
       builder: (context, _) {
         return Scaffold(
           resizeToAvoidBottomInset: false,
@@ -354,6 +394,9 @@ class _PracticeTab extends StatelessWidget {
                 onGenerate: onGenerate,
                 theme: theme,
                 quota: quota,
+                featuredPresets: presets.featuredPresets,
+                onPresetSelected: onPresetSelected,
+                onOpenPresetSheet: () => onOpenPresetSheet(),
               ),
               SizedBox(
                 height: 3,
@@ -363,7 +406,13 @@ class _PracticeTab extends StatelessWidget {
                     : const SizedBox.shrink(),
               ),
               Expanded(
-                child: _PreviewBody(controller: controller, theme: theme),
+                child: _PreviewBody(
+                  controller: controller,
+                  theme: theme,
+                  featuredPresets: presets.featuredPresets,
+                  onPresetSelected: onPresetSelected,
+                  onOpenPresetSheet: () => onOpenPresetSheet(),
+                ),
               ),
             ],
           ),
@@ -379,12 +428,18 @@ class _ControlBar extends StatelessWidget {
     required this.onGenerate,
     required this.theme,
     required this.quota,
+    required this.featuredPresets,
+    required this.onPresetSelected,
+    required this.onOpenPresetSheet,
   });
 
   final PracticeSheetController controller;
   final VoidCallback onGenerate;
   final ThemeData theme;
   final UsageQuotaService quota;
+  final List<PresetSheetList> featuredPresets;
+  final ValueChanged<PresetSheetList> onPresetSelected;
+  final VoidCallback onOpenPresetSheet;
 
   @override
   Widget build(BuildContext context) {
@@ -472,6 +527,14 @@ class _ControlBar extends StatelessWidget {
                       button,
                     ],
                   ),
+            if (featuredPresets.isNotEmpty) ...[
+              const SizedBox(height: 10),
+              PresetQuickChips(
+                presets: featuredPresets,
+                onPresetSelected: onPresetSelected,
+                onMore: onOpenPresetSheet,
+              ),
+            ],
           ],
         ),
       ),
@@ -483,10 +546,16 @@ class _PreviewBody extends StatelessWidget {
   const _PreviewBody({
     required this.controller,
     required this.theme,
+    required this.featuredPresets,
+    required this.onPresetSelected,
+    required this.onOpenPresetSheet,
   });
 
   final PracticeSheetController controller;
   final ThemeData theme;
+  final List<PresetSheetList> featuredPresets;
+  final ValueChanged<PresetSheetList> onPresetSelected;
+  final VoidCallback onOpenPresetSheet;
 
   @override
   Widget build(BuildContext context) {
@@ -533,16 +602,35 @@ class _PreviewBody extends StatelessWidget {
                         ),
                       ],
                     )
-                  : Padding(
-                      padding: const EdgeInsets.fromLTRB(12, 32, 12, 24),
-                      child: Text(
-                        l10n.emptyStateBody(controller.maxMultiCharacters),
-                        textAlign: TextAlign.center,
-                        style: theme.textTheme.bodyLarge?.copyWith(
-                          color: theme.colorScheme.onSurfaceVariant,
-                          height: 1.45,
+                  : Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        Text(
+                          l10n.emptyStateBody(controller.maxMultiCharacters),
+                          textAlign: TextAlign.center,
+                          style: theme.textTheme.bodyLarge?.copyWith(
+                            color: theme.colorScheme.onSurfaceVariant,
+                            height: 1.45,
+                          ),
                         ),
-                      ),
+                        if (featuredPresets.isNotEmpty) ...[
+                          const SizedBox(height: 20),
+                          Text(
+                            l10n.presetEmptyHint,
+                            textAlign: TextAlign.center,
+                            style: theme.textTheme.bodyMedium?.copyWith(
+                              color: theme.colorScheme.onSurfaceVariant,
+                            ),
+                          ),
+                          const SizedBox(height: 12),
+                          PresetQuickChips(
+                            presets: featuredPresets,
+                            onPresetSelected: onPresetSelected,
+                            onMore: onOpenPresetSheet,
+                            centered: true,
+                          ),
+                        ],
+                      ],
                     ),
             ),
           ),

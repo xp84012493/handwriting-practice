@@ -100,5 +100,18 @@
   "sheetConfigTraceHint": "半透明叠字，供描红练习。",
   "sheetConfigBlankSlots": "空白格数",
   "sheetConfigBlankHint": "仅米字格，供临摹书写。",
-  "sheetConfigDone": "完成"
+  "sheetConfigDone": "完成",
+  "presetSheetTitle": "预设字帖",
+  "presetSheetSubtitle": "选择一组生字，将自动填入并生成字帖。",
+  "presetMoreChip": "更多预设",
+  "presetOpenAll": "打开全部预设",
+  "presetEmptyHint": "或在上方选择预设字帖",
+  "presetRecentSection": "最近用过",
+  "presetCharacterCount": "{count} 字",
+  "@presetCharacterCount": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "presetLoadFailed": "预设字帖加载失败"
 }

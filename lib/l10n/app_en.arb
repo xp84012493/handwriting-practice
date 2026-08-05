@@ -267,5 +267,18 @@
   "sheetConfigTraceHint": "Semi-transparent character overlays for tracing.",
   "sheetConfigBlankSlots": "Blank grids",
   "sheetConfigBlankHint": "Empty mi zi grids for freehand practice.",
-  "sheetConfigDone": "Done"
+  "sheetConfigDone": "Done",
+  "presetSheetTitle": "Preset sheets",
+  "presetSheetSubtitle": "Pick a character set to fill the input and generate a sheet.",
+  "presetMoreChip": "More presets",
+  "presetOpenAll": "Browse all presets",
+  "presetEmptyHint": "Or choose a preset sheet above",
+  "presetRecentSection": "Recently used",
+  "presetCharacterCount": "{count} chars",
+  "@presetCharacterCount": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "presetLoadFailed": "Could not load preset sheets"
 }

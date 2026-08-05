@@ -1,0 +1,178 @@
+{
+  "schemaVersion": 1,
+  "categories": [
+    {
+      "id": "grade1",
+      "sortOrder": 10,
+      "icon": "school",
+      "title": {
+        "zh": "一年级生字",
+        "en": "Grade 1 characters",
+        "zh_Hant": "一年級生字"
+      },
+      "lists": [
+        {
+          "id": "grade1_unit1",
+          "sortOrder": 1,
+          "title": {
+            "zh": "识字 1–10",
+            "en": "Characters 1–10",
+            "zh_Hant": "識字 1–10"
+          },
+          "description": {
+            "zh": "10 字 · 入门常用",
+            "en": "10 characters · basics",
+            "zh_Hant": "10 字 · 入門常用"
+          },
+          "text": "天地人你我他一二三四五",
+          "tags": ["grade1", "unit1"]
+        },
+        {
+          "id": "grade1_unit2",
+          "sortOrder": 2,
+          "title": {
+            "zh": "识字 11–20",
+            "en": "Characters 11–20",
+            "zh_Hant": "識字 11–20"
+          },
+          "text": "六七八九十口耳目手足",
+          "tags": ["grade1", "unit2"]
+        },
+        {
+          "id": "grade1_nature",
+          "sortOrder": 3,
+          "title": {
+            "zh": "自然与方位",
+            "en": "Nature & directions",
+            "zh_Hant": "自然與方位"
+          },
+          "text": "日月水火木金土上下左右",
+          "tags": ["grade1", "nature"]
+        }
+      ]
+    },
+    {
+      "id": "themes",
+      "sortOrder": 20,
+      "icon": "eco",
+      "title": {
+        "zh": "主题词组",
+        "en": "Themed words",
+        "zh_Hant": "主題詞組"
+      },
+      "lists": [
+        {
+          "id": "theme_spring",
+          "sortOrder": 1,
+          "title": {
+            "zh": "春天",
+            "en": "Spring",
+            "zh_Hant": "春天"
+          },
+          "description": {
+            "zh": "季节 · 6 字",
+            "en": "Season · 6 characters",
+            "zh_Hant": "季節 · 6 字"
+          },
+          "text": "春天花草风雨",
+          "tags": ["season", "spring"]
+        },
+        {
+          "id": "theme_family",
+          "sortOrder": 2,
+          "title": {
+            "zh": "家庭",
+            "en": "Family",
+            "zh_Hant": "家庭"
+          },
+          "text": "爸妈爷爷奶奶哥姐弟妹",
+          "tags": ["family"]
+        },
+        {
+          "id": "theme_school",
+          "sortOrder": 3,
+          "title": {
+            "zh": "校园",
+            "en": "School",
+            "zh_Hant": "校園"
+          },
+          "text": "学校老师同学读书写字",
+          "tags": ["school"]
+        }
+      ]
+    },
+    {
+      "id": "festivals",
+      "sortOrder": 30,
+      "icon": "celebration",
+      "title": {
+        "zh": "节日常用字",
+        "en": "Festival characters",
+        "zh_Hant": "節日常用字"
+      },
+      "lists": [
+        {
+          "id": "festival_spring_festival",
+          "sortOrder": 1,
+          "title": {
+            "zh": "春节",
+            "en": "Spring Festival",
+            "zh_Hant": "春節"
+          },
+          "text": "春节福红包团圆饺子",
+          "tags": ["festival", "spring_festival"]
+        },
+        {
+          "id": "festival_mid_autumn",
+          "sortOrder": 2,
+          "title": {
+            "zh": "中秋",
+            "en": "Mid-Autumn",
+            "zh_Hant": "中秋"
+          },
+          "text": "中秋月亮月饼团圆",
+          "tags": ["festival", "mid_autumn"]
+        }
+      ]
+    },
+    {
+      "id": "practice_basics",
+      "sortOrder": 40,
+      "icon": "edit",
+      "title": {
+        "zh": "练字基础",
+        "en": "Writing basics",
+        "zh_Hant": "練字基礎"
+      },
+      "lists": [
+        {
+          "id": "basics_stroke_practice",
+          "sortOrder": 1,
+          "title": {
+            "zh": "基本笔画字",
+            "en": "Basic stroke characters",
+            "zh_Hant": "基本筆畫字"
+          },
+          "description": {
+            "zh": "永字八法常用例字",
+            "en": "Common stroke-order examples",
+            "zh_Hant": "永字八法常用例字"
+          },
+          "text": "永一二三十木口手",
+          "tags": ["basics", "strokes"]
+        },
+        {
+          "id": "basics_numbers",
+          "sortOrder": 2,
+          "title": {
+            "zh": "数字汉字",
+            "en": "Chinese numerals",
+            "zh_Hant": "數字漢字"
+          },
+          "text": "零一二三四五六七八九",
+          "tags": ["basics", "numbers"]
+        }
+      ]
+    }
+  ]
+}

@@ -704,6 +704,54 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Done'**
   String get sheetConfigDone;
+
+  /// No description provided for @presetSheetTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Preset sheets'**
+  String get presetSheetTitle;
+
+  /// No description provided for @presetSheetSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Pick a character set to fill the input and generate a sheet.'**
+  String get presetSheetSubtitle;
+
+  /// No description provided for @presetMoreChip.
+  ///
+  /// In en, this message translates to:
+  /// **'More presets'**
+  String get presetMoreChip;
+
+  /// No description provided for @presetOpenAll.
+  ///
+  /// In en, this message translates to:
+  /// **'Browse all presets'**
+  String get presetOpenAll;
+
+  /// No description provided for @presetEmptyHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Or choose a preset sheet above'**
+  String get presetEmptyHint;
+
+  /// No description provided for @presetRecentSection.
+  ///
+  /// In en, this message translates to:
+  /// **'Recently used'**
+  String get presetRecentSection;
+
+  /// No description provided for @presetCharacterCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} chars'**
+  String presetCharacterCount(int count);
+
+  /// No description provided for @presetLoadFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not load preset sheets'**
+  String get presetLoadFailed;
 }
 
 class _AppLocalizationsDelegate

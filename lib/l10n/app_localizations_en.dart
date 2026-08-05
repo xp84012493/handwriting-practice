@@ -373,4 +373,31 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get sheetConfigDone => 'Done';
+
+  @override
+  String get presetSheetTitle => 'Preset sheets';
+
+  @override
+  String get presetSheetSubtitle =>
+      'Pick a character set to fill the input and generate a sheet.';
+
+  @override
+  String get presetMoreChip => 'More presets';
+
+  @override
+  String get presetOpenAll => 'Browse all presets';
+
+  @override
+  String get presetEmptyHint => 'Or choose a preset sheet above';
+
+  @override
+  String get presetRecentSection => 'Recently used';
+
+  @override
+  String presetCharacterCount(int count) {
+    return '$count chars';
+  }
+
+  @override
+  String get presetLoadFailed => 'Could not load preset sheets';
 }

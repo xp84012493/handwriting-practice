@@ -364,6 +364,32 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get sheetConfigDone => '完成';
+
+  @override
+  String get presetSheetTitle => '预设字帖';
+
+  @override
+  String get presetSheetSubtitle => '选择一组生字，将自动填入并生成字帖。';
+
+  @override
+  String get presetMoreChip => '更多预设';
+
+  @override
+  String get presetOpenAll => '打开全部预设';
+
+  @override
+  String get presetEmptyHint => '或在上方选择预设字帖';
+
+  @override
+  String get presetRecentSection => '最近用过';
+
+  @override
+  String presetCharacterCount(int count) {
+    return '$count 字';
+  }
+
+  @override
+  String get presetLoadFailed => '预设字帖加载失败';
 }
 
 /// The translations for Chinese, using the Han script (`zh_Hant`).
@@ -726,4 +752,30 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String get sheetConfigDone => '完成';
+
+  @override
+  String get presetSheetTitle => '預設字帖';
+
+  @override
+  String get presetSheetSubtitle => '選擇一組生字，將自動填入並生成字帖。';
+
+  @override
+  String get presetMoreChip => '更多預設';
+
+  @override
+  String get presetOpenAll => '打開全部預設';
+
+  @override
+  String get presetEmptyHint => '或在上方選擇預設字帖';
+
+  @override
+  String get presetRecentSection => '最近用過';
+
+  @override
+  String presetCharacterCount(int count) {
+    return '$count 字';
+  }
+
+  @override
+  String get presetLoadFailed => '預設字帖載入失敗';
 }
