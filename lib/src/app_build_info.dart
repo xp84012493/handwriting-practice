@@ -2,4 +2,4 @@
 ///
 /// **发版前请与 `pubspec.yaml` 中的 `version:` 保持同步。**
 const String kAppName = '笔顺练字帖';
-const String kAppVersion = '0.1.0+1';
+const String kAppVersion = '1.0.0+1';

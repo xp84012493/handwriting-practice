@@ -1,6 +1,6 @@
 name: hanzi_practice_engine
 description: Core data parsing and CustomPainter engine for Chinese stroke-order practice sheets.
-version: 0.1.0+1
+version: 1.0.0+1
 publish_to: "none"
 
 environment:
