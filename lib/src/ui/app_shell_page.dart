@@ -562,16 +562,6 @@ class _PreviewBody extends StatelessWidget {
     final l10n = context.l10n;
     final rows =
         controller.hasSheet ? controller.sheetRows : const <PracticeSheetEntry>[];
-    final subtitle = !controller.hasSheet
-        ? null
-        : rows
-            .map(
-              (e) => l10n.sheetRowSummary(
-                e.character.character,
-                e.prepared.strokeCount,
-              ),
-            )
-            .join(' · ');
 
     return LayoutBuilder(
       builder: (context, constraints) {
@@ -584,23 +574,10 @@ class _PreviewBody extends StatelessWidget {
                 maxWidth: math.min(constraints.maxWidth, 620),
               ),
               child: controller.hasSheet
-                  ? Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        Text(
-                          subtitle!,
-                          textAlign: TextAlign.center,
-                          style: theme.textTheme.labelLarge?.copyWith(
-                            color: theme.colorScheme.onSurfaceVariant,
-                          ),
-                        ),
-                        const SizedBox(height: 12),
-                        A4PracticeSheetPreview(
-                          rows: rows,
-                          traceSlots: controller.traceSlots,
-                          blankSlots: controller.blankSlots,
-                        ),
-                      ],
+                  ? A4PracticeSheetPreview(
+                      rows: rows,
+                      traceSlots: controller.traceSlots,
+                      blankSlots: controller.blankSlots,
                     )
                   : Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,

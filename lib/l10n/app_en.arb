@@ -21,17 +21,6 @@
       }
     }
   },
-  "sheetRowSummary": "「{character}」{strokeCount} strokes",
-  "@sheetRowSummary": {
-    "placeholders": {
-      "character": {
-        "type": "String"
-      },
-      "strokeCount": {
-        "type": "int"
-      }
-    }
-  },
   "printFailed": "Print failed: {error}",
   "@printFailed": {
     "placeholders": {

@@ -44,11 +44,6 @@ class AppLocalizationsZh extends AppLocalizations {
   }
 
   @override
-  String sheetRowSummary(String character, int strokeCount) {
-    return '「$character」$strokeCount笔';
-  }
-
-  @override
   String printFailed(String error) {
     return '打印失败：$error';
   }
@@ -429,11 +424,6 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
   @override
   String emptyStateBody(int maxChars) {
     return '在上方輸入多個漢字（每字一行字帖，\nA4 單頁約限 $maxChars 字，超出部分將忽略）。';
-  }
-
-  @override
-  String sheetRowSummary(String character, int strokeCount) {
-    return '「$character」$strokeCount筆';
   }
 
   @override

@@ -165,12 +165,6 @@ abstract class AppLocalizations {
   /// **'Enter multiple characters above (one row per character on the sheet).\nAbout {maxChars} characters fit on one A4 page; extra characters are ignored.'**
   String emptyStateBody(int maxChars);
 
-  /// No description provided for @sheetRowSummary.
-  ///
-  /// In en, this message translates to:
-  /// **'「{character}」{strokeCount} strokes'**
-  String sheetRowSummary(String character, int strokeCount);
-
   /// No description provided for @printFailed.
   ///
   /// In en, this message translates to:

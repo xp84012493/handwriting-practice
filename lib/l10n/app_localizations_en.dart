@@ -44,11 +44,6 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String sheetRowSummary(String character, int strokeCount) {
-    return '「$character」$strokeCount strokes';
-  }
-
-  @override
   String printFailed(String error) {
     return 'Print failed: $error';
   }
