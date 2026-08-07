@@ -11,6 +11,10 @@ IconData presetCategoryIcon(String? iconName) {
       return Icons.celebration_outlined;
     case 'edit':
       return Icons.edit_outlined;
+    case 'chat':
+      return Icons.chat_bubble_outline;
+    case 'menu_book':
+      return Icons.menu_book_outlined;
     default:
       return Icons.library_books_outlined;
   }

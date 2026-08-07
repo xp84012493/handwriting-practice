@@ -48,6 +48,205 @@
           },
           "text": "日月水火木金土上下左右",
           "tags": ["grade1", "nature"]
+        },
+        {
+          "id": "grade1_actions",
+          "sortOrder": 4,
+          "title": {
+            "zh": "动作与出入",
+            "en": "Actions & movement",
+            "zh_Hant": "動作與出入"
+          },
+          "text": "出入开关坐立走跑",
+          "tags": ["grade1", "actions"]
+        },
+        {
+          "id": "grade1_body",
+          "sortOrder": 5,
+          "title": {
+            "zh": "身体部位",
+            "en": "Body parts",
+            "zh_Hant": "身體部位"
+          },
+          "text": "头脸眼鼻牙手足心",
+          "tags": ["grade1", "body"]
+        },
+        {
+          "id": "grade1_animals",
+          "sortOrder": 6,
+          "title": {
+            "zh": "常见动物",
+            "en": "Common animals",
+            "zh_Hant": "常見動物"
+          },
+          "text": "马牛羊鸡鸭狗",
+          "tags": ["grade1", "animals"]
+        }
+      ]
+    },
+    {
+      "id": "grade2",
+      "sortOrder": 15,
+      "icon": "school",
+      "title": {
+        "zh": "二年级生字",
+        "en": "Grade 2 characters",
+        "zh_Hant": "二年級生字"
+      },
+      "lists": [
+        {
+          "id": "grade2_unit1",
+          "sortOrder": 1,
+          "title": {
+            "zh": "形容与伙伴",
+            "en": "Descriptions & friends",
+            "zh_Hant": "形容與夥伴"
+          },
+          "text": "美丽讲话许多伙伴",
+          "tags": ["grade2"]
+        },
+        {
+          "id": "grade2_unit2",
+          "sortOrder": 2,
+          "title": {
+            "zh": "学习与帮助",
+            "en": "Study & helping",
+            "zh_Hant": "學習與幫助"
+          },
+          "text": "科技帮助完全害怕",
+          "tags": ["grade2"]
+        },
+        {
+          "id": "grade2_unit3",
+          "sortOrder": 3,
+          "title": {
+            "zh": "自然与观察",
+            "en": "Nature & observing",
+            "zh_Hant": "自然與觀察"
+          },
+          "text": "森林枝叶茂盛",
+          "tags": ["grade2", "nature"]
+        }
+      ]
+    },
+    {
+      "id": "grade3",
+      "sortOrder": 16,
+      "icon": "school",
+      "title": {
+        "zh": "三年级生字",
+        "en": "Grade 3 characters",
+        "zh_Hant": "三年級生字"
+      },
+      "lists": [
+        {
+          "id": "grade3_unit1",
+          "sortOrder": 1,
+          "title": {
+            "zh": "宇宙与科学",
+            "en": "Space & science",
+            "zh_Hant": "宇宙與科學"
+          },
+          "text": "宇宙星球观察实验",
+          "tags": ["grade3", "science"]
+        },
+        {
+          "id": "grade3_unit2",
+          "sortOrder": 2,
+          "title": {
+            "zh": "昆虫与植物",
+            "en": "Insects & plants",
+            "zh_Hant": "昆蟲與植物"
+          },
+          "text": "蜜蜂蝴蝶花朵草树",
+          "tags": ["grade3", "nature"]
+        },
+        {
+          "id": "grade3_unit3",
+          "sortOrder": 3,
+          "title": {
+            "zh": "校园用品",
+            "en": "School supplies",
+            "zh_Hant": "校園用品"
+          },
+          "text": "教室操场黑板铅笔",
+          "tags": ["grade3", "school"]
+        },
+        {
+          "id": "grade3_unit4",
+          "sortOrder": 4,
+          "title": {
+            "zh": "品质性格",
+            "en": "Character traits",
+            "zh_Hant": "品質性格"
+          },
+          "text": "勇敢坚强诚实善良",
+          "tags": ["grade3", "character"]
+        },
+        {
+          "id": "grade3_unit5",
+          "sortOrder": 5,
+          "title": {
+            "zh": "户外活动",
+            "en": "Outdoor activities",
+            "zh_Hant": "戶外活動"
+          },
+          "text": "春游秋游野餐露营",
+          "tags": ["grade3", "activities"]
+        },
+        {
+          "id": "grade3_poetry_spring",
+          "sortOrder": 6,
+          "title": {
+            "zh": "古诗·春晓",
+            "en": "Poem: Spring Dawn",
+            "zh_Hant": "古詩·春曉"
+          },
+          "description": {
+            "zh": "孟浩然《春晓》常用字",
+            "en": "Characters from a classic spring poem",
+            "zh_Hant": "孟浩然《春曉》常用字"
+          },
+          "text": "春眠不觉晓",
+          "tags": ["grade3", "poetry"]
+        },
+        {
+          "id": "grade3_poetry_village",
+          "sortOrder": 7,
+          "title": {
+            "zh": "古诗·村居",
+            "en": "Poem: Village Life",
+            "zh_Hant": "古詩·村居"
+          },
+          "description": {
+            "zh": "高鼎《村居》常用字",
+            "en": "Characters from a classic village poem",
+            "zh_Hant": "高鼎《村居》常用字"
+          },
+          "text": "牧童归还短笛",
+          "tags": ["grade3", "poetry"]
+        },
+        {
+          "id": "grade3_weather",
+          "sortOrder": 8,
+          "title": {
+            "zh": "天气与气候",
+            "en": "Weather & climate",
+            "zh_Hant": "天氣與氣候"
+          },
+          "text": "温暖凉爽湿润干燥",
+          "tags": ["grade3", "weather"]
+        },
+        {
+          "id": "grade3_city",
+          "sortOrder": 9,
+          "title": {
+            "zh": "城市与乡村",
+            "en": "City & countryside",
+            "zh_Hant": "城市與鄉村"
+          },
+          "text": "城市乡村街道广场",
+          "tags": ["grade3", "places"]
         }
       ]
     },
@@ -78,8 +277,41 @@
           "tags": ["season", "spring"]
         },
         {
-          "id": "theme_family",
+          "id": "theme_summer",
           "sortOrder": 2,
+          "title": {
+            "zh": "夏天",
+            "en": "Summer",
+            "zh_Hant": "夏天"
+          },
+          "text": "夏暑荷花荷叶",
+          "tags": ["season", "summer"]
+        },
+        {
+          "id": "theme_autumn",
+          "sortOrder": 3,
+          "title": {
+            "zh": "秋天",
+            "en": "Autumn",
+            "zh_Hant": "秋天"
+          },
+          "text": "秋黄叶果实",
+          "tags": ["season", "autumn"]
+        },
+        {
+          "id": "theme_winter",
+          "sortOrder": 4,
+          "title": {
+            "zh": "冬天",
+            "en": "Winter",
+            "zh_Hant": "冬天"
+          },
+          "text": "冬雪寒冷冰雪",
+          "tags": ["season", "winter"]
+        },
+        {
+          "id": "theme_family",
+          "sortOrder": 5,
           "title": {
             "zh": "家庭",
             "en": "Family",
@@ -90,7 +322,7 @@
         },
         {
           "id": "theme_school",
-          "sortOrder": 3,
+          "sortOrder": 6,
           "title": {
             "zh": "校园",
             "en": "School",
@@ -98,6 +330,122 @@
           },
           "text": "学校老师同学读书写字",
           "tags": ["school"]
+        },
+        {
+          "id": "theme_food",
+          "sortOrder": 7,
+          "title": {
+            "zh": "食物",
+            "en": "Food",
+            "zh_Hant": "食物"
+          },
+          "text": "米饭面包鸡蛋牛奶",
+          "tags": ["food"]
+        },
+        {
+          "id": "theme_animals",
+          "sortOrder": 8,
+          "title": {
+            "zh": "动物",
+            "en": "Animals",
+            "zh_Hant": "動物"
+          },
+          "text": "猫狗鸟鱼兔马",
+          "tags": ["animals"]
+        },
+        {
+          "id": "theme_colors",
+          "sortOrder": 9,
+          "title": {
+            "zh": "颜色",
+            "en": "Colors",
+            "zh_Hant": "顏色"
+          },
+          "text": "红黄蓝绿白黑",
+          "tags": ["colors"]
+        },
+        {
+          "id": "theme_weather",
+          "sortOrder": 10,
+          "title": {
+            "zh": "天气",
+            "en": "Weather",
+            "zh_Hant": "天氣"
+          },
+          "text": "晴雨阴风雪",
+          "tags": ["weather"]
+        },
+        {
+          "id": "theme_transport",
+          "sortOrder": 11,
+          "title": {
+            "zh": "交通",
+            "en": "Transport",
+            "zh_Hant": "交通"
+          },
+          "text": "车路桥船飞机",
+          "tags": ["transport"]
+        }
+      ]
+    },
+    {
+      "id": "daily",
+      "sortOrder": 25,
+      "icon": "chat",
+      "title": {
+        "zh": "日常用语",
+        "en": "Daily phrases",
+        "zh_Hant": "日常用語"
+      },
+      "lists": [
+        {
+          "id": "daily_greetings",
+          "sortOrder": 1,
+          "title": {
+            "zh": "问候礼貌",
+            "en": "Greetings",
+            "zh_Hant": "問候禮貌"
+          },
+          "text": "你好谢谢对不起再见",
+          "tags": ["daily", "greetings"]
+        },
+        {
+          "id": "daily_polite",
+          "sortOrder": 2,
+          "title": {
+            "zh": "礼貌用语",
+            "en": "Polite words",
+            "zh_Hant": "禮貌用語"
+          },
+          "text": "请坐慢走欢迎",
+          "tags": ["daily", "polite"]
+        },
+        {
+          "id": "daily_time",
+          "sortOrder": 3,
+          "title": {
+            "zh": "时间",
+            "en": "Time",
+            "zh_Hant": "時間"
+          },
+          "text": "早晚中午今天明天",
+          "tags": ["daily", "time"]
+        },
+        {
+          "id": "daily_weekdays",
+          "sortOrder": 4,
+          "title": {
+            "zh": "星期",
+            "en": "Days of the week",
+            "zh_Hant": "星期"
+          },
+          "description": {
+            "zh": "周一至周日",
+            "en": "Monday through Sunday",
+            "zh_Hant": "週一至週日"
+          },
+          "text": "一二三四五六日",
+          "tags": ["daily", "weekdays"]
         }
       ]
     },
@@ -132,6 +480,50 @@
           },
           "text": "中秋月亮月饼团圆",
           "tags": ["festival", "mid_autumn"]
+        },
+        {
+          "id": "festival_dragon_boat",
+          "sortOrder": 3,
+          "title": {
+            "zh": "端午",
+            "en": "Dragon Boat",
+            "zh_Hant": "端午"
+          },
+          "text": "端午粽子龙舟",
+          "tags": ["festival", "dragon_boat"]
+        },
+        {
+          "id": "festival_lantern",
+          "sortOrder": 4,
+          "title": {
+            "zh": "元宵",
+            "en": "Lantern Festival",
+            "zh_Hant": "元宵"
+          },
+          "text": "元宵灯笼汤圆",
+          "tags": ["festival", "lantern"]
+        },
+        {
+          "id": "festival_qingming",
+          "sortOrder": 5,
+          "title": {
+            "zh": "清明",
+            "en": "Qingming",
+            "zh_Hant": "清明"
+          },
+          "text": "清明踏青",
+          "tags": ["festival", "qingming"]
+        },
+        {
+          "id": "festival_wishes",
+          "sortOrder": 6,
+          "title": {
+            "zh": "祝福用语",
+            "en": "Festive wishes",
+            "zh_Hant": "祝福用語"
+          },
+          "text": "新年快乐恭喜发财",
+          "tags": ["festival", "wishes"]
         }
       ]
     },
@@ -171,6 +563,73 @@
           },
           "text": "零一二三四五六七八九",
           "tags": ["basics", "numbers"]
+        },
+        {
+          "id": "basics_directions",
+          "sortOrder": 3,
+          "title": {
+            "zh": "方位",
+            "en": "Directions",
+            "zh_Hant": "方位"
+          },
+          "text": "东南西北前后",
+          "tags": ["basics", "directions"]
+        },
+        {
+          "id": "basics_size",
+          "sortOrder": 4,
+          "title": {
+            "zh": "大小多少",
+            "en": "Size & quantity",
+            "zh_Hant": "大小多少"
+          },
+          "text": "大小多少长短",
+          "tags": ["basics", "size"]
+        }
+      ]
+    },
+    {
+      "id": "idioms",
+      "sortOrder": 50,
+      "icon": "menu_book",
+      "title": {
+        "zh": "常用词语",
+        "en": "Common phrases",
+        "zh_Hant": "常用詞語"
+      },
+      "lists": [
+        {
+          "id": "idiom_study",
+          "sortOrder": 1,
+          "title": {
+            "zh": "学习励志",
+            "en": "Study & motivation",
+            "zh_Hant": "學習勵志"
+          },
+          "text": "好好学习天天向上",
+          "tags": ["idiom", "study"]
+        },
+        {
+          "id": "idiom_nature",
+          "sortOrder": 2,
+          "title": {
+            "zh": "自然风光",
+            "en": "Nature scenery",
+            "zh_Hant": "自然風光"
+          },
+          "text": "山清水秀鸟语花香",
+          "tags": ["idiom", "nature"]
+        },
+        {
+          "id": "idiom_happy",
+          "sortOrder": 3,
+          "title": {
+            "zh": "开心快乐",
+            "en": "Happiness",
+            "zh_Hant": "開心快樂"
+          },
+          "text": "开心快乐高兴",
+          "tags": ["idiom", "emotion"]
         }
       ]
     }
