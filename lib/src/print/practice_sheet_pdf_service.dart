@@ -72,11 +72,14 @@ class PracticeSheetPdfService {
   }
 
   /// 调用系统原生打印预览（可另存为 PDF）。
+  ///
+  /// [bytes] 若已预生成可直接传入，避免重复构建；否则按当前行数据生成。
   static Future<void> layoutPrint({
     required List<PracticeSheetEntry> rows,
     required int traceSlots,
     required int blankSlots,
     String name = '练字帖',
+    Uint8List? bytes,
   }) async {
     // 先生成固定 A4 横向 PDF，再打开系统打印。
     //
@@ -85,20 +88,18 @@ class PracticeSheetPdfService {
     // 处于未完成状态，导致再次点击打印无反应。
     //
     // `dynamicLayout: false` + 预生成：面板打开时文档已就绪。
-    // `forceCustomPrintPaper: true`：iOS 按传入的横向 A4 选纸，避免插件在 setDocument
-    // 重建 UIPrintInfo 后丢失横屏尺寸。
-    final bytes = await buildPdfBytes(
-      rows: rows,
-      traceSlots: traceSlots,
-      blankSlots: blankSlots,
-      pageFormat: pageFormat,
-    );
+    final pdfBytes = bytes ??
+        await buildPdfBytes(
+          rows: rows,
+          traceSlots: traceSlots,
+          blankSlots: blankSlots,
+          pageFormat: pageFormat,
+        );
     await Printing.layoutPdf(
       name: name,
       format: pageFormat,
       dynamicLayout: false,
-      forceCustomPrintPaper: true,
-      onLayout: (_) async => bytes,
+      onLayout: (_) async => pdfBytes,
     );
   }
 }

@@ -21,6 +21,8 @@
       }
     }
   },
+  "printPreparing": "Preparing to print…",
+  "printBusy": "Print in progress, please wait",
   "printFailed": "Print failed: {error}",
   "@printFailed": {
     "placeholders": {

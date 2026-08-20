@@ -44,6 +44,12 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String get printPreparing => 'Preparing to print…';
+
+  @override
+  String get printBusy => 'Print in progress, please wait';
+
+  @override
   String printFailed(String error) {
     return 'Print failed: $error';
   }

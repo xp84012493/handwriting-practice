@@ -158,20 +158,53 @@ class _AppShellPageState extends State<AppShellPage> {
   }
 
   Future<void> _onSystemPrint() async {
-    if (!_controller.hasSheet || _printInFlight) return;
-    _printInFlight = true;
+    if (!_controller.hasSheet) return;
     final l10n = context.l10n;
+    if (_printInFlight) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(l10n.printBusy)),
+      );
+      return;
+    }
+    _printInFlight = true;
+
+    // PopupMenu 关闭动画未结束时就 present 打印面板，iOS 上常会静默失败（无界面、无报错）。
+    await Future<void>.delayed(const Duration(milliseconds: 300));
+    if (!mounted) {
+      _printInFlight = false;
+      return;
+    }
+
+    final messenger = ScaffoldMessenger.of(context);
+    messenger.hideCurrentSnackBar();
+    messenger.showSnackBar(
+      SnackBar(
+        content: Text(l10n.printPreparing),
+        duration: const Duration(minutes: 1),
+      ),
+    );
+
     try {
+      final bytes = await _buildSheetPdfBytes();
+      if (!mounted) return;
+      messenger.hideCurrentSnackBar();
+
+      // 再留一帧，确保 SnackBar 收起后再 present 系统打印。
+      await Future<void>.delayed(const Duration(milliseconds: 50));
+      if (!mounted) return;
+
       await PracticeSheetPdfService.layoutPrint(
         rows: _controller.sheetRows,
         traceSlots: _controller.traceSlots,
         blankSlots: _controller.blankSlots,
         name: _sheetPdfBaseName(),
+        bytes: bytes,
       );
     } catch (e, st) {
       debugPrint('Print failed: $e\n$st');
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
+      messenger.hideCurrentSnackBar();
+      messenger.showSnackBar(
         SnackBar(content: Text(l10n.printFailed('$e'))),
       );
     } finally {

@@ -24,7 +24,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get exportPdfTooltip => '导出 PDF';
 
   @override
-  String get exportSystemPrint => '系统打印…';
+  String get exportSystemPrint => '打印…';
 
   @override
   String get exportSaveFile => '保存 PDF 到文件';
@@ -42,6 +42,12 @@ class AppLocalizationsZh extends AppLocalizations {
   String emptyStateBody(int maxChars) {
     return '在上方输入多个汉字（每字一行字帖，\nA4 单页约限 $maxChars 字，超出部分将忽略）。';
   }
+
+  @override
+  String get printPreparing => '正在准备打印…';
+
+  @override
+  String get printBusy => '正在打印，请稍候';
 
   @override
   String printFailed(String error) {
@@ -407,7 +413,7 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
   String get exportPdfTooltip => '匯出 PDF';
 
   @override
-  String get exportSystemPrint => '系統列印…';
+  String get exportSystemPrint => '列印…';
 
   @override
   String get exportSaveFile => '儲存 PDF 到檔案';
@@ -425,6 +431,12 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
   String emptyStateBody(int maxChars) {
     return '在上方輸入多個漢字（每字一行字帖，\nA4 單頁約限 $maxChars 字，超出部分將忽略）。';
   }
+
+  @override
+  String get printPreparing => '正在準備列印…';
+
+  @override
+  String get printBusy => '正在列印，請稍候';
 
   @override
   String printFailed(String error) {
