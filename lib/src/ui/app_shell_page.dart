@@ -47,6 +47,7 @@ class _AppShellPageState extends State<AppShellPage> {
   final _quota = UsageQuotaService.instance;
   final _recentSheets = RecentSheetsService.instance;
   final _presets = PresetListService.instance;
+  bool _printInFlight = false;
 
   _AppTab _tab = _AppTab.practice;
 
@@ -157,7 +158,8 @@ class _AppShellPageState extends State<AppShellPage> {
   }
 
   Future<void> _onSystemPrint() async {
-    if (!_controller.hasSheet) return;
+    if (!_controller.hasSheet || _printInFlight) return;
+    _printInFlight = true;
     final l10n = context.l10n;
     try {
       await PracticeSheetPdfService.layoutPrint(
@@ -172,6 +174,8 @@ class _AppShellPageState extends State<AppShellPage> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(l10n.printFailed('$e'))),
       );
+    } finally {
+      _printInFlight = false;
     }
   }
 

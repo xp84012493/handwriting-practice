@@ -24,8 +24,8 @@ class PracticeSheetPdfService {
 
   /// 生成 PDF 字节（矢量路径，非位图）。
   ///
-  /// [pageFormat] 默认 [PracticeSheetPdfService.pageFormat]；打印时由系统传入尺寸，
-  /// 应使用 [PdfPageFormat.landscape] 以保证与 A4 横向字帖一致。
+  /// [pageFormat] 默认 [PracticeSheetPdfService.pageFormat]；打印使用固定横向 A4，
+  /// 保存/分享同此格式。
   static Future<Uint8List> buildPdfBytes({
     required List<PracticeSheetEntry> rows,
     required int traceSlots,
@@ -78,21 +78,27 @@ class PracticeSheetPdfService {
     required int blankSlots,
     String name = '练字帖',
   }) async {
-    // iOS：`dynamicLayout: false` 时 printing 插件在 setDocument 里用新的 UIPrintInfo
-    // 覆盖打印面板，丢失已在 printPdf 里根据宽高设置的横屏，系统会回到默认竖向。
-    // `dynamicLayout: true` 保留横屏 UIPrintInfo；此处始终按横向页生成 PDF。
+    // 先生成固定 A4 横向 PDF，再打开系统打印。
+    //
+    // 不要用 `dynamicLayout: true`：iOS 会在主线程 `numberOfPages` 里 semaphore 等待
+    // onLayout；字帖矢量路径较多时预览会一直转圈，且 UIPrintInteractionController.shared
+    // 处于未完成状态，导致再次点击打印无反应。
+    //
+    // `dynamicLayout: false` + 预生成：面板打开时文档已就绪。
+    // `forceCustomPrintPaper: true`：iOS 按传入的横向 A4 选纸，避免插件在 setDocument
+    // 重建 UIPrintInfo 后丢失横屏尺寸。
+    final bytes = await buildPdfBytes(
+      rows: rows,
+      traceSlots: traceSlots,
+      blankSlots: blankSlots,
+      pageFormat: pageFormat,
+    );
     await Printing.layoutPdf(
       name: name,
       format: pageFormat,
-      dynamicLayout: true,
-      onLayout: (PdfPageFormat format) async {
-        return buildPdfBytes(
-          rows: rows,
-          traceSlots: traceSlots,
-          blankSlots: blankSlots,
-          pageFormat: format.landscape,
-        );
-      },
+      dynamicLayout: false,
+      forceCustomPrintPaper: true,
+      onLayout: (_) async => bytes,
     );
   }
 }
