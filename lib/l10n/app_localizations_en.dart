@@ -50,6 +50,14 @@ class AppLocalizationsEn extends AppLocalizations {
   String get printBusy => 'Print in progress, please wait';
 
   @override
+  String get printUnavailable =>
+      'Printing is not available on this device. Try Share PDF instead.';
+
+  @override
+  String get printFallbackShare =>
+      'Could not open the print panel. Opening the share sheet — choose Print there.';
+
+  @override
   String printFailed(String error) {
     return 'Print failed: $error';
   }

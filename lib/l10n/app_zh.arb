@@ -13,6 +13,8 @@
   "emptyStateBody": "在上方输入多个汉字（每字一行字帖，\nA4 单页约限 {maxChars} 字，超出部分将忽略）。",
   "printPreparing": "正在准备打印…",
   "printBusy": "正在打印，请稍候",
+  "printUnavailable": "此设备不支持打印，请改用「分享 PDF」",
+  "printFallbackShare": "无法打开打印面板，已改为分享面板，请选择「打印」",
   "printFailed": "打印失败：{error}",
   "pdfSaved": "已保存 PDF",
   "pdfSaveCancelled": "已取消保存",

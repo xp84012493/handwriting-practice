@@ -50,6 +50,12 @@ class AppLocalizationsZh extends AppLocalizations {
   String get printBusy => '正在打印，请稍候';
 
   @override
+  String get printUnavailable => '此设备不支持打印，请改用「分享 PDF」';
+
+  @override
+  String get printFallbackShare => '无法打开打印面板，已改为分享面板，请选择「打印」';
+
+  @override
   String printFailed(String error) {
     return '打印失败：$error';
   }
@@ -437,6 +443,12 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String get printBusy => '正在列印，請稍候';
+
+  @override
+  String get printUnavailable => '此裝置不支援列印，請改用「分享 PDF」';
+
+  @override
+  String get printFallbackShare => '無法開啟列印面板，已改為分享面板，請選擇「列印」';
 
   @override
   String printFailed(String error) {

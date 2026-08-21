@@ -177,6 +177,18 @@ abstract class AppLocalizations {
   /// **'Print in progress, please wait'**
   String get printBusy;
 
+  /// No description provided for @printUnavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Printing is not available on this device. Try Share PDF instead.'**
+  String get printUnavailable;
+
+  /// No description provided for @printFallbackShare.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not open the print panel. Opening the share sheet — choose Print there.'**
+  String get printFallbackShare;
+
   /// No description provided for @printFailed.
   ///
   /// In en, this message translates to:

@@ -23,6 +23,8 @@
   },
   "printPreparing": "Preparing to print…",
   "printBusy": "Print in progress, please wait",
+  "printUnavailable": "Printing is not available on this device. Try Share PDF instead.",
+  "printFallbackShare": "Could not open the print panel. Opening the share sheet — choose Print there.",
   "printFailed": "Print failed: {error}",
   "@printFailed": {
     "placeholders": {
