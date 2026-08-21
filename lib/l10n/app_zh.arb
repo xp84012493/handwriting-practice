@@ -99,6 +99,16 @@
   "sheetConfigTooltip": "字帖配置",
   "sheetConfigTitle": "字帖配置",
   "sheetConfigSubtitle": "每字一行：递进笔顺 → 描红 → 空白临摹格。",
+  "sheetConfigCellSize": "字体大小",
+  "sheetConfigCellSizeHint": "米字格边长，越大字越大，一页可排字数越少。",
+  "sheetConfigCellSizeValue": "{mm} mm",
+  "@sheetConfigCellSizeValue": {
+    "placeholders": {
+      "mm": {
+        "type": "int"
+      }
+    }
+  },
   "sheetConfigTraceSlots": "描红格数",
   "sheetConfigTraceHint": "半透明叠字，供描红练习。",
   "sheetConfigBlankSlots": "空白格数",

@@ -256,6 +256,16 @@
   "sheetConfigTooltip": "Sheet layout",
   "sheetConfigTitle": "Sheet layout",
   "sheetConfigSubtitle": "Each character row: stroke order → trace → blank grids.",
+  "sheetConfigCellSize": "Character size",
+  "sheetConfigCellSizeHint": "Mi-zi grid size. Larger grids mean bigger characters and fewer per page.",
+  "sheetConfigCellSizeValue": "{mm} mm",
+  "@sheetConfigCellSizeValue": {
+    "placeholders": {
+      "mm": {
+        "type": "int"
+      }
+    }
+  },
   "sheetConfigTraceSlots": "Trace grids",
   "sheetConfigTraceHint": "Semi-transparent character overlays for tracing.",
   "sheetConfigBlankSlots": "Blank grids",

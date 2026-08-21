@@ -13,6 +13,7 @@ class A4PracticeSheetPreview extends StatelessWidget {
     required this.rows,
     required this.traceSlots,
     required this.blankSlots,
+    this.cellSizeMm = A4SheetLayout.practiceCellSizeMm,
     this.rowGap = 4,
     this.pagePadding = 14,
     this.traceColor = PracticeStrokeColors.trace,
@@ -21,6 +22,7 @@ class A4PracticeSheetPreview extends StatelessWidget {
   final List<PracticeSheetEntry> rows;
   final int traceSlots;
   final int blankSlots;
+  final double cellSizeMm;
   final double rowGap;
   final double pagePadding;
   final Color traceColor;
@@ -59,8 +61,10 @@ class A4PracticeSheetPreview extends StatelessWidget {
                   builder: (context, inner) {
                     final innerW = inner.maxWidth;
                     final innerH = inner.maxHeight;
-                    final targetCell =
-                        A4SheetLayout.targetCellSizeForPreview(innerW);
+                    final targetCell = A4SheetLayout.targetCellSizeForPreview(
+                      innerW,
+                      cellSizeMm: cellSizeMm,
+                    );
                     final layout = A4SheetLayout.planWrappedSheet(
                       innerW: innerW,
                       innerH: innerH,

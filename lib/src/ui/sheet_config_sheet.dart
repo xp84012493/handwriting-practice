@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import '../l10n/l10n_extension.dart';
+import '../layout/a4_sheet_layout.dart';
 import 'practice_sheet_controller.dart';
 
-/// 字帖描红 / 空白格数配置（底部弹层）。
+/// 字帖描红 / 空白格数 / 字体大小配置（底部弹层）。
 Future<void> showSheetConfigSheet(
   BuildContext context,
   PracticeSheetController controller,
@@ -31,11 +32,13 @@ class _SheetConfigSheet extends StatefulWidget {
 class _SheetConfigSheetState extends State<_SheetConfigSheet> {
   late int _traceSlots = widget.controller.traceSlots;
   late int _blankSlots = widget.controller.blankSlots;
+  late int _cellSizeMm = widget.controller.cellSizeMm.round();
 
   Future<void> _apply() async {
     await widget.controller.applyLayout(
       traceSlots: _traceSlots,
       blankSlots: _blankSlots,
+      cellSizeMm: _cellSizeMm.toDouble(),
     );
     if (mounted) Navigator.of(context).pop();
   }
@@ -44,6 +47,8 @@ class _SheetConfigSheetState extends State<_SheetConfigSheet> {
   Widget build(BuildContext context) {
     final l10n = context.l10n;
     final bottom = MediaQuery.paddingOf(context).bottom;
+    final minMm = A4SheetLayout.minPracticeCellSizeMm.round();
+    final maxMm = A4SheetLayout.maxPracticeCellSizeMm.round();
 
     return Padding(
       padding: EdgeInsets.fromLTRB(20, 0, 20, 16 + bottom),
@@ -64,8 +69,19 @@ class _SheetConfigSheetState extends State<_SheetConfigSheet> {
           ),
           const SizedBox(height: 20),
           _SlotStepper(
+            label: l10n.sheetConfigCellSize,
+            hint: l10n.sheetConfigCellSizeHint,
+            valueLabel: l10n.sheetConfigCellSizeValue(_cellSizeMm),
+            value: _cellSizeMm,
+            min: minMm,
+            max: maxMm,
+            onChanged: (v) => setState(() => _cellSizeMm = v),
+          ),
+          const SizedBox(height: 16),
+          _SlotStepper(
             label: l10n.sheetConfigTraceSlots,
             hint: l10n.sheetConfigTraceHint,
+            valueLabel: '$_traceSlots',
             value: _traceSlots,
             min: PracticeSheetController.minSlots,
             max: PracticeSheetController.maxSlots,
@@ -75,6 +91,7 @@ class _SheetConfigSheetState extends State<_SheetConfigSheet> {
           _SlotStepper(
             label: l10n.sheetConfigBlankSlots,
             hint: l10n.sheetConfigBlankHint,
+            valueLabel: '$_blankSlots',
             value: _blankSlots,
             min: PracticeSheetController.minSlots,
             max: PracticeSheetController.maxSlots,
@@ -95,6 +112,7 @@ class _SlotStepper extends StatelessWidget {
   const _SlotStepper({
     required this.label,
     required this.hint,
+    required this.valueLabel,
     required this.value,
     required this.min,
     required this.max,
@@ -103,6 +121,7 @@ class _SlotStepper extends StatelessWidget {
 
   final String label;
   final String hint;
+  final String valueLabel;
   final int value;
   final int min;
   final int max;
@@ -136,7 +155,7 @@ class _SlotStepper extends StatelessWidget {
             ),
             Expanded(
               child: Text(
-                '$value',
+                valueLabel,
                 textAlign: TextAlign.center,
                 style: Theme.of(context).textTheme.headlineSmall,
               ),

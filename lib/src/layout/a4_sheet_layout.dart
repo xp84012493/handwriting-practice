@@ -10,14 +10,23 @@ abstract final class A4SheetLayout {
   /// 宽:高 = 297:210（A4 横向）。
   static const double aspectRatio = 297 / 210;
 
-  /// 练字米字格边长（mm）。
+  /// 练字米字格边长（mm）默认值。
   static const double practiceCellSizeMm = 13;
+
+  /// 可配置格边长范围（mm）。
+  static const double minPracticeCellSizeMm = 10;
+  static const double maxPracticeCellSizeMm = 18;
 
   static const double defaultRowGap = 4;
   static const double defaultPagePaddingPt = 18;
 
-  /// 打印/PDF 下的目标格边长（pt）。
-  static double get practiceCellSizePt => practiceCellSizeMm * PdfPageFormat.mm;
+  /// 将毫米格边长转为 PDF 点。
+  static double cellSizePtFromMm(double cellSizeMm) =>
+      cellSizeMm.clamp(minPracticeCellSizeMm, maxPracticeCellSizeMm) *
+      PdfPageFormat.mm;
+
+  /// 打印/PDF 下的默认格边长（pt）。
+  static double get practiceCellSizePt => cellSizePtFromMm(practiceCellSizeMm);
 
   static double get pdfInnerWidthPt =>
       PdfPageFormat.a4.landscape.width - 2 * defaultPagePaddingPt;
@@ -26,8 +35,11 @@ abstract final class A4SheetLayout {
       PdfPageFormat.a4.landscape.height - 2 * defaultPagePaddingPt;
 
   /// 屏幕预览：按可打印区域宽度等比缩放目标格大小。
-  static double targetCellSizeForPreview(double previewInnerW) {
-    return practiceCellSizePt * (previewInnerW / pdfInnerWidthPt);
+  static double targetCellSizeForPreview(
+    double previewInnerW, {
+    double cellSizeMm = practiceCellSizeMm,
+  }) {
+    return cellSizePtFromMm(cellSizeMm) * (previewInnerW / pdfInnerWidthPt);
   }
 
   /// 固定 [cellSize] 时，一行最多容纳多少列。

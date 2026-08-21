@@ -358,6 +358,17 @@ class AppLocalizationsZh extends AppLocalizations {
   String get sheetConfigSubtitle => '每字一行：递进笔顺 → 描红 → 空白临摹格。';
 
   @override
+  String get sheetConfigCellSize => '字体大小';
+
+  @override
+  String get sheetConfigCellSizeHint => '米字格边长，越大字越大，一页可排字数越少。';
+
+  @override
+  String sheetConfigCellSizeValue(int mm) {
+    return '$mm mm';
+  }
+
+  @override
   String get sheetConfigTraceSlots => '描红格数';
 
   @override
@@ -751,6 +762,17 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String get sheetConfigSubtitle => '每字一行：遞進筆順 → 描紅 → 空白臨摹格。';
+
+  @override
+  String get sheetConfigCellSize => '字體大小';
+
+  @override
+  String get sheetConfigCellSizeHint => '米字格邊長，越大字越大，一頁可排字數越少。';
+
+  @override
+  String sheetConfigCellSizeValue(int mm) {
+    return '$mm mm';
+  }
 
   @override
   String get sheetConfigTraceSlots => '描紅格數';

@@ -36,6 +36,7 @@ class PracticeSheetPdfService {
     required List<PracticeSheetEntry> rows,
     required int traceSlots,
     required int blankSlots,
+    double cellSizeMm = A4SheetLayout.practiceCellSizeMm,
     double rowGap = 4,
     double pagePadding = 18,
     PdfPageFormat? pageFormat,
@@ -64,6 +65,7 @@ class PracticeSheetPdfService {
                     rows: rows,
                     traceSlots: traceSlots,
                     blankSlots: blankSlots,
+                    cellSizeMm: cellSizeMm,
                     rowGap: rowGap,
                   ).paint(canvas, innerSize);
                 },
@@ -84,6 +86,7 @@ class PracticeSheetPdfService {
     required List<PracticeSheetEntry> rows,
     required int traceSlots,
     required int blankSlots,
+    double cellSizeMm = A4SheetLayout.practiceCellSizeMm,
     String name = '练字帖',
     Uint8List? bytes,
   }) async {
@@ -92,6 +95,7 @@ class PracticeSheetPdfService {
           rows: rows,
           traceSlots: traceSlots,
           blankSlots: blankSlots,
+          cellSizeMm: cellSizeMm,
           pageFormat: pageFormat,
         );
 
@@ -122,12 +126,14 @@ class _PracticeSheetPdfPainter {
     required this.rows,
     required this.traceSlots,
     required this.blankSlots,
+    required this.cellSizeMm,
     required this.rowGap,
   });
 
   final List<PracticeSheetEntry> rows;
   final int traceSlots;
   final int blankSlots;
+  final double cellSizeMm;
   final double rowGap;
 
   static final PdfColor _borderColor = PdfColor.fromInt(0xFF2C2C2C);
@@ -148,7 +154,7 @@ class _PracticeSheetPdfPainter {
         ..scaleByDouble(1.0, -1.0, 1, 1),
     );
 
-    final targetCell = A4SheetLayout.practiceCellSizePt;
+    final targetCell = A4SheetLayout.cellSizePtFromMm(cellSizeMm);
     final layout = A4SheetLayout.planWrappedSheet(
       innerW: innerW,
       innerH: innerH,

@@ -47,22 +47,32 @@ class PracticeSheetController extends ChangeNotifier {
     this.dictionaryAssetPath = 'assets/hanzi_dictionary.json',
     int traceSlots = defaultTraceSlots,
     int blankSlots = defaultBlankSlots,
+    double cellSizeMm = defaultCellSizeMm,
   })  : _traceSlots = traceSlots.clamp(minSlots, maxSlots),
-        _blankSlots = blankSlots.clamp(minSlots, maxSlots);
+        _blankSlots = blankSlots.clamp(minSlots, maxSlots),
+        _cellSizeMm = cellSizeMm
+            .clamp(
+              A4SheetLayout.minPracticeCellSizeMm,
+              A4SheetLayout.maxPracticeCellSizeMm,
+            )
+            .toDouble();
 
   static const int defaultTraceSlots = 3;
   static const int defaultBlankSlots = 3;
   static const int minSlots = 0;
   static const int maxSlots = 10;
+  static const double defaultCellSizeMm = A4SheetLayout.practiceCellSizeMm;
 
   static const _prefTraceSlots = 'sheet_trace_slots';
   static const _prefBlankSlots = 'sheet_blank_slots';
+  static const _prefCellSizeMm = 'sheet_cell_size_mm';
 
   /// 笔画字典（JSON 数组），见 [HanziGraphicsParser.loadDictionaryFromAsset]。
   final String dictionaryAssetPath;
 
   int _traceSlots;
   int _blankSlots;
+  double _cellSizeMm;
 
   /// 每行末尾「描红」完整叠字的格数。
   int get traceSlots => _traceSlots;
@@ -70,15 +80,27 @@ class PracticeSheetController extends ChangeNotifier {
   /// 每行末尾仅米字格（临摹）的格数。
   int get blankSlots => _blankSlots;
 
+  /// 米字格边长（mm），影响预览与打印字体大小。
+  double get cellSizeMm => _cellSizeMm;
+
   Future<void> load() async {
     final prefs = await SharedPreferences.getInstance();
     final trace = prefs.getInt(_prefTraceSlots);
     final blank = prefs.getInt(_prefBlankSlots);
+    final cell = prefs.getDouble(_prefCellSizeMm);
     if (trace != null) {
       _traceSlots = trace.clamp(minSlots, maxSlots);
     }
     if (blank != null) {
       _blankSlots = blank.clamp(minSlots, maxSlots);
+    }
+    if (cell != null) {
+      _cellSizeMm = cell
+          .clamp(
+            A4SheetLayout.minPracticeCellSizeMm,
+            A4SheetLayout.maxPracticeCellSizeMm,
+          )
+          .toDouble();
     }
     notifyListeners();
   }
@@ -86,17 +108,28 @@ class PracticeSheetController extends ChangeNotifier {
   Future<void> applyLayout({
     required int traceSlots,
     required int blankSlots,
+    required double cellSizeMm,
   }) async {
     final nextTrace = traceSlots.clamp(minSlots, maxSlots);
     final nextBlank = blankSlots.clamp(minSlots, maxSlots);
-    if (nextTrace == _traceSlots && nextBlank == _blankSlots) {
+    final nextCell = cellSizeMm
+        .clamp(
+          A4SheetLayout.minPracticeCellSizeMm,
+          A4SheetLayout.maxPracticeCellSizeMm,
+        )
+        .toDouble();
+    if (nextTrace == _traceSlots &&
+        nextBlank == _blankSlots &&
+        nextCell == _cellSizeMm) {
       return;
     }
     _traceSlots = nextTrace;
     _blankSlots = nextBlank;
+    _cellSizeMm = nextCell;
     final prefs = await SharedPreferences.getInstance();
     await prefs.setInt(_prefTraceSlots, _traceSlots);
     await prefs.setInt(_prefBlankSlots, _blankSlots);
+    await prefs.setDouble(_prefCellSizeMm, _cellSizeMm);
 
     final raw = textController.text.trim();
     if (raw.isNotEmpty) {
@@ -106,6 +139,8 @@ class PracticeSheetController extends ChangeNotifier {
       notifyListeners();
     }
   }
+
+  double get _cellSizePt => A4SheetLayout.cellSizePtFromMm(_cellSizeMm);
 
   final TextEditingController textController = TextEditingController();
   final StrokePathCache pathCache = StrokePathCache();
@@ -126,9 +161,11 @@ class PracticeSheetController extends ChangeNotifier {
   int get maxMultiCharacters {
     final colsPerLine = A4SheetLayout.columnsPerLine(
       A4SheetLayout.pdfInnerWidthPt,
-      A4SheetLayout.practiceCellSizePt,
+      _cellSizePt,
     );
-    final maxPhysical = A4SheetLayout.maxPhysicalRowsOnSheet();
+    final maxPhysical = A4SheetLayout.maxPhysicalRowsOnSheet(
+      targetCellSize: _cellSizePt,
+    );
     final minColsPerChar = 1 + 1 + _traceSlots + _blankSlots;
     final minPhysPerChar =
         (minColsPerChar + colsPerLine - 1) ~/ colsPerLine;
@@ -186,9 +223,11 @@ class PracticeSheetController extends ChangeNotifier {
   HintPhysicalOverflow? _pageOverflowMessage(List<PracticeSheetEntry> logicalRows) {
     final colsPerLine = A4SheetLayout.columnsPerLine(
       A4SheetLayout.pdfInnerWidthPt,
-      A4SheetLayout.practiceCellSizePt,
+      _cellSizePt,
     );
-    final maxPhysical = A4SheetLayout.maxPhysicalRowsOnSheet();
+    final maxPhysical = A4SheetLayout.maxPhysicalRowsOnSheet(
+      targetCellSize: _cellSizePt,
+    );
     var used = 0;
     for (final entry in logicalRows) {
       used += A4SheetLayout.physicalLineCountForEntry(
@@ -214,9 +253,11 @@ class PracticeSheetController extends ChangeNotifier {
 
     final colsPerLine = A4SheetLayout.columnsPerLine(
       A4SheetLayout.pdfInnerWidthPt,
-      A4SheetLayout.practiceCellSizePt,
+      _cellSizePt,
     );
-    final maxPhysical = A4SheetLayout.maxPhysicalRowsOnSheet();
+    final maxPhysical = A4SheetLayout.maxPhysicalRowsOnSheet(
+      targetCellSize: _cellSizePt,
+    );
 
     final built = <PracticeSheetEntry>[];
     final missing = <String>[];

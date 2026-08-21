@@ -368,6 +368,18 @@ class AppLocalizationsEn extends AppLocalizations {
       'Each character row: stroke order → trace → blank grids.';
 
   @override
+  String get sheetConfigCellSize => 'Character size';
+
+  @override
+  String get sheetConfigCellSizeHint =>
+      'Mi-zi grid size. Larger grids mean bigger characters and fewer per page.';
+
+  @override
+  String sheetConfigCellSizeValue(int mm) {
+    return '$mm mm';
+  }
+
+  @override
   String get sheetConfigTraceSlots => 'Trace grids';
 
   @override

@@ -693,6 +693,24 @@ abstract class AppLocalizations {
   /// **'Each character row: stroke order → trace → blank grids.'**
   String get sheetConfigSubtitle;
 
+  /// No description provided for @sheetConfigCellSize.
+  ///
+  /// In en, this message translates to:
+  /// **'Character size'**
+  String get sheetConfigCellSize;
+
+  /// No description provided for @sheetConfigCellSizeHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Mi-zi grid size. Larger grids mean bigger characters and fewer per page.'**
+  String get sheetConfigCellSizeHint;
+
+  /// No description provided for @sheetConfigCellSizeValue.
+  ///
+  /// In en, this message translates to:
+  /// **'{mm} mm'**
+  String sheetConfigCellSizeValue(int mm);
+
   /// No description provided for @sheetConfigTraceSlots.
   ///
   /// In en, this message translates to:
