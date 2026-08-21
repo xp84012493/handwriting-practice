@@ -1,1 +1,5 @@
 #include "Generated.xcconfig"
+
+// Keep non-global symbols so SPM-linked plugins that rely on @_cdecl/dlsym
+// (e.g. printing's set_document) still work in App Store archives.
+STRIP_STYLE = non-global

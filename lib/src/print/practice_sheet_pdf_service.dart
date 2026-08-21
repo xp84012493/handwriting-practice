@@ -1,10 +1,12 @@
-import 'dart:typed_data';
 import 'dart:ui' show Rect;
-import 'package:vector_math/vector_math_64.dart' show Matrix4;
 
+import 'package:flutter/foundation.dart'
+    show TargetPlatform, defaultTargetPlatform, kIsWeb;
+import 'package:flutter/services.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:printing/printing.dart';
+import 'package:vector_math/vector_math_64.dart' show Matrix4;
 
 import '../layout/a4_sheet_layout.dart';
 import '../models/practice_sheet_entry.dart';
@@ -18,6 +20,10 @@ import '../models/stroke_path_convention.dart';
 /// 页面格式固定为 A4 横向（[PdfPageFormat.a4.landscape]）；布局算法与 [A4PracticeSheetPreview] 对齐。
 class PracticeSheetPdfService {
   PracticeSheetPdfService._();
+
+  static const _iosPrintChannel = MethodChannel(
+    'com.leoxp.handwritingpractice/print',
+  );
 
   /// A4 横向：练字行沿 297mm 长边排列。
   static final PdfPageFormat pageFormat = PdfPageFormat.a4.landscape;
@@ -81,13 +87,6 @@ class PracticeSheetPdfService {
     String name = '练字帖',
     Uint8List? bytes,
   }) async {
-    // iOS 打印预览机制：
-    // - `dynamicLayout: true`：先 present 面板，再在 numberOfPages 里 semaphore 等 PDF；
-    //   主线程被阻塞后 onLayout 无法执行 → 预览一直「正在载入」。
-    // - `dynamicLayout: false`：onLayout 先返回 PDF，setDocument 再 present，预览可立即显示。
-    //
-    // 须在 onLayout 返回已生成的 PDF（勿在回调里 rebuild），并配合 forceCustomPrintPaper
-    // 保持 A4 横向纸张。
     final pdfBytes = bytes ??
         await buildPdfBytes(
           rows: rows,
@@ -95,11 +94,23 @@ class PracticeSheetPdfService {
           blankSlots: blankSlots,
           pageFormat: pageFormat,
         );
+
+    // iOS：绕过 `printing` 插件的 FFI setDocument（SPM 静态链接 + App Store strip
+    // 后符号丢失，layoutPdf 收不到 PDF，表现为点击无反应）。改用 Runner 内
+    // UIPrintInteractionController.printingItem。
+    if (!kIsWeb && defaultTargetPlatform == TargetPlatform.iOS) {
+      await _iosPrintChannel.invokeMethod<void>('printPdf', <String, Object?>{
+        'bytes': pdfBytes,
+        'name': name,
+        'landscape': true,
+      });
+      return;
+    }
+
     await Printing.layoutPdf(
       name: name,
       format: pageFormat,
       dynamicLayout: false,
-      forceCustomPrintPaper: true,
       onLayout: (_) async => pdfBytes,
     );
   }

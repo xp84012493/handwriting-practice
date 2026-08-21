@@ -167,14 +167,30 @@ class _AppShellPageState extends State<AppShellPage> {
       return;
     }
     _printInFlight = true;
+
+    // 等 PopupMenu 关闭后再 present，避免与菜单转场冲突导致静默失败。
+    await Future<void>.delayed(const Duration(milliseconds: 300));
+    if (!mounted) {
+      _printInFlight = false;
+      return;
+    }
+
+    final messenger = ScaffoldMessenger.of(context);
+    messenger.hideCurrentSnackBar();
+    messenger.showSnackBar(
+      SnackBar(
+        content: Text(l10n.printPreparing),
+        duration: const Duration(minutes: 1),
+      ),
+    );
+
     try {
       final bytes = await _buildSheetPdfBytes();
       if (!mounted) return;
-      // 等 PopupMenu 路由完全关闭后再 present，避免 setDocument 里 present 静默失败。
-      await Future<void>.delayed(Duration.zero);
+      messenger.hideCurrentSnackBar();
+      await Future<void>.delayed(const Duration(milliseconds: 50));
       if (!mounted) return;
-      await WidgetsBinding.instance.endOfFrame;
-      if (!mounted) return;
+
       await PracticeSheetPdfService.layoutPrint(
         rows: _controller.sheetRows,
         traceSlots: _controller.traceSlots,
@@ -185,7 +201,8 @@ class _AppShellPageState extends State<AppShellPage> {
     } catch (e, st) {
       debugPrint('Print failed: $e\n$st');
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
+      messenger.hideCurrentSnackBar();
+      messenger.showSnackBar(
         SnackBar(content: Text(l10n.printFailed('$e'))),
       );
     } finally {
