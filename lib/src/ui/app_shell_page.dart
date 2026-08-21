@@ -6,7 +6,6 @@ import 'package:flutter/material.dart';
 import '../l10n/l10n_extension.dart';
 import '../locale/locale_controller.dart';
 import '../locale/practice_sheet_messages.dart';
-import '../models/practice_sheet_entry.dart';
 import '../models/preset_sheet_list.dart';
 import '../models/saved_practice_sheet.dart';
 import '../print/practice_sheet_export.dart';
@@ -486,45 +485,46 @@ class _ControlBar extends StatelessWidget {
 
     final field = TextField(
       controller: controller.textController,
-      textAlign: TextAlign.center,
-      maxLines: 1,
-      style: theme.textTheme.headlineSmall?.copyWith(
-        fontWeight: FontWeight.w600,
-        letterSpacing: 2,
+      textAlign: TextAlign.start,
+      minLines: 3,
+      maxLines: 3,
+      style: theme.textTheme.bodyLarge?.copyWith(
+        fontWeight: FontWeight.w500,
+        letterSpacing: 1,
+        height: 1.35,
       ),
       decoration: InputDecoration(
         hintText: l10n.inputHint,
+        isDense: true,
         filled: true,
         fillColor: theme.colorScheme.surfaceContainerHighest.withValues(
           alpha: 0.35,
         ),
         border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(10),
         ),
         contentPadding:
-            const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
+            const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
       ),
-      keyboardType: TextInputType.text,
-      textInputAction: TextInputAction.done,
+      keyboardType: TextInputType.multiline,
+      textInputAction: TextInputAction.newline,
       autocorrect: false,
       enableSuggestions: true,
       smartDashesType: SmartDashesType.disabled,
       smartQuotesType: SmartQuotesType.disabled,
-      inputFormatters: [
-        HanziOnlyTextInputFormatter(
-          maxCharacters: controller.maxMultiCharacters,
-        ),
+      inputFormatters: const [
+        HanziOnlyTextInputFormatter(),
       ],
-      onSubmitted: (_) => onGenerate(),
     );
 
     final button = FilledButton.icon(
       onPressed: controller.loading ? null : onGenerate,
-      icon: const Icon(Icons.auto_fix_high_outlined),
+      icon: const Icon(Icons.auto_fix_high_outlined, size: 20),
       label: Text(l10n.generateButton),
       style: FilledButton.styleFrom(
-        padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 14),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+        visualDensity: VisualDensity.compact,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
       ),
     );
 
@@ -532,13 +532,13 @@ class _ControlBar extends StatelessWidget {
       elevation: 0.5,
       color: theme.colorScheme.surface,
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             if (quota.billingEnforced && !quota.isUnlocked)
               Padding(
-                padding: const EdgeInsets.only(bottom: 8),
+                padding: const EdgeInsets.only(bottom: 6),
                 child: Text(
                   l10n.quotaRemaining(quota.remainingFree),
                   textAlign: TextAlign.center,
@@ -552,7 +552,7 @@ class _ControlBar extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
                       field,
-                      const SizedBox(height: 10),
+                      const SizedBox(height: 8),
                       button,
                     ],
                   )
@@ -560,12 +560,12 @@ class _ControlBar extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Expanded(child: field),
-                      const SizedBox(width: 12),
+                      const SizedBox(width: 10),
                       button,
                     ],
                   ),
             if (featuredPresets.isNotEmpty) ...[
-              const SizedBox(height: 10),
+              const SizedBox(height: 8),
               PresetQuickChips(
                 presets: featuredPresets,
                 onPresetSelected: onPresetSelected,
@@ -597,8 +597,6 @@ class _PreviewBody extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
-    final rows =
-        controller.hasSheet ? controller.sheetRows : const <PracticeSheetEntry>[];
 
     return LayoutBuilder(
       builder: (context, constraints) {
@@ -611,17 +609,26 @@ class _PreviewBody extends StatelessWidget {
                 maxWidth: math.min(constraints.maxWidth, 620),
               ),
               child: controller.hasSheet
-                  ? A4PracticeSheetPreview(
-                      rows: rows,
-                      traceSlots: controller.traceSlots,
-                      blankSlots: controller.blankSlots,
-                      cellSizeMm: controller.cellSizeMm,
+                  ? Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        if (controller.pageCount > 1) ...[
+                          _SheetPageControls(controller: controller),
+                          const SizedBox(height: 10),
+                        ],
+                        A4PracticeSheetPreview(
+                          rows: controller.previewPageRows,
+                          traceSlots: controller.traceSlots,
+                          blankSlots: controller.blankSlots,
+                          cellSizeMm: controller.cellSizeMm,
+                        ),
+                      ],
                     )
                   : Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
                         Text(
-                          l10n.emptyStateBody(controller.maxMultiCharacters),
+                          l10n.emptyStateBody,
                           textAlign: TextAlign.center,
                           style: theme.textTheme.bodyLarge?.copyWith(
                             color: theme.colorScheme.onSurfaceVariant,
@@ -651,6 +658,44 @@ class _PreviewBody extends StatelessWidget {
           ),
         );
       },
+    );
+  }
+}
+
+class _SheetPageControls extends StatelessWidget {
+  const _SheetPageControls({required this.controller});
+
+  final PracticeSheetController controller;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = context.l10n;
+    final total = controller.pageCount;
+    final current = controller.previewPageIndex + 1;
+    final canPrev = controller.previewPageIndex > 0;
+    final canNext = controller.previewPageIndex < total - 1;
+
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        IconButton.filledTonal(
+          tooltip: l10n.sheetPagePrevTooltip,
+          onPressed: canPrev ? controller.goToPreviousPage : null,
+          icon: const Icon(Icons.chevron_left),
+        ),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 12),
+          child: Text(
+            l10n.sheetPageIndicator(current, total),
+            style: Theme.of(context).textTheme.titleMedium,
+          ),
+        ),
+        IconButton.filledTonal(
+          tooltip: l10n.sheetPageNextTooltip,
+          onPressed: canNext ? controller.goToNextPage : null,
+          icon: const Icon(Icons.chevron_right),
+        ),
+      ],
     );
   }
 }

@@ -13,14 +13,7 @@
   "exportShare": "Share PDF",
   "inputHint": "Enter Chinese characters",
   "generateButton": "Generate sheet",
-  "emptyStateBody": "Enter multiple characters above (one row per character on the sheet).\nAbout {maxChars} characters fit on one A4 page; extra characters are ignored.",
-  "@emptyStateBody": {
-    "placeholders": {
-      "maxChars": {
-        "type": "int"
-      }
-    }
-  },
+  "emptyStateBody": "Enter Chinese characters above — one practice row per character.\nExtra content continues on following pages.",
   "printPreparing": "Preparing to print…",
   "printBusy": "Print in progress, please wait",
   "printUnavailable": "Printing is not available on this device. Try Share PDF instead.",
@@ -71,7 +64,7 @@
   "themeLight": "Light",
   "themeDark": "Dark",
   "featureOverviewTitle": "Overview",
-  "featureOverviewBody": "Generate stroke-order practice sheets from the built-in dictionary, preview them in the app, and print or export PDF via the system.",
+  "featureOverviewBody": "Generate stroke-order practice sheets from the built-in dictionary, preview them in the app, and print or export PDF via the system. Multi-page sheets are supported when content exceeds one A4 page.",
   "strokeDataTitle": "Stroke data",
   "strokeDataBody": "Stroke outlines come from Make Me a Hanzi graphics.txt, derived from Arphic PL fonts under the Arphic Public License (1999). See Third-party notices below for the full statement.",
   "thirdPartyNoticesButton": "Third-party notices",
@@ -138,6 +131,27 @@
       }
     }
   },
+  "hintMultiPage": "{pageCount} pages — preview with page controls; print and export include all pages",
+  "@hintMultiPage": {
+    "placeholders": {
+      "pageCount": {
+        "type": "int"
+      }
+    }
+  },
+  "sheetPageIndicator": "{current} / {total}",
+  "@sheetPageIndicator": {
+    "placeholders": {
+      "current": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "sheetPagePrevTooltip": "Previous page",
+  "sheetPageNextTooltip": "Next page",
   "quotaRemaining": "{count} free generations left",
   "@quotaRemaining": {
     "placeholders": {

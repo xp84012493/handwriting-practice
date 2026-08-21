@@ -39,9 +39,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get generateButton => '生成字帖';
 
   @override
-  String emptyStateBody(int maxChars) {
-    return '在上方输入多个汉字（每字一行字帖，\nA4 单页约限 $maxChars 字，超出部分将忽略）。';
-  }
+  String get emptyStateBody => '在上方输入要练习的汉字，每字一行字帖。\n超出一页会自动分页，可左右翻页预览。';
 
   @override
   String get printPreparing => '正在准备打印…';
@@ -119,7 +117,7 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get featureOverviewBody =>
-      '根据字库生成汉字笔顺练字帖预览，并可通过系统对话框打印或导出 PDF。当前为多字模式：每字一行版式，具体行数受 A4 可打印区域限制。';
+      '根据字库生成汉字笔顺练字帖预览，并可通过系统对话框打印或导出 PDF。支持多字多页：每字一行，超出一页自动分页。';
 
   @override
   String get strokeDataTitle => '笔画数据来源';
@@ -189,6 +187,22 @@ class AppLocalizationsZh extends AppLocalizations {
   String hintPhysicalOverflow(int usedRows, int maxRows) {
     return '折行后共 $usedRows 行，超出 A4 单页约 $maxRows 行，打印时底部可能被裁切';
   }
+
+  @override
+  String hintMultiPage(int pageCount) {
+    return '共 $pageCount 页，可翻页预览；打印/导出将包含全部页';
+  }
+
+  @override
+  String sheetPageIndicator(int current, int total) {
+    return '$current / $total';
+  }
+
+  @override
+  String get sheetPagePrevTooltip => '上一页';
+
+  @override
+  String get sheetPageNextTooltip => '下一页';
 
   @override
   String quotaRemaining(int count) {
@@ -445,9 +459,7 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
   String get generateButton => '生成字帖';
 
   @override
-  String emptyStateBody(int maxChars) {
-    return '在上方輸入多個漢字（每字一行字帖，\nA4 單頁約限 $maxChars 字，超出部分將忽略）。';
-  }
+  String get emptyStateBody => '在上方輸入要練習的漢字，每字一行字帖。\n超出一頁會自動分頁，可左右翻頁預覽。';
 
   @override
   String get printPreparing => '正在準備列印…';
@@ -525,7 +537,7 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String get featureOverviewBody =>
-      '根據字庫生成漢字筆順練字帖預覽，並可透過系統對話方塊列印或匯出 PDF。目前為多字模式：每字一行版式，具體行數受 A4 可列印區域限制。';
+      '根據字庫生成漢字筆順練字帖預覽，並可透過系統對話方塊列印或匯出 PDF。支援多字多頁：每字一行，超出一頁自動分頁。';
 
   @override
   String get strokeDataTitle => '筆畫資料來源';
@@ -595,6 +607,22 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
   String hintPhysicalOverflow(int usedRows, int maxRows) {
     return '折行後共 $usedRows 行，超出 A4 單頁約 $maxRows 行，列印時底部可能被裁切';
   }
+
+  @override
+  String hintMultiPage(int pageCount) {
+    return '共 $pageCount 頁，可翻頁預覽；列印/匯出將包含全部頁';
+  }
+
+  @override
+  String sheetPageIndicator(int current, int total) {
+    return '$current / $total';
+  }
+
+  @override
+  String get sheetPagePrevTooltip => '上一頁';
+
+  @override
+  String get sheetPageNextTooltip => '下一頁';
 
   @override
   String quotaRemaining(int count) {

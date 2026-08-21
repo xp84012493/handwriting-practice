@@ -39,9 +39,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get generateButton => 'Generate sheet';
 
   @override
-  String emptyStateBody(int maxChars) {
-    return 'Enter multiple characters above (one row per character on the sheet).\nAbout $maxChars characters fit on one A4 page; extra characters are ignored.';
-  }
+  String get emptyStateBody =>
+      'Enter Chinese characters above — one practice row per character.\nExtra content continues on following pages.';
 
   @override
   String get printPreparing => 'Preparing to print…';
@@ -121,7 +120,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get featureOverviewBody =>
-      'Generate stroke-order practice sheets from the built-in dictionary, preview them in the app, and print or export PDF via the system.';
+      'Generate stroke-order practice sheets from the built-in dictionary, preview them in the app, and print or export PDF via the system. Multi-page sheets are supported when content exceeds one A4 page.';
 
   @override
   String get strokeDataTitle => 'Stroke data';
@@ -192,6 +191,22 @@ class AppLocalizationsEn extends AppLocalizations {
   String hintPhysicalOverflow(int usedRows, int maxRows) {
     return 'Wrapped layout uses $usedRows rows, exceeding one A4 page (~$maxRows rows); the bottom may be clipped when printing';
   }
+
+  @override
+  String hintMultiPage(int pageCount) {
+    return '$pageCount pages — preview with page controls; print and export include all pages';
+  }
+
+  @override
+  String sheetPageIndicator(int current, int total) {
+    return '$current / $total';
+  }
+
+  @override
+  String get sheetPagePrevTooltip => 'Previous page';
+
+  @override
+  String get sheetPageNextTooltip => 'Next page';
 
   @override
   String quotaRemaining(int count) {

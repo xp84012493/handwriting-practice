@@ -43,38 +43,48 @@ class PracticeSheetPdfService {
   }) async {
     final fmt = pageFormat ?? PracticeSheetPdfService.pageFormat;
     final doc = pw.Document();
-
-    doc.addPage(
-      pw.Page(
-        pageFormat: fmt,
-        margin: pw.EdgeInsets.zero,
-        build: (context) {
-          return pw.Container(
-            width: fmt.width,
-            height: fmt.height,
-            color: PdfColors.white,
-            child: pw.Padding(
-              padding: pw.EdgeInsets.all(pagePadding),
-              child: pw.CustomPaint(
-                size: PdfPoint(
-                  fmt.width - 2 * pagePadding,
-                  fmt.height - 2 * pagePadding,
-                ),
-                painter: (PdfGraphics canvas, PdfPoint innerSize) {
-                  _PracticeSheetPdfPainter(
-                    rows: rows,
-                    traceSlots: traceSlots,
-                    blankSlots: blankSlots,
-                    cellSizeMm: cellSizeMm,
-                    rowGap: rowGap,
-                  ).paint(canvas, innerSize);
-                },
-              ),
-            ),
-          );
-        },
-      ),
+    final pages = A4SheetLayout.paginateEntries(
+      entries: rows,
+      traceSlots: traceSlots,
+      blankSlots: blankSlots,
+      rowGap: rowGap,
+      targetCellSize: A4SheetLayout.cellSizePtFromMm(cellSizeMm),
     );
+    final pageRows = pages.isEmpty ? const <List<PracticeSheetEntry>>[[]] : pages;
+
+    for (final pageEntries in pageRows) {
+      doc.addPage(
+        pw.Page(
+          pageFormat: fmt,
+          margin: pw.EdgeInsets.zero,
+          build: (context) {
+            return pw.Container(
+              width: fmt.width,
+              height: fmt.height,
+              color: PdfColors.white,
+              child: pw.Padding(
+                padding: pw.EdgeInsets.all(pagePadding),
+                child: pw.CustomPaint(
+                  size: PdfPoint(
+                    fmt.width - 2 * pagePadding,
+                    fmt.height - 2 * pagePadding,
+                  ),
+                  painter: (PdfGraphics canvas, PdfPoint innerSize) {
+                    _PracticeSheetPdfPainter(
+                      rows: pageEntries,
+                      traceSlots: traceSlots,
+                      blankSlots: blankSlots,
+                      cellSizeMm: cellSizeMm,
+                      rowGap: rowGap,
+                    ).paint(canvas, innerSize);
+                  },
+                ),
+              ),
+            );
+          },
+        ),
+      );
+    }
 
     return doc.save();
   }

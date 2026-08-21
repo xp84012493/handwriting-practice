@@ -136,6 +136,7 @@ class PracticeSheetController extends ChangeNotifier {
       await _ensureDictionaryLoaded();
       await _generateMulti(raw);
     } else {
+      _rebuildPages();
       notifyListeners();
     }
   }
@@ -149,15 +150,41 @@ class PracticeSheetController extends ChangeNotifier {
 
   Map<String, HanziCharacter>? _dictionary;
   List<PracticeSheetEntry> _entries = const [];
+  List<List<PracticeSheetEntry>> _pages = const [];
   List<PracticeSheetMessage> _messages = const [];
   bool _loading = false;
+  int _previewPageIndex = 0;
 
   List<PracticeSheetEntry> get entries => _entries;
   List<PracticeSheetMessage> get messages => _messages;
   bool get loading => _loading;
   bool get hasSheet => _entries.isNotEmpty;
 
-  /// 输入上限（按每字至少占 1 物理行估算）。
+  /// 分页后的页数（至少为 1 当有字帖时）。
+  int get pageCount => _pages.length;
+
+  int get previewPageIndex => _previewPageIndex;
+
+  /// 当前预览页的逻辑行。
+  List<PracticeSheetEntry> get previewPageRows {
+    if (_pages.isEmpty) return const [];
+    final i = _previewPageIndex.clamp(0, _pages.length - 1);
+    return _pages[i];
+  }
+
+  void setPreviewPageIndex(int index) {
+    if (_pages.isEmpty) return;
+    final next = index.clamp(0, _pages.length - 1);
+    if (next == _previewPageIndex) return;
+    _previewPageIndex = next;
+    notifyListeners();
+  }
+
+  void goToPreviousPage() => setPreviewPageIndex(_previewPageIndex - 1);
+
+  void goToNextPage() => setPreviewPageIndex(_previewPageIndex + 1);
+
+  /// 兼容：约一页可排字数（仅作空状态提示参考）。
   int get maxMultiCharacters {
     final colsPerLine = A4SheetLayout.columnsPerLine(
       A4SheetLayout.pdfInnerWidthPt,
@@ -220,25 +247,18 @@ class PracticeSheetController extends ChangeNotifier {
     }
   }
 
-  HintPhysicalOverflow? _pageOverflowMessage(List<PracticeSheetEntry> logicalRows) {
-    final colsPerLine = A4SheetLayout.columnsPerLine(
-      A4SheetLayout.pdfInnerWidthPt,
-      _cellSizePt,
-    );
-    final maxPhysical = A4SheetLayout.maxPhysicalRowsOnSheet(
+  void _rebuildPages() {
+    _pages = A4SheetLayout.paginateEntries(
+      entries: _entries,
+      traceSlots: _traceSlots,
+      blankSlots: _blankSlots,
       targetCellSize: _cellSizePt,
     );
-    var used = 0;
-    for (final entry in logicalRows) {
-      used += A4SheetLayout.physicalLineCountForEntry(
-        entry,
-        traceSlots: traceSlots,
-        blankSlots: blankSlots,
-        colsPerLine: colsPerLine,
-      );
+    if (_pages.isEmpty) {
+      _previewPageIndex = 0;
+    } else {
+      _previewPageIndex = _previewPageIndex.clamp(0, _pages.length - 1);
     }
-    if (used <= maxPhysical) return null;
-    return HintPhysicalOverflow(usedRows: used, maxRows: maxPhysical);
   }
 
   Future<void> _generateMulti(String raw) async {
@@ -247,22 +267,14 @@ class PracticeSheetController extends ChangeNotifier {
         .toList(growable: false);
     if (chars.isEmpty) {
       _entries = const [];
+      _pages = const [];
+      _previewPageIndex = 0;
       _messages = const [HintInvalidInput()];
       return;
     }
 
-    final colsPerLine = A4SheetLayout.columnsPerLine(
-      A4SheetLayout.pdfInnerWidthPt,
-      _cellSizePt,
-    );
-    final maxPhysical = A4SheetLayout.maxPhysicalRowsOnSheet(
-      targetCellSize: _cellSizePt,
-    );
-
     final built = <PracticeSheetEntry>[];
     final missing = <String>[];
-    var physicalUsed = 0;
-    var skippedForPage = 0;
 
     for (final ch in chars) {
       final model = _dictionary![ch];
@@ -270,47 +282,35 @@ class PracticeSheetController extends ChangeNotifier {
         missing.add(ch);
         continue;
       }
-      final entry = PracticeSheetEntry(
-        character: model,
-        prepared: PreparedHanziStrokes.prepare(
-          model: model,
-          cache: pathCache,
+      built.add(
+        PracticeSheetEntry(
+          character: model,
+          prepared: PreparedHanziStrokes.prepare(
+            model: model,
+            cache: pathCache,
+          ),
         ),
       );
-      final lines = A4SheetLayout.physicalLineCountForEntry(
-        entry,
-        traceSlots: traceSlots,
-        blankSlots: blankSlots,
-        colsPerLine: colsPerLine,
-      );
-      if (physicalUsed + lines > maxPhysical) {
-        skippedForPage++;
-        continue;
-      }
-      physicalUsed += lines;
-      built.add(entry);
     }
 
     if (built.isEmpty) {
       _entries = const [];
+      _pages = const [];
+      _previewPageIndex = 0;
       _messages = [HintNoMatchingChars(dictionaryAssetPath)];
       return;
     }
 
     _entries = built;
+    _rebuildPages();
+    _previewPageIndex = 0;
 
     final hints = <PracticeSheetMessage>[];
     if (missing.isNotEmpty) {
       hints.add(HintMissingChars(missing));
     }
-    if (skippedForPage > 0) {
-      hints.add(
-        HintSkippedOverflow(maxRows: maxPhysical, skipped: skippedForPage),
-      );
-    }
-    final overflow = _pageOverflowMessage(built);
-    if (overflow != null) {
-      hints.add(overflow);
+    if (_pages.length > 1) {
+      hints.add(HintMultiPage(pageCount: _pages.length));
     }
     _messages = hints;
   }

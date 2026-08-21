@@ -10,7 +10,7 @@
   "exportShare": "分享 PDF",
   "inputHint": "输入汉字（多字）",
   "generateButton": "生成字帖",
-  "emptyStateBody": "在上方输入多个汉字（每字一行字帖，\nA4 单页约限 {maxChars} 字，超出部分将忽略）。",
+  "emptyStateBody": "在上方输入要练习的汉字，每字一行字帖。\n超出一页会自动分页，可左右翻页预览。",
   "printPreparing": "正在准备打印…",
   "printBusy": "正在打印，请稍候",
   "printUnavailable": "此设备不支持打印，请改用「分享 PDF」",
@@ -33,7 +33,7 @@
   "themeLight": "浅色",
   "themeDark": "深色",
   "featureOverviewTitle": "功能简介",
-  "featureOverviewBody": "根据字库生成汉字笔顺练字帖预览，并可通过系统对话框打印或导出 PDF。当前为多字模式：每字一行版式，具体行数受 A4 可打印区域限制。",
+  "featureOverviewBody": "根据字库生成汉字笔顺练字帖预览，并可通过系统对话框打印或导出 PDF。支持多字多页：每字一行，超出一页自动分页。",
   "strokeDataTitle": "笔画数据来源",
   "strokeDataBody": "笔画矢量数据来自开源项目 Make Me a Hanzi 的 graphics.txt，基于文鼎 Arphic PL 字体衍生，许可证为 Arphic Public License（1999）。完整第三方声明与链接见下方「第三方说明全文」。",
   "thirdPartyNoticesButton": "第三方说明全文",
@@ -52,6 +52,27 @@
   "hintMissingChars": "字库中暂无：{chars}",
   "hintSkippedOverflow": "折行后超出 A4 单页（约 {maxRows} 行），已忽略后 {skipped} 字",
   "hintPhysicalOverflow": "折行后共 {usedRows} 行，超出 A4 单页约 {maxRows} 行，打印时底部可能被裁切",
+  "hintMultiPage": "共 {pageCount} 页，可翻页预览；打印/导出将包含全部页",
+  "@hintMultiPage": {
+    "placeholders": {
+      "pageCount": {
+        "type": "int"
+      }
+    }
+  },
+  "sheetPageIndicator": "{current} / {total}",
+  "@sheetPageIndicator": {
+    "placeholders": {
+      "current": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "sheetPagePrevTooltip": "上一页",
+  "sheetPageNextTooltip": "下一页",
   "quotaRemaining": "剩余 {count} 次免费生成",
   "quotaUnlocked": "已解锁，无限次使用",
   "quotaExceededTitle": "免费次数已用完",

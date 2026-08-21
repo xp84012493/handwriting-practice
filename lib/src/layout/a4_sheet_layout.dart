@@ -172,4 +172,47 @@ abstract final class A4SheetLayout {
       physicalRows: physicalRows,
     );
   }
+
+  /// 按「整字不拆页」将逻辑行分页：一页放不下的字进入下一页。
+  static List<List<PracticeSheetEntry>> paginateEntries({
+    required List<PracticeSheetEntry> entries,
+    required int traceSlots,
+    required int blankSlots,
+    double rowGap = defaultRowGap,
+    double? targetCellSize,
+  }) {
+    if (entries.isEmpty) return const [];
+
+    final cell = targetCellSize ?? practiceCellSizePt;
+    final colsPerLine = columnsPerLine(pdfInnerWidthPt, cell);
+    final maxPhysical = maxPhysicalRowsOnSheet(
+      rowGap: rowGap,
+      targetCellSize: cell,
+    );
+
+    final pages = <List<PracticeSheetEntry>>[];
+    var current = <PracticeSheetEntry>[];
+    var used = 0;
+
+    for (final entry in entries) {
+      final lines = physicalLineCountForEntry(
+        entry,
+        traceSlots: traceSlots,
+        blankSlots: blankSlots,
+        colsPerLine: colsPerLine,
+      );
+      final need = math.max(1, lines);
+      if (current.isNotEmpty && used + need > maxPhysical) {
+        pages.add(current);
+        current = <PracticeSheetEntry>[];
+        used = 0;
+      }
+      current.add(entry);
+      used += need;
+    }
+    if (current.isNotEmpty) {
+      pages.add(current);
+    }
+    return pages;
+  }
 }

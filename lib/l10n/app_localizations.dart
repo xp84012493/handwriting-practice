@@ -162,8 +162,8 @@ abstract class AppLocalizations {
   /// No description provided for @emptyStateBody.
   ///
   /// In en, this message translates to:
-  /// **'Enter multiple characters above (one row per character on the sheet).\nAbout {maxChars} characters fit on one A4 page; extra characters are ignored.'**
-  String emptyStateBody(int maxChars);
+  /// **'Enter Chinese characters above — one practice row per character.\nExtra content continues on following pages.'**
+  String get emptyStateBody;
 
   /// No description provided for @printPreparing.
   ///
@@ -300,7 +300,7 @@ abstract class AppLocalizations {
   /// No description provided for @featureOverviewBody.
   ///
   /// In en, this message translates to:
-  /// **'Generate stroke-order practice sheets from the built-in dictionary, preview them in the app, and print or export PDF via the system.'**
+  /// **'Generate stroke-order practice sheets from the built-in dictionary, preview them in the app, and print or export PDF via the system. Multi-page sheets are supported when content exceeds one A4 page.'**
   String get featureOverviewBody;
 
   /// No description provided for @strokeDataTitle.
@@ -410,6 +410,30 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Wrapped layout uses {usedRows} rows, exceeding one A4 page (~{maxRows} rows); the bottom may be clipped when printing'**
   String hintPhysicalOverflow(int usedRows, int maxRows);
+
+  /// No description provided for @hintMultiPage.
+  ///
+  /// In en, this message translates to:
+  /// **'{pageCount} pages — preview with page controls; print and export include all pages'**
+  String hintMultiPage(int pageCount);
+
+  /// No description provided for @sheetPageIndicator.
+  ///
+  /// In en, this message translates to:
+  /// **'{current} / {total}'**
+  String sheetPageIndicator(int current, int total);
+
+  /// No description provided for @sheetPagePrevTooltip.
+  ///
+  /// In en, this message translates to:
+  /// **'Previous page'**
+  String get sheetPagePrevTooltip;
+
+  /// No description provided for @sheetPageNextTooltip.
+  ///
+  /// In en, this message translates to:
+  /// **'Next page'**
+  String get sheetPageNextTooltip;
 
   /// No description provided for @quotaRemaining.
   ///

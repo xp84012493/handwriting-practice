@@ -46,6 +46,11 @@ class HintPhysicalOverflow extends PracticeSheetMessage {
   final int maxRows;
 }
 
+class HintMultiPage extends PracticeSheetMessage {
+  const HintMultiPage({required this.pageCount});
+  final int pageCount;
+}
+
 String formatPracticeSheetMessages(
   AppLocalizations l10n,
   List<PracticeSheetMessage> messages,
@@ -70,5 +75,6 @@ String _formatOne(AppLocalizations l10n, PracticeSheetMessage message) {
       l10n.hintSkippedOverflow(maxRows, skipped),
     HintPhysicalOverflow(:final usedRows, :final maxRows) =>
       l10n.hintPhysicalOverflow(usedRows, maxRows),
+    HintMultiPage(:final pageCount) => l10n.hintMultiPage(pageCount),
   };
 }
