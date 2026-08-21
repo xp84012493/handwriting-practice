@@ -421,6 +421,16 @@ class AppLocalizationsEn extends AppLocalizations {
   String get sheetConfigBlankHint => 'Empty mi zi grids for freehand practice.';
 
   @override
+  String get sheetConfigFitPageWidth => 'Fit page width';
+
+  @override
+  String get sheetConfigFitPageWidthHint =>
+      'Adjust slot counts for the current character size so model + trace + blank fill one full row.';
+
+  @override
+  String get sheetConfigResetDefaults => 'Reset defaults';
+
+  @override
   String get sheetConfigDone => 'Done';
 
   @override

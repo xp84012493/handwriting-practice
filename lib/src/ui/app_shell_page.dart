@@ -479,42 +479,57 @@ class _ControlBar extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = context.l10n;
 
-    final field = TextField(
-      controller: controller.textController,
-      textAlign: TextAlign.start,
-      minLines: 3,
-      maxLines: 3,
-      style: theme.textTheme.bodyLarge?.copyWith(
-        fontWeight: FontWeight.w500,
-        letterSpacing: 1,
-        height: 1.35,
-      ),
-      decoration: InputDecoration(
-        hintText: l10n.inputHint,
-        isDense: true,
-        filled: true,
-        fillColor: theme.colorScheme.surfaceContainerHighest.withValues(
-          alpha: 0.35,
+    final field = Stack(
+      children: [
+        TextField(
+          controller: controller.textController,
+          textAlign: TextAlign.start,
+          minLines: 3,
+          maxLines: 3,
+          style: theme.textTheme.bodyLarge?.copyWith(
+            fontWeight: FontWeight.w500,
+            letterSpacing: 1,
+            height: 1.35,
+          ),
+          decoration: InputDecoration(
+            hintText: l10n.inputHint,
+            isDense: true,
+            filled: true,
+            fillColor: theme.colorScheme.surfaceContainerHighest.withValues(
+              alpha: 0.35,
+            ),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(10),
+            ),
+            // 右侧留白，避免末行文字与收起键盘按钮重叠。
+            contentPadding: const EdgeInsets.fromLTRB(12, 10, 40, 10),
+          ),
+          keyboardType: TextInputType.multiline,
+          textInputAction: TextInputAction.newline,
+          autocorrect: false,
+          enableSuggestions: true,
+          smartDashesType: SmartDashesType.disabled,
+          smartQuotesType: SmartQuotesType.disabled,
+          inputFormatters: const [
+            HanziOnlyTextInputFormatter(),
+          ],
         ),
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10),
+        Positioned(
+          right: 2,
+          bottom: 2,
+          child: IconButton(
+            tooltip: MaterialLocalizations.of(context).closeButtonTooltip,
+            visualDensity: VisualDensity.compact,
+            padding: EdgeInsets.zero,
+            constraints: const BoxConstraints(minWidth: 36, minHeight: 36),
+            onPressed: () => FocusManager.instance.primaryFocus?.unfocus(),
+            icon: Icon(
+              Icons.keyboard_hide_outlined,
+              size: 20,
+              color: theme.colorScheme.onSurfaceVariant,
+            ),
+          ),
         ),
-        contentPadding:
-            const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-        suffixIcon: IconButton(
-          tooltip: MaterialLocalizations.of(context).closeButtonTooltip,
-          onPressed: () => FocusManager.instance.primaryFocus?.unfocus(),
-          icon: const Icon(Icons.keyboard_hide_outlined),
-        ),
-      ),
-      keyboardType: TextInputType.multiline,
-      textInputAction: TextInputAction.newline,
-      autocorrect: false,
-      enableSuggestions: true,
-      smartDashesType: SmartDashesType.disabled,
-      smartQuotesType: SmartQuotesType.disabled,
-      inputFormatters: const [
-        HanziOnlyTextInputFormatter(),
       ],
     );
 

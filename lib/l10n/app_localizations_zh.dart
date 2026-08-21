@@ -407,6 +407,15 @@ class AppLocalizationsZh extends AppLocalizations {
   String get sheetConfigBlankHint => '仅米字格，供临摹书写。';
 
   @override
+  String get sheetConfigFitPageWidth => '自适应页宽';
+
+  @override
+  String get sheetConfigFitPageWidthHint => '按当前字体大小增减格数，使示范+描红+空白刚好占满一行。';
+
+  @override
+  String get sheetConfigResetDefaults => '恢复默认';
+
+  @override
   String get sheetConfigDone => '完成';
 
   @override
@@ -837,6 +846,15 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String get sheetConfigBlankHint => '僅米字格，供臨摹書寫。';
+
+  @override
+  String get sheetConfigFitPageWidth => '自適應頁寬';
+
+  @override
+  String get sheetConfigFitPageWidthHint => '依目前字體大小增減格數，使示範+描紅+空白剛好占滿一行。';
+
+  @override
+  String get sheetConfigResetDefaults => '恢復預設';
 
   @override
   String get sheetConfigDone => '完成';

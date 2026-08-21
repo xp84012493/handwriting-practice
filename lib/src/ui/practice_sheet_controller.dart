@@ -63,8 +63,33 @@ class PracticeSheetController extends ChangeNotifier {
   static const int defaultBlankSlots = 3;
   static const int minSlots = 0;
   static const int maxSlots = 10;
+
+  /// 无笔画填满页宽时允许的格数上限（约 10mm 格下一行可排列数）。
+  static const int maxSlotsNoStrokeOrder = 40;
   static const double defaultCellSizeMm = A4SheetLayout.practiceCellSizeMm;
   static const bool defaultShowStrokeOrder = true;
+
+  /// 描红/空白格可调上限：有笔画用 [maxSlots]；无笔画可提到填满一行所需。
+  static int maxSlotsFor({
+    required bool showStrokeOrder,
+    required double cellSizeMm,
+  }) {
+    if (showStrokeOrder) return maxSlots;
+    final cols = A4SheetLayout.columnsPerLine(
+      A4SheetLayout.pdfInnerWidthPt,
+      A4SheetLayout.cellSizePtFromMm(cellSizeMm),
+    );
+    return math.max(maxSlots, cols - 1).clamp(maxSlots, maxSlotsNoStrokeOrder);
+  }
+
+  /// 无笔画模式下，使「示范 + 描红 + 空白」刚好占满一行所需的练习格总数。
+  static int practiceSlotsToFillLine(double cellSizeMm) {
+    final cols = A4SheetLayout.columnsPerLine(
+      A4SheetLayout.pdfInnerWidthPt,
+      A4SheetLayout.cellSizePtFromMm(cellSizeMm),
+    );
+    return math.max(0, cols - 1);
+  }
 
   static const _prefTraceSlots = 'sheet_trace_slots';
   static const _prefBlankSlots = 'sheet_blank_slots';
@@ -98,10 +123,10 @@ class PracticeSheetController extends ChangeNotifier {
     final cell = prefs.getDouble(_prefCellSizeMm);
     final strokes = prefs.getBool(_prefShowStrokeOrder);
     if (trace != null) {
-      _traceSlots = trace.clamp(minSlots, maxSlots);
+      _traceSlots = trace.clamp(minSlots, maxSlotsNoStrokeOrder);
     }
     if (blank != null) {
-      _blankSlots = blank.clamp(minSlots, maxSlots);
+      _blankSlots = blank.clamp(minSlots, maxSlotsNoStrokeOrder);
     }
     if (cell != null) {
       _cellSizeMm = cell
@@ -123,8 +148,12 @@ class PracticeSheetController extends ChangeNotifier {
     required double cellSizeMm,
     required bool showStrokeOrder,
   }) async {
-    final nextTrace = traceSlots.clamp(minSlots, maxSlots);
-    final nextBlank = blankSlots.clamp(minSlots, maxSlots);
+    final maxS = maxSlotsFor(
+      showStrokeOrder: showStrokeOrder,
+      cellSizeMm: cellSizeMm,
+    );
+    final nextTrace = traceSlots.clamp(minSlots, maxS);
+    final nextBlank = blankSlots.clamp(minSlots, maxS);
     final nextCell = cellSizeMm
         .clamp(
           A4SheetLayout.minPracticeCellSizeMm,

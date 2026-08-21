@@ -783,6 +783,24 @@ abstract class AppLocalizations {
   /// **'Empty mi zi grids for freehand practice.'**
   String get sheetConfigBlankHint;
 
+  /// No description provided for @sheetConfigFitPageWidth.
+  ///
+  /// In en, this message translates to:
+  /// **'Fit page width'**
+  String get sheetConfigFitPageWidth;
+
+  /// No description provided for @sheetConfigFitPageWidthHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Adjust slot counts for the current character size so model + trace + blank fill one full row.'**
+  String get sheetConfigFitPageWidthHint;
+
+  /// No description provided for @sheetConfigResetDefaults.
+  ///
+  /// In en, this message translates to:
+  /// **'Reset defaults'**
+  String get sheetConfigResetDefaults;
+
   /// No description provided for @sheetConfigDone.
   ///
   /// In en, this message translates to:
