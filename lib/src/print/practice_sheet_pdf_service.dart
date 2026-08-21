@@ -81,11 +81,13 @@ class PracticeSheetPdfService {
     String name = '练字帖',
     Uint8List? bytes,
   }) async {
-    // iOS 上 `dynamicLayout: true` 会先 present 打印面板；`false` 改在 setDocument 里
-    // present，在部分设备上会静默失败（面板弹不出）。
+    // iOS 打印预览机制：
+    // - `dynamicLayout: true`：先 present 面板，再在 numberOfPages 里 semaphore 等 PDF；
+    //   主线程被阻塞后 onLayout 无法执行 → 预览一直「正在载入」。
+    // - `dynamicLayout: false`：onLayout 先返回 PDF，setDocument 再 present，预览可立即显示。
     //
-    // cca22f1 预览一直转圈，是因为 onLayout 里重新 buildPdfBytes；预生成 PDF 后
-    // onLayout 立即返回，可同时恢复面板弹出与预览加载。
+    // 须在 onLayout 返回已生成的 PDF（勿在回调里 rebuild），并配合 forceCustomPrintPaper
+    // 保持 A4 横向纸张。
     final pdfBytes = bytes ??
         await buildPdfBytes(
           rows: rows,
@@ -96,7 +98,8 @@ class PracticeSheetPdfService {
     await Printing.layoutPdf(
       name: name,
       format: pageFormat,
-      dynamicLayout: true,
+      dynamicLayout: false,
+      forceCustomPrintPaper: true,
       onLayout: (_) async => pdfBytes,
     );
   }

@@ -170,6 +170,11 @@ class _AppShellPageState extends State<AppShellPage> {
     try {
       final bytes = await _buildSheetPdfBytes();
       if (!mounted) return;
+      // 等 PopupMenu 路由完全关闭后再 present，避免 setDocument 里 present 静默失败。
+      await Future<void>.delayed(Duration.zero);
+      if (!mounted) return;
+      await WidgetsBinding.instance.endOfFrame;
+      if (!mounted) return;
       await PracticeSheetPdfService.layoutPrint(
         rows: _controller.sheetRows,
         traceSlots: _controller.traceSlots,
