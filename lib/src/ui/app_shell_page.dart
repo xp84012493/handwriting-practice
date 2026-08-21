@@ -90,6 +90,7 @@ class _AppShellPageState extends State<AppShellPage> {
   }
 
   Future<void> _openPresetSheet({String? initialCategoryId}) async {
+    FocusManager.instance.primaryFocus?.unfocus();
     final catalog = _presets.catalog;
     if (catalog == null) {
       if (_presets.isLoading) return;
@@ -371,7 +372,10 @@ class _PracticeTab extends StatelessWidget {
             leading: IconButton(
               tooltip: l10n.sheetConfigTooltip,
               icon: const Icon(Icons.tune_outlined),
-              onPressed: () => showSheetConfigSheet(context, controller),
+              onPressed: () {
+                FocusManager.instance.primaryFocus?.unfocus();
+                showSheetConfigSheet(context, controller);
+              },
             ),
             actions: [
               PopupMenuButton<_PdfExportAction>(
@@ -437,9 +441,13 @@ class _PracticeTab extends StatelessWidget {
                     : const SizedBox.shrink(),
               ),
               Expanded(
-                child: _PreviewBody(
-                  controller: controller,
-                  theme: theme,
+                child: GestureDetector(
+                  behavior: HitTestBehavior.opaque,
+                  onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
+                  child: _PreviewBody(
+                    controller: controller,
+                    theme: theme,
+                  ),
                 ),
               ),
             ],
@@ -491,6 +499,11 @@ class _ControlBar extends StatelessWidget {
         ),
         contentPadding:
             const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+        suffixIcon: IconButton(
+          tooltip: MaterialLocalizations.of(context).closeButtonTooltip,
+          onPressed: () => FocusManager.instance.primaryFocus?.unfocus(),
+          icon: const Icon(Icons.keyboard_hide_outlined),
+        ),
       ),
       keyboardType: TextInputType.multiline,
       textInputAction: TextInputAction.newline,
@@ -576,6 +589,7 @@ class _PreviewBody extends StatelessWidget {
     return LayoutBuilder(
       builder: (context, constraints) {
         return SingleChildScrollView(
+          keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
           padding: const EdgeInsets.fromLTRB(12, 12, 12, 24),
           child: Align(
             alignment: Alignment.topCenter,
