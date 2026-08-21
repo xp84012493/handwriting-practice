@@ -1,10 +1,7 @@
-import 'dart:async';
 import 'dart:math' as math;
 import 'dart:typed_data';
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:printing/printing.dart';
 
 import '../l10n/l10n_extension.dart';
 import '../locale/locale_controller.dart';
@@ -160,30 +157,6 @@ class _AppShellPageState extends State<AppShellPage> {
     );
   }
 
-  Future<void> _waitForOverlayDismissed() async {
-    // PopupMenu 关闭动画未结束时就 present 打印面板，iOS 上常会静默失败（无界面、无报错）。
-    await Future<void>.delayed(Duration.zero);
-    if (!mounted) return;
-    await WidgetsBinding.instance.endOfFrame;
-    await WidgetsBinding.instance.endOfFrame;
-    await Future<void>.delayed(const Duration(milliseconds: 350));
-  }
-
-  Future<void> _openShareSheetForPrintFallback({
-    required Uint8List bytes,
-    required String hint,
-  }) async {
-    await PracticeSheetExport.sharePdf(
-      bytes: bytes,
-      baseName: _sheetPdfBaseName(),
-      context: context,
-    );
-    if (!mounted) return;
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(hint)),
-    );
-  }
-
   Future<void> _onSystemPrint() async {
     if (!_controller.hasSheet) return;
     final l10n = context.l10n;
@@ -194,92 +167,23 @@ class _AppShellPageState extends State<AppShellPage> {
       return;
     }
     _printInFlight = true;
-
-    var progressDialogVisible = false;
     try {
-      final info = await Printing.info();
-      if (!info.canPrint) {
-        if (!mounted) return;
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(l10n.printUnavailable)),
-        );
-        return;
-      }
-
-      if (!mounted) return;
-      progressDialogVisible = true;
-      showDialog<void>(
-        context: context,
-        barrierDismissible: false,
-        useRootNavigator: true,
-        builder: (dialogContext) {
-          return PopScope(
-            canPop: false,
-            child: AlertDialog(
-              content: Row(
-                children: [
-                  const CircularProgressIndicator(),
-                  const SizedBox(width: 20),
-                  Expanded(child: Text(l10n.printPreparing)),
-                ],
-              ),
-            ),
-          );
-        },
-      );
-
       final bytes = await _buildSheetPdfBytes();
       if (!mounted) return;
-
-      await WidgetsBinding.instance.endOfFrame;
-      await Future<void>.delayed(const Duration(milliseconds: 100));
-      if (!mounted) return;
-
-      if (progressDialogVisible && mounted) {
-        Navigator.of(context, rootNavigator: true).pop();
-        progressDialogVisible = false;
-      }
-
-      try {
-        await PracticeSheetPdfService.layoutPrint(
-          rows: _controller.sheetRows,
-          traceSlots: _controller.traceSlots,
-          blankSlots: _controller.blankSlots,
-          name: 'hanzi_practice_sheet',
-          bytes: bytes,
-        ).timeout(const Duration(seconds: 45));
-      } on TimeoutException {
-        if (!mounted) return;
-        await _openShareSheetForPrintFallback(
-          bytes: bytes,
-          hint: l10n.printFallbackShare,
-        );
-      }
+      await PracticeSheetPdfService.layoutPrint(
+        rows: _controller.sheetRows,
+        traceSlots: _controller.traceSlots,
+        blankSlots: _controller.blankSlots,
+        name: _sheetPdfBaseName(),
+        bytes: bytes,
+      );
     } catch (e, st) {
       debugPrint('Print failed: $e\n$st');
       if (!mounted) return;
-      if (!kIsWeb && defaultTargetPlatform == TargetPlatform.iOS) {
-        try {
-          final bytes = await _buildSheetPdfBytes();
-          if (!mounted) return;
-          await _openShareSheetForPrintFallback(
-            bytes: bytes,
-            hint: l10n.printFallbackShare,
-          );
-          return;
-        } catch (fallbackError, fallbackStack) {
-          debugPrint(
-            'Print share fallback failed: $fallbackError\n$fallbackStack',
-          );
-        }
-      }
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(l10n.printFailed('$e'))),
       );
     } finally {
-      if (progressDialogVisible && mounted) {
-        Navigator.of(context, rootNavigator: true).pop();
-      }
       _printInFlight = false;
     }
   }
@@ -326,8 +230,6 @@ class _AppShellPageState extends State<AppShellPage> {
   }
 
   Future<void> _onPdfExportMenu(_PdfExportAction action) async {
-    await _waitForOverlayDismissed();
-    if (!mounted) return;
     switch (action) {
       case _PdfExportAction.systemPrint:
         await _onSystemPrint();

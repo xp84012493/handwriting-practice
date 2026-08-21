@@ -81,13 +81,11 @@ class PracticeSheetPdfService {
     String name = '练字帖',
     Uint8List? bytes,
   }) async {
-    // 先生成固定 A4 横向 PDF，再打开系统打印。
+    // iOS 上 `dynamicLayout: true` 会先 present 打印面板；`false` 改在 setDocument 里
+    // present，在部分设备上会静默失败（面板弹不出）。
     //
-    // 不要用 `dynamicLayout: true`：iOS 会在主线程 `numberOfPages` 里 semaphore 等待
-    // onLayout；字帖矢量路径较多时预览会一直转圈，且 UIPrintInteractionController.shared
-    // 处于未完成状态，导致再次点击打印无反应。
-    //
-    // `dynamicLayout: false` + 预生成：面板打开时文档已就绪。
+    // cca22f1 预览一直转圈，是因为 onLayout 里重新 buildPdfBytes；预生成 PDF 后
+    // onLayout 立即返回，可同时恢复面板弹出与预览加载。
     final pdfBytes = bytes ??
         await buildPdfBytes(
           rows: rows,
@@ -98,7 +96,7 @@ class PracticeSheetPdfService {
     await Printing.layoutPdf(
       name: name,
       format: pageFormat,
-      dynamicLayout: false,
+      dynamicLayout: true,
       onLayout: (_) async => pdfBytes,
     );
   }
