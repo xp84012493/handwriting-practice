@@ -20,6 +20,16 @@ Upstream also provides the license in other languages under [`APL/`](https://git
 
 The file `dictionary.txt` in Make Me a Hanzi is under **LGPL** (see upstream [COPYING](https://github.com/skishore/makemeahanzi/blob/master/COPYING)). **This project does not bundle or require `dictionary.txt`.** If you add it yourself, you must comply with the **GNU Lesser General Public License** on that file.
 
+## LXGW WenKai / LXGW ZhenKai (fonts)
+
+This app may embed **LXGW WenKai GB** and **LXGW ZhenKai GB** TrueType fonts for no-stroke practice sheets.
+
+- **Projects:** [lxgw/LxgwWenkaiGB](https://github.com/lxgw/LxgwWenkaiGB), [lxgw/LxgwZhenKai](https://github.com/lxgw/LxgwZhenKai)
+- **License:** SIL Open Font License 1.1
+- **License copies in this repo:**
+  - [	hird_party/licenses/LXGWWenKai-OFL.txt](third_party/licenses/LXGWWenKai-OFL.txt)
+  - [	hird_party/licenses/LXGWZhenKai-OFL.txt](third_party/licenses/LXGWZhenKai-OFL.txt)
+
 ---
 
 *This file is for attribution and convenience. It is not legal advice.*

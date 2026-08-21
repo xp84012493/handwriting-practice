@@ -396,6 +396,22 @@ class AppLocalizationsEn extends AppLocalizations {
   String get sheetConfigStrokeOrderOff => 'No strokes';
 
   @override
+  String get sheetConfigFont => 'Font';
+
+  @override
+  String get sheetConfigFontHint =>
+      'Available only when stroke order is off. Default uses stroke-outline glyphs; or pick LXGW WenKai / ZhenKai.';
+
+  @override
+  String get sheetConfigFontDefault => 'Default';
+
+  @override
+  String get sheetConfigFontWenKai => 'LXGW WenKai';
+
+  @override
+  String get sheetConfigFontZhenKai => 'LXGW ZhenKai';
+
+  @override
   String get sheetConfigPageOrientation => 'Page orientation';
 
   @override

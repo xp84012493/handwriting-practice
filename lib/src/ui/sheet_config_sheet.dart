@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 
 import '../l10n/l10n_extension.dart';
 import '../layout/a4_sheet_layout.dart';
+import '../style/practice_sheet_font.dart';
 import 'practice_sheet_controller.dart';
 
 /// 字帖描红 / 空白格数 / 字体大小 / 有无笔画配置（底部弹层）。
@@ -36,6 +37,7 @@ class _SheetConfigSheetState extends State<_SheetConfigSheet> {
   late bool _showStrokeOrder = widget.controller.showStrokeOrder;
   late SheetPageOrientation _pageOrientation =
       widget.controller.pageOrientation;
+  late PracticeSheetFont _sheetFont = widget.controller.sheetFont;
 
   int get _slotMax => PracticeSheetController.maxSlotsFor(
         showStrokeOrder: _showStrokeOrder,
@@ -50,6 +52,7 @@ class _SheetConfigSheetState extends State<_SheetConfigSheet> {
       cellSizeMm: _cellSizeMm.toDouble(),
       showStrokeOrder: _showStrokeOrder,
       pageOrientation: _pageOrientation,
+      sheetFont: _sheetFont,
     );
     if (mounted) Navigator.of(context).pop();
   }
@@ -100,6 +103,7 @@ class _SheetConfigSheetState extends State<_SheetConfigSheet> {
       _cellSizeMm = PracticeSheetController.defaultCellSizeMm.round();
       _traceSlots = PracticeSheetController.defaultTraceSlots;
       _blankSlots = PracticeSheetController.defaultBlankSlots;
+      _sheetFont = PracticeSheetController.defaultSheetFont;
     });
   }
 
@@ -203,6 +207,47 @@ class _SheetConfigSheetState extends State<_SheetConfigSheet> {
                   _clampSlotsToMax();
                 });
               },
+            ),
+            const SizedBox(height: 16),
+            Text(
+              l10n.sheetConfigFont,
+              style: Theme.of(context).textTheme.titleSmall,
+            ),
+            const SizedBox(height: 4),
+            Text(
+              l10n.sheetConfigFontHint,
+              style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                  ),
+            ),
+            const SizedBox(height: 8),
+            IgnorePointer(
+              ignoring: _showStrokeOrder,
+              child: Opacity(
+                opacity: _showStrokeOrder ? 0.45 : 1,
+                child: SegmentedButton<PracticeSheetFont>(
+                  showSelectedIcon: false,
+                  segments: [
+                    ButtonSegment<PracticeSheetFont>(
+                      value: PracticeSheetFont.appDefault,
+                      label: Text(l10n.sheetConfigFontDefault),
+                    ),
+                    ButtonSegment<PracticeSheetFont>(
+                      value: PracticeSheetFont.wenKai,
+                      label: Text(l10n.sheetConfigFontWenKai),
+                    ),
+                    ButtonSegment<PracticeSheetFont>(
+                      value: PracticeSheetFont.zhenKai,
+                      label: Text(l10n.sheetConfigFontZhenKai),
+                    ),
+                  ],
+                  selected: {_sheetFont},
+                  onSelectionChanged: (next) {
+                    HapticFeedback.selectionClick();
+                    setState(() => _sheetFont = next.first);
+                  },
+                ),
+              ),
             ),
             const SizedBox(height: 16),
             _SlotStepper(

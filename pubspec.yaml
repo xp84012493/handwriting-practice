@@ -37,3 +37,10 @@ flutter:
     - assets/preset_lists.json
     - LICENSE
     - THIRD_PARTY_NOTICES.md
+  fonts:
+    - family: LXGWWenKai
+      fonts:
+        - asset: assets/fonts/LXGWWenKaiGB-Regular.ttf
+    - family: LXGWZhenKai
+      fonts:
+        - asset: assets/fonts/LXGWZhenKaiGB-Regular.ttf

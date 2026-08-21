@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../layout/a4_sheet_layout.dart';
 import '../layout/practice_sheet_wrap.dart';
 import '../models/practice_sheet_entry.dart';
+import '../style/practice_sheet_font.dart';
 import '../style/practice_stroke_colors.dart';
 import '../widgets/hanzi_practice_cell.dart';
 
@@ -14,6 +15,7 @@ class A4PracticeSheetPreview extends StatelessWidget {
     required this.traceSlots,
     required this.blankSlots,
     this.showStrokeOrder = true,
+    this.sheetFont = PracticeSheetFont.appDefault,
     this.pageOrientation = A4SheetLayout.defaultOrientation,
     this.cellSizeMm = A4SheetLayout.practiceCellSizeMm,
     this.rowGap = 4,
@@ -25,6 +27,7 @@ class A4PracticeSheetPreview extends StatelessWidget {
   final int traceSlots;
   final int blankSlots;
   final bool showStrokeOrder;
+  final PracticeSheetFont sheetFont;
   final SheetPageOrientation pageOrientation;
   final double cellSizeMm;
   final double rowGap;
@@ -121,6 +124,7 @@ class A4PracticeSheetPreview extends StatelessWidget {
                                         slice: slice,
                                         traceSlots: traceSlots,
                                         showStrokeOrder: showStrokeOrder,
+                                        sheetFont: sheetFont,
                                         cellSize: layout.cellSize,
                                         strokeWidth: layout.strokeWidth,
                                         traceColor: traceColor,
@@ -150,6 +154,7 @@ class _PracticeRowSlice extends StatelessWidget {
     required this.slice,
     required this.traceSlots,
     required this.showStrokeOrder,
+    required this.sheetFont,
     required this.cellSize,
     required this.strokeWidth,
     required this.traceColor,
@@ -158,6 +163,7 @@ class _PracticeRowSlice extends StatelessWidget {
   final PracticeRowSlice slice;
   final int traceSlots;
   final bool showStrokeOrder;
+  final PracticeSheetFont sheetFont;
   final double cellSize;
   final double strokeWidth;
   final Color traceColor;
@@ -184,6 +190,12 @@ class _PracticeRowSlice extends StatelessWidget {
                 prepared: prepared,
                 kind: HanziPracticeCellKind.model,
                 strokeWidth: strokeWidth,
+                glyphCharacter: showStrokeOrder
+                    ? null
+                    : slice.entry.character.character,
+                fontFamily: showStrokeOrder
+                    ? null
+                    : sheetFont.familyName,
               ),
             PracticeCellKind.progressive => HanziPracticeCell(
                 prepared: prepared,
@@ -199,6 +211,12 @@ class _PracticeRowSlice extends StatelessWidget {
                 kind: HanziPracticeCellKind.trace,
                 strokeWidth: strokeWidth,
                 traceColor: traceColor,
+                glyphCharacter: showStrokeOrder
+                    ? null
+                    : slice.entry.character.character,
+                fontFamily: showStrokeOrder
+                    ? null
+                    : sheetFont.familyName,
               ),
             PracticeCellKind.blank => HanziPracticeCell(
                 prepared: prepared,

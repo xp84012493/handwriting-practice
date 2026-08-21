@@ -10,6 +10,7 @@ import 'package:vector_math/vector_math_64.dart' show Matrix4;
 
 import '../layout/a4_sheet_layout.dart';
 import '../models/practice_sheet_entry.dart';
+import '../style/practice_sheet_font.dart';
 import '../style/practice_stroke_colors.dart';
 import '../models/stroke_path_convention.dart';
 
@@ -38,6 +39,7 @@ class PracticeSheetPdfService {
     required int traceSlots,
     required int blankSlots,
     bool showStrokeOrder = true,
+    PracticeSheetFont sheetFont = PracticeSheetFont.appDefault,
     SheetPageOrientation pageOrientation = A4SheetLayout.defaultOrientation,
     double cellSizeMm = A4SheetLayout.practiceCellSizeMm,
     double rowGap = 4,
@@ -46,6 +48,12 @@ class PracticeSheetPdfService {
   }) async {
     final fmt = pageFormat ?? pageFormatFor(pageOrientation);
     final doc = pw.Document();
+    pw.Font? glyphFont;
+    final fontAsset = sheetFont.assetPath;
+    if (!showStrokeOrder && fontAsset != null) {
+      final fontData = await rootBundle.load(fontAsset);
+      glyphFont = pw.Font.ttf(fontData);
+    }
     final pages = A4SheetLayout.paginateEntries(
       entries: rows,
       traceSlots: traceSlots,
@@ -82,6 +90,8 @@ class PracticeSheetPdfService {
                       showStrokeOrder: showStrokeOrder,
                       cellSizeMm: cellSizeMm,
                       rowGap: rowGap,
+                      glyphFont: glyphFont?.getFont(context),
+                      contentHeight: innerSize.y,
                     ).paint(canvas, innerSize);
                   },
                 ),
@@ -103,6 +113,7 @@ class PracticeSheetPdfService {
     required int traceSlots,
     required int blankSlots,
     bool showStrokeOrder = true,
+    PracticeSheetFont sheetFont = PracticeSheetFont.appDefault,
     SheetPageOrientation pageOrientation = A4SheetLayout.defaultOrientation,
     double cellSizeMm = A4SheetLayout.practiceCellSizeMm,
     String name = '练字帖',
@@ -115,6 +126,7 @@ class PracticeSheetPdfService {
           traceSlots: traceSlots,
           blankSlots: blankSlots,
           showStrokeOrder: showStrokeOrder,
+          sheetFont: sheetFont,
           pageOrientation: pageOrientation,
           cellSizeMm: cellSizeMm,
           pageFormat: fmt,
@@ -150,6 +162,8 @@ class _PracticeSheetPdfPainter {
     required this.showStrokeOrder,
     required this.cellSizeMm,
     required this.rowGap,
+    this.glyphFont,
+    this.contentHeight = 0,
   });
 
   final List<PracticeSheetEntry> rows;
@@ -158,6 +172,8 @@ class _PracticeSheetPdfPainter {
   final bool showStrokeOrder;
   final double cellSizeMm;
   final double rowGap;
+  final PdfFont? glyphFont;
+  final double contentHeight;
 
   static final PdfColor _borderColor = PdfColor.fromInt(0xFF2C2C2C);
   static final PdfColor _guideColor = PdfColor.fromInt(0xFF9E9E9E);
@@ -205,6 +221,21 @@ class _PracticeSheetPdfPainter {
 
         final kind = _cellKind(col, strokeCount);
         if (kind == _CellKind.blank) continue;
+
+        final useFont = !showStrokeOrder &&
+            glyphFont != null &&
+            (kind == _CellKind.model || kind == _CellKind.trace);
+        if (useFont) {
+          _paintFontGlyph(
+            g,
+            slice.entry.character.character,
+            x0,
+            y0,
+            cell,
+            kind: kind,
+          );
+          continue;
+        }
 
         final step = kind == _CellKind.progressive ? col - 1 : null;
         _paintStrokesForCell(
@@ -271,7 +302,46 @@ class _PracticeSheetPdfPainter {
     g.restoreContext();
   }
 
-  void _paintStrokesForCell(
+  
+  void _paintFontGlyph(
+    PdfGraphics g,
+    String character,
+    double cellX,
+    double cellY,
+    double cell, {
+    required _CellKind kind,
+  }) {
+    final font = glyphFont;
+    if (font == null || character.isEmpty) return;
+
+    final inset = cell * 0.14;
+    final fontSize = (cell - 2 * inset) * 0.88;
+    final color = kind == _CellKind.trace ? _trace : _completed;
+    final metrics = font.stringMetrics(character) * fontSize;
+    final textW = metrics.width;
+    final cx = cellX + cell / 2;
+    final cy = cellY + cell / 2;
+
+    g.saveContext();
+    // Parent CTM flips Y; counter-flip so glyphs stay upright.
+    g.setTransform(
+      Matrix4.identity()
+        ..translateByDouble(0.0, contentHeight, 0, 1)
+        ..scaleByDouble(1.0, -1.0, 1, 1)
+        ..translateByDouble(cx, cy, 0, 1)
+        ..scaleByDouble(1.0, -1.0, 1, 1),
+    );
+    g.setFillColor(color);
+    g.drawString(
+      font,
+      fontSize,
+      character,
+      -textW / 2,
+      fontSize * 0.35,
+    );
+    g.restoreContext();
+  }
+void _paintStrokesForCell(
     PdfGraphics g,
     PracticeSheetEntry entry,
     double cellX,

@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 
 import '../engine/prepared_hanzi_strokes.dart';
 import '../painters/hanzi_strokes_painter.dart';
-import '../style/practice_stroke_colors.dart';
 import '../painters/mizi_grid_painter.dart';
+import '../style/practice_stroke_colors.dart';
 
 /// 练字格展示类型。
 enum HanziPracticeCellKind {
@@ -22,6 +22,8 @@ enum HanziPracticeCellKind {
 
 /// 单个练字格：米字格 + 笔画绘制（递进 / 描红 / 空白）。
 ///
+/// 无笔画模式下可传入 [glyphCharacter] + [fontFamily]，用字体字形代替笔画路径。
+///
 /// 使用 [RepaintBoundary] 将重绘隔离在格内。
 class HanziPracticeCell extends StatelessWidget {
   const HanziPracticeCell({
@@ -32,6 +34,8 @@ class HanziPracticeCell extends StatelessWidget {
     this.glyphInsetFraction = 0.14,
     this.strokeWidth = 3.0,
     this.traceColor = PracticeStrokeColors.trace,
+    this.glyphCharacter,
+    this.fontFamily,
   }) : assert(stepIndex >= 0);
 
   final PreparedHanziStrokes prepared;
@@ -44,10 +48,23 @@ class HanziPracticeCell extends StatelessWidget {
   final double strokeWidth;
   final Color traceColor;
 
+  /// 无笔画 + 字体模式下绘制的汉字（单字）。
+  final String? glyphCharacter;
+
+  /// 无笔画模式下的字体 family；为 null 时仍用笔画路径。
+  final String? fontFamily;
+
+  bool get _useFontGlyph =>
+      fontFamily != null &&
+      glyphCharacter != null &&
+      glyphCharacter!.isNotEmpty &&
+      (kind == HanziPracticeCellKind.model ||
+          kind == HanziPracticeCellKind.trace);
+
   @override
   Widget build(BuildContext context) {
     final n = prepared.strokeCount;
-    final safeStep = stepIndex.clamp(0, n - 1);
+    final safeStep = n == 0 ? 0 : stepIndex.clamp(0, n - 1);
     final progressiveVisible = safeStep + 1;
 
     return AspectRatio(
@@ -72,39 +89,60 @@ class HanziPracticeCell extends StatelessWidget {
                   size: Size(side, side),
                 ),
                 if (kind != HanziPracticeCellKind.blank)
-                  CustomPaint(
-                    painter: switch (kind) {
-                      HanziPracticeCellKind.model => HanziStrokesPainter(
-                          strokes: prepared,
-                          glyphRect: glyphRect,
-                          visibleStrokeCount: n,
-                          highlightStrokeIndex: 0,
-                          modelStyle: true,
-                          fillStrokes: true,
-                          strokePaintWidth: strokeWidth,
+                  if (_useFontGlyph)
+                    Positioned.fromRect(
+                      rect: glyphRect,
+                      child: Center(
+                        child: Text(
+                          glyphCharacter!,
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontFamily: fontFamily,
+                            fontSize: glyphRect.width * 0.88,
+                            height: 1,
+                            color: kind == HanziPracticeCellKind.trace
+                                ? traceColor
+                                : PracticeStrokeColors.completed,
+                            fontWeight: FontWeight.w400,
+                          ),
                         ),
-                      HanziPracticeCellKind.trace => HanziStrokesPainter(
-                          strokes: prepared,
-                          glyphRect: glyphRect,
-                          visibleStrokeCount: n,
-                          highlightStrokeIndex: 0,
-                          traceStyle: true,
-                          traceColor: traceColor,
-                          strokePaintWidth: strokeWidth,
-                        ),
-                      HanziPracticeCellKind.progressive => HanziStrokesPainter(
-                          strokes: prepared,
-                          glyphRect: glyphRect,
-                          visibleStrokeCount: progressiveVisible,
-                          highlightStrokeIndex: safeStep,
-                          strokePaintWidth: strokeWidth,
-                        ),
-                      HanziPracticeCellKind.blank => throw StateError(
-                          'blank cell has no stroke painter',
-                        ),
-                    },
-                    size: Size(side, side),
-                  ),
+                      ),
+                    )
+                  else
+                    CustomPaint(
+                      painter: switch (kind) {
+                        HanziPracticeCellKind.model => HanziStrokesPainter(
+                            strokes: prepared,
+                            glyphRect: glyphRect,
+                            visibleStrokeCount: n,
+                            highlightStrokeIndex: 0,
+                            modelStyle: true,
+                            fillStrokes: true,
+                            strokePaintWidth: strokeWidth,
+                          ),
+                        HanziPracticeCellKind.trace => HanziStrokesPainter(
+                            strokes: prepared,
+                            glyphRect: glyphRect,
+                            visibleStrokeCount: n,
+                            highlightStrokeIndex: 0,
+                            traceStyle: true,
+                            traceColor: traceColor,
+                            strokePaintWidth: strokeWidth,
+                          ),
+                        HanziPracticeCellKind.progressive =>
+                          HanziStrokesPainter(
+                            strokes: prepared,
+                            glyphRect: glyphRect,
+                            visibleStrokeCount: progressiveVisible,
+                            highlightStrokeIndex: safeStep,
+                            strokePaintWidth: strokeWidth,
+                          ),
+                        HanziPracticeCellKind.blank => throw StateError(
+                            'blank cell has no stroke painter',
+                          ),
+                      },
+                      size: Size(side, side),
+                    ),
               ],
             );
           },

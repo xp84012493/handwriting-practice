@@ -384,6 +384,21 @@ class AppLocalizationsZh extends AppLocalizations {
   String get sheetConfigStrokeOrderOff => '无笔画';
 
   @override
+  String get sheetConfigFont => '字体';
+
+  @override
+  String get sheetConfigFontHint => '仅在无笔画时可用。默认使用笔画轮廓字形；也可选霞鹜文楷或臻楷。';
+
+  @override
+  String get sheetConfigFontDefault => '默认';
+
+  @override
+  String get sheetConfigFontWenKai => '霞鹜文楷';
+
+  @override
+  String get sheetConfigFontZhenKai => '霞鹜臻楷';
+
+  @override
   String get sheetConfigPageOrientation => '纸张方向';
 
   @override
@@ -835,6 +850,21 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String get sheetConfigStrokeOrderOff => '無筆畫';
+
+  @override
+  String get sheetConfigFont => '字體';
+
+  @override
+  String get sheetConfigFontHint => '僅在無筆畫時可用。預設使用筆畫輪廓字形；也可選霞鶩文楷或臻楷。';
+
+  @override
+  String get sheetConfigFontDefault => '預設';
+
+  @override
+  String get sheetConfigFontWenKai => '霞鶩文楷';
+
+  @override
+  String get sheetConfigFontZhenKai => '霞鶩臻楷';
 
   @override
   String get sheetConfigPageOrientation => '紙張方向';

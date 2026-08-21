@@ -741,6 +741,36 @@ abstract class AppLocalizations {
   /// **'No strokes'**
   String get sheetConfigStrokeOrderOff;
 
+  /// No description provided for @sheetConfigFont.
+  ///
+  /// In en, this message translates to:
+  /// **'Font'**
+  String get sheetConfigFont;
+
+  /// No description provided for @sheetConfigFontHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Available only when stroke order is off. Default uses stroke-outline glyphs; or pick LXGW WenKai / ZhenKai.'**
+  String get sheetConfigFontHint;
+
+  /// No description provided for @sheetConfigFontDefault.
+  ///
+  /// In en, this message translates to:
+  /// **'Default'**
+  String get sheetConfigFontDefault;
+
+  /// No description provided for @sheetConfigFontWenKai.
+  ///
+  /// In en, this message translates to:
+  /// **'LXGW WenKai'**
+  String get sheetConfigFontWenKai;
+
+  /// No description provided for @sheetConfigFontZhenKai.
+  ///
+  /// In en, this message translates to:
+  /// **'LXGW ZhenKai'**
+  String get sheetConfigFontZhenKai;
+
   /// No description provided for @sheetConfigPageOrientation.
   ///
   /// In en, this message translates to:
