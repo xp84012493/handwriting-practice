@@ -5,7 +5,7 @@ import '../l10n/l10n_extension.dart';
 import '../layout/a4_sheet_layout.dart';
 import 'practice_sheet_controller.dart';
 
-/// 字帖描红 / 空白格数 / 字体大小配置（底部弹层）。
+/// 字帖描红 / 空白格数 / 字体大小 / 有无笔画配置（底部弹层）。
 Future<void> showSheetConfigSheet(
   BuildContext context,
   PracticeSheetController controller,
@@ -33,12 +33,14 @@ class _SheetConfigSheetState extends State<_SheetConfigSheet> {
   late int _traceSlots = widget.controller.traceSlots;
   late int _blankSlots = widget.controller.blankSlots;
   late int _cellSizeMm = widget.controller.cellSizeMm.round();
+  late bool _showStrokeOrder = widget.controller.showStrokeOrder;
 
   Future<void> _apply() async {
     await widget.controller.applyLayout(
       traceSlots: _traceSlots,
       blankSlots: _blankSlots,
       cellSizeMm: _cellSizeMm.toDouble(),
+      showStrokeOrder: _showStrokeOrder,
     );
     if (mounted) Navigator.of(context).pop();
   }
@@ -68,6 +70,36 @@ class _SheetConfigSheetState extends State<_SheetConfigSheet> {
                 ),
           ),
           const SizedBox(height: 20),
+          Text(
+            l10n.sheetConfigStrokeOrder,
+            style: Theme.of(context).textTheme.titleSmall,
+          ),
+          const SizedBox(height: 4),
+          Text(
+            l10n.sheetConfigStrokeOrderHint,
+            style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
+                ),
+          ),
+          const SizedBox(height: 8),
+          SegmentedButton<bool>(
+            segments: [
+              ButtonSegment<bool>(
+                value: true,
+                label: Text(l10n.sheetConfigStrokeOrderOn),
+              ),
+              ButtonSegment<bool>(
+                value: false,
+                label: Text(l10n.sheetConfigStrokeOrderOff),
+              ),
+            ],
+            selected: {_showStrokeOrder},
+            onSelectionChanged: (next) {
+              HapticFeedback.selectionClick();
+              setState(() => _showStrokeOrder = next.first);
+            },
+          ),
+          const SizedBox(height: 16),
           _SlotStepper(
             label: l10n.sheetConfigCellSize,
             hint: l10n.sheetConfigCellSizeHint,

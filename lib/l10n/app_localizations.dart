@@ -714,8 +714,32 @@ abstract class AppLocalizations {
   /// No description provided for @sheetConfigSubtitle.
   ///
   /// In en, this message translates to:
-  /// **'Each character row: stroke order → trace → blank grids.'**
+  /// **'Each character row: model → (optional stroke order) → trace → blank grids.'**
   String get sheetConfigSubtitle;
+
+  /// No description provided for @sheetConfigStrokeOrder.
+  ///
+  /// In en, this message translates to:
+  /// **'Stroke order'**
+  String get sheetConfigStrokeOrder;
+
+  /// No description provided for @sheetConfigStrokeOrderHint.
+  ///
+  /// In en, this message translates to:
+  /// **'With strokes: progressive stroke-order grids. Without: skip them and keep model, trace, and blank only.'**
+  String get sheetConfigStrokeOrderHint;
+
+  /// No description provided for @sheetConfigStrokeOrderOn.
+  ///
+  /// In en, this message translates to:
+  /// **'With strokes'**
+  String get sheetConfigStrokeOrderOn;
+
+  /// No description provided for @sheetConfigStrokeOrderOff.
+  ///
+  /// In en, this message translates to:
+  /// **'No strokes'**
+  String get sheetConfigStrokeOrderOff;
 
   /// No description provided for @sheetConfigCellSize.
   ///

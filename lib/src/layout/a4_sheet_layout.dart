@@ -54,10 +54,12 @@ abstract final class A4SheetLayout {
     required int traceSlots,
     required int blankSlots,
     required int colsPerLine,
+    bool showStrokeOrder = true,
   }) {
     final total = entry.columnsCount(
       traceSlots: traceSlots,
       blankSlots: blankSlots,
+      showStrokeOrder: showStrokeOrder,
     );
     final slices = <PracticeRowSlice>[];
     for (var start = 0; start < total; start += colsPerLine) {
@@ -78,10 +80,12 @@ abstract final class A4SheetLayout {
     required int traceSlots,
     required int blankSlots,
     required int colsPerLine,
+    bool showStrokeOrder = true,
   }) {
     final total = entry.columnsCount(
       traceSlots: traceSlots,
       blankSlots: blankSlots,
+      showStrokeOrder: showStrokeOrder,
     );
     return (total + colsPerLine - 1) ~/ colsPerLine;
   }
@@ -107,6 +111,7 @@ abstract final class A4SheetLayout {
     int? maxStrokeCountHint,
     double rowGap = defaultRowGap,
     double? targetCellSize,
+    bool showStrokeOrder = true,
   }) {
     final cell = targetCellSize ?? practiceCellSizePt;
     final colsPerLine = columnsPerLine(pdfInnerWidthPt, cell);
@@ -120,6 +125,7 @@ abstract final class A4SheetLayout {
         strokeCount: maxStrokeCountHint,
         traceSlots: traceSlots,
         blankSlots: blankSlots,
+        showStrokeOrder: showStrokeOrder,
       );
       final linesPerChar =
           (colsPerChar + colsPerLine - 1) ~/ colsPerLine;
@@ -142,6 +148,7 @@ abstract final class A4SheetLayout {
     required int blankSlots,
     double rowGap = defaultRowGap,
     double? targetCellSize,
+    bool showStrokeOrder = true,
   }) {
     final cell = targetCellSize ?? practiceCellSizePt;
     final colsPerLine = columnsPerLine(innerW, cell);
@@ -154,6 +161,7 @@ abstract final class A4SheetLayout {
           traceSlots: traceSlots,
           blankSlots: blankSlots,
           colsPerLine: colsPerLine,
+          showStrokeOrder: showStrokeOrder,
         ),
       );
     }
@@ -180,6 +188,7 @@ abstract final class A4SheetLayout {
     required int blankSlots,
     double rowGap = defaultRowGap,
     double? targetCellSize,
+    bool showStrokeOrder = true,
   }) {
     if (entries.isEmpty) return const [];
 
@@ -200,6 +209,7 @@ abstract final class A4SheetLayout {
         traceSlots: traceSlots,
         blankSlots: blankSlots,
         colsPerLine: colsPerLine,
+        showStrokeOrder: showStrokeOrder,
       );
       final need = math.max(1, lines);
       if (current.isNotEmpty && used + need > maxPhysical) {

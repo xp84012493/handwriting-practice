@@ -380,7 +380,20 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get sheetConfigSubtitle =>
-      'Each character row: stroke order → trace → blank grids.';
+      'Each character row: model → (optional stroke order) → trace → blank grids.';
+
+  @override
+  String get sheetConfigStrokeOrder => 'Stroke order';
+
+  @override
+  String get sheetConfigStrokeOrderHint =>
+      'With strokes: progressive stroke-order grids. Without: skip them and keep model, trace, and blank only.';
+
+  @override
+  String get sheetConfigStrokeOrderOn => 'With strokes';
+
+  @override
+  String get sheetConfigStrokeOrderOff => 'No strokes';
 
   @override
   String get sheetConfigCellSize => 'Character size';

@@ -12,11 +12,16 @@ class PracticeSheetEntry {
   final HanziCharacter character;
   final PreparedHanziStrokes prepared;
 
-  int columnsCount({required int traceSlots, required int blankSlots}) {
+  int columnsCount({
+    required int traceSlots,
+    required int blankSlots,
+    bool showStrokeOrder = true,
+  }) {
     return practiceColumnsCount(
       strokeCount: prepared.strokeCount,
       traceSlots: traceSlots,
       blankSlots: blankSlots,
+      showStrokeOrder: showStrokeOrder,
     );
   }
 }

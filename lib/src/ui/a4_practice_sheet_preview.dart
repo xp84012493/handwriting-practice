@@ -13,6 +13,7 @@ class A4PracticeSheetPreview extends StatelessWidget {
     required this.rows,
     required this.traceSlots,
     required this.blankSlots,
+    this.showStrokeOrder = true,
     this.cellSizeMm = A4SheetLayout.practiceCellSizeMm,
     this.rowGap = 4,
     this.pagePadding = 14,
@@ -22,6 +23,7 @@ class A4PracticeSheetPreview extends StatelessWidget {
   final List<PracticeSheetEntry> rows;
   final int traceSlots;
   final int blankSlots;
+  final bool showStrokeOrder;
   final double cellSizeMm;
   final double rowGap;
   final double pagePadding;
@@ -73,6 +75,7 @@ class A4PracticeSheetPreview extends StatelessWidget {
                       blankSlots: blankSlots,
                       rowGap: rowGap,
                       targetCellSize: targetCell,
+                      showStrokeOrder: showStrokeOrder,
                     );
 
                     return Stack(
@@ -111,6 +114,7 @@ class A4PracticeSheetPreview extends StatelessWidget {
                                       child: _PracticeRowSlice(
                                         slice: slice,
                                         traceSlots: traceSlots,
+                                        showStrokeOrder: showStrokeOrder,
                                         cellSize: layout.cellSize,
                                         strokeWidth: layout.strokeWidth,
                                         traceColor: traceColor,
@@ -139,6 +143,7 @@ class _PracticeRowSlice extends StatelessWidget {
   const _PracticeRowSlice({
     required this.slice,
     required this.traceSlots,
+    required this.showStrokeOrder,
     required this.cellSize,
     required this.strokeWidth,
     required this.traceColor,
@@ -146,6 +151,7 @@ class _PracticeRowSlice extends StatelessWidget {
 
   final PracticeRowSlice slice;
   final int traceSlots;
+  final bool showStrokeOrder;
   final double cellSize;
   final double strokeWidth;
   final Color traceColor;
@@ -161,6 +167,7 @@ class _PracticeRowSlice extends StatelessWidget {
         col: col,
         strokeCount: strokeCount,
         traceSlots: traceSlots,
+        showStrokeOrder: showStrokeOrder,
       );
       children.add(
         SizedBox(
@@ -175,7 +182,10 @@ class _PracticeRowSlice extends StatelessWidget {
             PracticeCellKind.progressive => HanziPracticeCell(
                 prepared: prepared,
                 kind: HanziPracticeCellKind.progressive,
-                stepIndex: practiceProgressiveStepIndex(col)!,
+                stepIndex: practiceProgressiveStepIndex(
+                  col,
+                  showStrokeOrder: showStrokeOrder,
+                )!,
                 strokeWidth: strokeWidth,
               ),
             PracticeCellKind.trace => HanziPracticeCell(

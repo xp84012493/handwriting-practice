@@ -36,6 +36,7 @@ class PracticeSheetPdfService {
     required List<PracticeSheetEntry> rows,
     required int traceSlots,
     required int blankSlots,
+    bool showStrokeOrder = true,
     double cellSizeMm = A4SheetLayout.practiceCellSizeMm,
     double rowGap = 4,
     double pagePadding = 18,
@@ -49,6 +50,7 @@ class PracticeSheetPdfService {
       blankSlots: blankSlots,
       rowGap: rowGap,
       targetCellSize: A4SheetLayout.cellSizePtFromMm(cellSizeMm),
+      showStrokeOrder: showStrokeOrder,
     );
     final pageRows = pages.isEmpty ? const <List<PracticeSheetEntry>>[[]] : pages;
 
@@ -74,6 +76,7 @@ class PracticeSheetPdfService {
                       rows: pageEntries,
                       traceSlots: traceSlots,
                       blankSlots: blankSlots,
+                      showStrokeOrder: showStrokeOrder,
                       cellSizeMm: cellSizeMm,
                       rowGap: rowGap,
                     ).paint(canvas, innerSize);
@@ -96,6 +99,7 @@ class PracticeSheetPdfService {
     required List<PracticeSheetEntry> rows,
     required int traceSlots,
     required int blankSlots,
+    bool showStrokeOrder = true,
     double cellSizeMm = A4SheetLayout.practiceCellSizeMm,
     String name = '练字帖',
     Uint8List? bytes,
@@ -105,6 +109,7 @@ class PracticeSheetPdfService {
           rows: rows,
           traceSlots: traceSlots,
           blankSlots: blankSlots,
+          showStrokeOrder: showStrokeOrder,
           cellSizeMm: cellSizeMm,
           pageFormat: pageFormat,
         );
@@ -136,6 +141,7 @@ class _PracticeSheetPdfPainter {
     required this.rows,
     required this.traceSlots,
     required this.blankSlots,
+    required this.showStrokeOrder,
     required this.cellSizeMm,
     required this.rowGap,
   });
@@ -143,6 +149,7 @@ class _PracticeSheetPdfPainter {
   final List<PracticeSheetEntry> rows;
   final int traceSlots;
   final int blankSlots;
+  final bool showStrokeOrder;
   final double cellSizeMm;
   final double rowGap;
 
@@ -173,6 +180,7 @@ class _PracticeSheetPdfPainter {
       blankSlots: blankSlots,
       rowGap: rowGap,
       targetCellSize: targetCell,
+      showStrokeOrder: showStrokeOrder,
     );
     final cell = layout.cellSize;
     final strokeW = layout.strokeWidth;
@@ -211,8 +219,9 @@ class _PracticeSheetPdfPainter {
 
   _CellKind _cellKind(int col, int strokeCount) {
     if (col == 0) return _CellKind.model;
-    if (col <= strokeCount) return _CellKind.progressive;
-    if (col <= strokeCount + traceSlots) return _CellKind.trace;
+    final progressive = showStrokeOrder ? strokeCount : 0;
+    if (col <= progressive) return _CellKind.progressive;
+    if (col <= progressive + traceSlots) return _CellKind.trace;
     return _CellKind.blank;
   }
 

@@ -369,7 +369,19 @@ class AppLocalizationsZh extends AppLocalizations {
   String get sheetConfigTitle => '字帖配置';
 
   @override
-  String get sheetConfigSubtitle => '每字一行：递进笔顺 → 描红 → 空白临摹格。';
+  String get sheetConfigSubtitle => '每字一行：示范字 →（可选笔顺）→ 描红 → 空白临摹格。';
+
+  @override
+  String get sheetConfigStrokeOrder => '笔画笔顺';
+
+  @override
+  String get sheetConfigStrokeOrderHint => '有笔画：逐笔递进练习；无笔画：跳过笔顺格，仅保留示范、描红与空白。';
+
+  @override
+  String get sheetConfigStrokeOrderOn => '有笔画';
+
+  @override
+  String get sheetConfigStrokeOrderOff => '无笔画';
 
   @override
   String get sheetConfigCellSize => '字体大小';
@@ -789,7 +801,19 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
   String get sheetConfigTitle => '字帖設定';
 
   @override
-  String get sheetConfigSubtitle => '每字一行：遞進筆順 → 描紅 → 空白臨摹格。';
+  String get sheetConfigSubtitle => '每字一行：示範字 →（可選筆順）→ 描紅 → 空白臨摹格。';
+
+  @override
+  String get sheetConfigStrokeOrder => '筆畫筆順';
+
+  @override
+  String get sheetConfigStrokeOrderHint => '有筆畫：逐筆遞進練習；無筆畫：跳過筆順格，僅保留示範、描紅與空白。';
+
+  @override
+  String get sheetConfigStrokeOrderOn => '有筆畫';
+
+  @override
+  String get sheetConfigStrokeOrderOff => '無筆畫';
 
   @override
   String get sheetConfigCellSize => '字體大小';

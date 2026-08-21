@@ -51,28 +51,32 @@ enum PracticeCellKind {
   blank,
 }
 
-/// 每行第一格为完整字，其后为递进笔顺 → 描红 → 临摹。
+/// 每行第一格为完整字，其后可选递进笔顺 → 描红 → 临摹。
 int practiceColumnsCount({
   required int strokeCount,
   required int traceSlots,
   required int blankSlots,
+  bool showStrokeOrder = true,
 }) {
-  return 1 + strokeCount + traceSlots + blankSlots;
+  final progressive = showStrokeOrder ? strokeCount : 0;
+  return 1 + progressive + traceSlots + blankSlots;
 }
 
 PracticeCellKind practiceCellKindAt({
   required int col,
   required int strokeCount,
   required int traceSlots,
+  bool showStrokeOrder = true,
 }) {
   if (col == 0) return PracticeCellKind.model;
-  if (col <= strokeCount) return PracticeCellKind.progressive;
-  if (col <= strokeCount + traceSlots) return PracticeCellKind.trace;
+  final progressive = showStrokeOrder ? strokeCount : 0;
+  if (col <= progressive) return PracticeCellKind.progressive;
+  if (col <= progressive + traceSlots) return PracticeCellKind.trace;
   return PracticeCellKind.blank;
 }
 
-/// 递进格对应的 stepIndex（0 = 仅第 1 笔）。
-int? practiceProgressiveStepIndex(int col) {
-  if (col <= 0) return null;
+/// 递进格对应的 stepIndex（0 = 仅第 1 笔）。无笔画模式下返回 null。
+int? practiceProgressiveStepIndex(int col, {bool showStrokeOrder = true}) {
+  if (!showStrokeOrder || col <= 0) return null;
   return col - 1;
 }

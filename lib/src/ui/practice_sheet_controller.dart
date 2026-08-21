@@ -48,6 +48,7 @@ class PracticeSheetController extends ChangeNotifier {
     int traceSlots = defaultTraceSlots,
     int blankSlots = defaultBlankSlots,
     double cellSizeMm = defaultCellSizeMm,
+    bool showStrokeOrder = defaultShowStrokeOrder,
   })  : _traceSlots = traceSlots.clamp(minSlots, maxSlots),
         _blankSlots = blankSlots.clamp(minSlots, maxSlots),
         _cellSizeMm = cellSizeMm
@@ -55,17 +56,20 @@ class PracticeSheetController extends ChangeNotifier {
               A4SheetLayout.minPracticeCellSizeMm,
               A4SheetLayout.maxPracticeCellSizeMm,
             )
-            .toDouble();
+            .toDouble(),
+        _showStrokeOrder = showStrokeOrder;
 
   static const int defaultTraceSlots = 3;
   static const int defaultBlankSlots = 3;
   static const int minSlots = 0;
   static const int maxSlots = 10;
   static const double defaultCellSizeMm = A4SheetLayout.practiceCellSizeMm;
+  static const bool defaultShowStrokeOrder = true;
 
   static const _prefTraceSlots = 'sheet_trace_slots';
   static const _prefBlankSlots = 'sheet_blank_slots';
   static const _prefCellSizeMm = 'sheet_cell_size_mm';
+  static const _prefShowStrokeOrder = 'sheet_show_stroke_order';
 
   /// 笔画字典（JSON 数组），见 [HanziGraphicsParser.loadDictionaryFromAsset]。
   final String dictionaryAssetPath;
@@ -73,6 +77,7 @@ class PracticeSheetController extends ChangeNotifier {
   int _traceSlots;
   int _blankSlots;
   double _cellSizeMm;
+  bool _showStrokeOrder;
 
   /// 每行末尾「描红」完整叠字的格数。
   int get traceSlots => _traceSlots;
@@ -83,11 +88,15 @@ class PracticeSheetController extends ChangeNotifier {
   /// 米字格边长（mm），影响预览与打印字体大小。
   double get cellSizeMm => _cellSizeMm;
 
+  /// 是否包含递进笔顺格（有笔画 / 无笔画）。
+  bool get showStrokeOrder => _showStrokeOrder;
+
   Future<void> load() async {
     final prefs = await SharedPreferences.getInstance();
     final trace = prefs.getInt(_prefTraceSlots);
     final blank = prefs.getInt(_prefBlankSlots);
     final cell = prefs.getDouble(_prefCellSizeMm);
+    final strokes = prefs.getBool(_prefShowStrokeOrder);
     if (trace != null) {
       _traceSlots = trace.clamp(minSlots, maxSlots);
     }
@@ -102,6 +111,9 @@ class PracticeSheetController extends ChangeNotifier {
           )
           .toDouble();
     }
+    if (strokes != null) {
+      _showStrokeOrder = strokes;
+    }
     notifyListeners();
   }
 
@@ -109,6 +121,7 @@ class PracticeSheetController extends ChangeNotifier {
     required int traceSlots,
     required int blankSlots,
     required double cellSizeMm,
+    required bool showStrokeOrder,
   }) async {
     final nextTrace = traceSlots.clamp(minSlots, maxSlots);
     final nextBlank = blankSlots.clamp(minSlots, maxSlots);
@@ -120,16 +133,19 @@ class PracticeSheetController extends ChangeNotifier {
         .toDouble();
     if (nextTrace == _traceSlots &&
         nextBlank == _blankSlots &&
-        nextCell == _cellSizeMm) {
+        nextCell == _cellSizeMm &&
+        showStrokeOrder == _showStrokeOrder) {
       return;
     }
     _traceSlots = nextTrace;
     _blankSlots = nextBlank;
     _cellSizeMm = nextCell;
+    _showStrokeOrder = showStrokeOrder;
     final prefs = await SharedPreferences.getInstance();
     await prefs.setInt(_prefTraceSlots, _traceSlots);
     await prefs.setInt(_prefBlankSlots, _blankSlots);
     await prefs.setDouble(_prefCellSizeMm, _cellSizeMm);
+    await prefs.setBool(_prefShowStrokeOrder, _showStrokeOrder);
 
     final raw = textController.text.trim();
     if (raw.isNotEmpty) {
@@ -193,7 +209,8 @@ class PracticeSheetController extends ChangeNotifier {
     final maxPhysical = A4SheetLayout.maxPhysicalRowsOnSheet(
       targetCellSize: _cellSizePt,
     );
-    final minColsPerChar = 1 + 1 + _traceSlots + _blankSlots;
+    final minColsPerChar =
+        1 + (_showStrokeOrder ? 1 : 0) + _traceSlots + _blankSlots;
     final minPhysPerChar =
         (minColsPerChar + colsPerLine - 1) ~/ colsPerLine;
     return math.max(1, maxPhysical ~/ minPhysPerChar);
@@ -253,6 +270,7 @@ class PracticeSheetController extends ChangeNotifier {
       traceSlots: _traceSlots,
       blankSlots: _blankSlots,
       targetCellSize: _cellSizePt,
+      showStrokeOrder: _showStrokeOrder,
     );
     if (_pages.isEmpty) {
       _previewPageIndex = 0;
