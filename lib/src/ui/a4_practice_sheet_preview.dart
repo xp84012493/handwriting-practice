@@ -14,6 +14,7 @@ class A4PracticeSheetPreview extends StatelessWidget {
     required this.traceSlots,
     required this.blankSlots,
     this.showStrokeOrder = true,
+    this.pageOrientation = A4SheetLayout.defaultOrientation,
     this.cellSizeMm = A4SheetLayout.practiceCellSizeMm,
     this.rowGap = 4,
     this.pagePadding = 14,
@@ -24,6 +25,7 @@ class A4PracticeSheetPreview extends StatelessWidget {
   final int traceSlots;
   final int blankSlots;
   final bool showStrokeOrder;
+  final SheetPageOrientation pageOrientation;
   final double cellSizeMm;
   final double rowGap;
   final double pagePadding;
@@ -38,12 +40,15 @@ class A4PracticeSheetPreview extends StatelessWidget {
         final maxW = constraints.maxWidth.isFinite
             ? constraints.maxWidth
             : MediaQuery.sizeOf(context).width;
-        final pageW = maxW.clamp(200.0, 560.0);
+        final pageW = maxW.clamp(
+          200.0,
+          pageOrientation.isLandscape ? 560.0 : 420.0,
+        );
 
         return SizedBox(
           width: pageW,
           child: AspectRatio(
-            aspectRatio: A4SheetLayout.aspectRatio,
+            aspectRatio: A4SheetLayout.aspectRatioFor(pageOrientation),
             child: DecoratedBox(
               decoration: BoxDecoration(
                 color: Colors.white,
@@ -66,6 +71,7 @@ class A4PracticeSheetPreview extends StatelessWidget {
                     final targetCell = A4SheetLayout.targetCellSizeForPreview(
                       innerW,
                       cellSizeMm: cellSizeMm,
+                      orientation: pageOrientation,
                     );
                     final layout = A4SheetLayout.planWrappedSheet(
                       innerW: innerW,

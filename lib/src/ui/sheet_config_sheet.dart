@@ -1,5 +1,3 @@
-import 'dart:math' as math;
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -36,10 +34,13 @@ class _SheetConfigSheetState extends State<_SheetConfigSheet> {
   late int _blankSlots = widget.controller.blankSlots;
   late int _cellSizeMm = widget.controller.cellSizeMm.round();
   late bool _showStrokeOrder = widget.controller.showStrokeOrder;
+  late SheetPageOrientation _pageOrientation =
+      widget.controller.pageOrientation;
 
   int get _slotMax => PracticeSheetController.maxSlotsFor(
         showStrokeOrder: _showStrokeOrder,
         cellSizeMm: _cellSizeMm.toDouble(),
+        orientation: _pageOrientation,
       );
 
   Future<void> _apply() async {
@@ -48,14 +49,17 @@ class _SheetConfigSheetState extends State<_SheetConfigSheet> {
       blankSlots: _blankSlots,
       cellSizeMm: _cellSizeMm.toDouble(),
       showStrokeOrder: _showStrokeOrder,
+      pageOrientation: _pageOrientation,
     );
     if (mounted) Navigator.of(context).pop();
   }
 
   /// 无笔画：调整描红格，使示范+描红+空白刚好占满一行（尽量保留空白格数）。
   void _fitTraceToPageWidth() {
-    final practice =
-        PracticeSheetController.practiceSlotsToFillLine(_cellSizeMm.toDouble());
+    final practice = PracticeSheetController.practiceSlotsToFillLine(
+      _cellSizeMm.toDouble(),
+      orientation: _pageOrientation,
+    );
     final maxS = _slotMax;
     HapticFeedback.selectionClick();
     setState(() {
@@ -71,8 +75,10 @@ class _SheetConfigSheetState extends State<_SheetConfigSheet> {
 
   /// 无笔画：调整空白格，使示范+描红+空白刚好占满一行（尽量保留描红格数）。
   void _fitBlankToPageWidth() {
-    final practice =
-        PracticeSheetController.practiceSlotsToFillLine(_cellSizeMm.toDouble());
+    final practice = PracticeSheetController.practiceSlotsToFillLine(
+      _cellSizeMm.toDouble(),
+      orientation: _pageOrientation,
+    );
     final maxS = _slotMax;
     HapticFeedback.selectionClick();
     setState(() {
@@ -90,10 +96,17 @@ class _SheetConfigSheetState extends State<_SheetConfigSheet> {
     HapticFeedback.selectionClick();
     setState(() {
       _showStrokeOrder = PracticeSheetController.defaultShowStrokeOrder;
+      _pageOrientation = PracticeSheetController.defaultPageOrientation;
       _cellSizeMm = PracticeSheetController.defaultCellSizeMm.round();
       _traceSlots = PracticeSheetController.defaultTraceSlots;
       _blankSlots = PracticeSheetController.defaultBlankSlots;
     });
+  }
+
+  void _clampSlotsToMax() {
+    final maxS = _slotMax;
+    _traceSlots = _traceSlots.clamp(0, maxS);
+    _blankSlots = _blankSlots.clamp(0, maxS);
   }
 
   @override
@@ -107,126 +120,151 @@ class _SheetConfigSheetState extends State<_SheetConfigSheet> {
 
     return Padding(
       padding: EdgeInsets.fromLTRB(20, 0, 20, 16 + bottom),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Text(
-            l10n.sheetConfigTitle,
-            style: Theme.of(context).textTheme.titleLarge,
-          ),
-          const SizedBox(height: 8),
-          Text(
-            l10n.sheetConfigSubtitle,
-            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: Theme.of(context).colorScheme.onSurfaceVariant,
+      child: SingleChildScrollView(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Text(
+              l10n.sheetConfigTitle,
+              style: Theme.of(context).textTheme.titleLarge,
+            ),
+            const SizedBox(height: 8),
+            Text(
+              l10n.sheetConfigSubtitle,
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                  ),
+            ),
+            const SizedBox(height: 20),
+            Text(
+              l10n.sheetConfigPageOrientation,
+              style: Theme.of(context).textTheme.titleSmall,
+            ),
+            const SizedBox(height: 4),
+            Text(
+              l10n.sheetConfigPageOrientationHint,
+              style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                  ),
+            ),
+            const SizedBox(height: 8),
+            SegmentedButton<SheetPageOrientation>(
+              segments: [
+                ButtonSegment<SheetPageOrientation>(
+                  value: SheetPageOrientation.landscape,
+                  label: Text(l10n.sheetConfigPageOrientationLandscape),
+                  icon: const Icon(Icons.stay_current_landscape_outlined),
                 ),
-          ),
-          const SizedBox(height: 20),
-          Text(
-            l10n.sheetConfigStrokeOrder,
-            style: Theme.of(context).textTheme.titleSmall,
-          ),
-          const SizedBox(height: 4),
-          Text(
-            l10n.sheetConfigStrokeOrderHint,
-            style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                  color: Theme.of(context).colorScheme.onSurfaceVariant,
+                ButtonSegment<SheetPageOrientation>(
+                  value: SheetPageOrientation.portrait,
+                  label: Text(l10n.sheetConfigPageOrientationPortrait),
+                  icon: const Icon(Icons.stay_current_portrait_outlined),
                 ),
-          ),
-          const SizedBox(height: 8),
-          SegmentedButton<bool>(
-            segments: [
-              ButtonSegment<bool>(
-                value: true,
-                label: Text(l10n.sheetConfigStrokeOrderOn),
-              ),
-              ButtonSegment<bool>(
-                value: false,
-                label: Text(l10n.sheetConfigStrokeOrderOff),
-              ),
-            ],
-            selected: {_showStrokeOrder},
-            onSelectionChanged: (next) {
-              HapticFeedback.selectionClick();
-              setState(() {
-                _showStrokeOrder = next.first;
-                final maxS = PracticeSheetController.maxSlotsFor(
-                  showStrokeOrder: _showStrokeOrder,
-                  cellSizeMm: _cellSizeMm.toDouble(),
-                );
-                _traceSlots = _traceSlots.clamp(0, maxS);
-                _blankSlots = _blankSlots.clamp(0, maxS);
-              });
-            },
-          ),
-          const SizedBox(height: 16),
-          _SlotStepper(
-            label: l10n.sheetConfigCellSize,
-            hint: l10n.sheetConfigCellSizeHint,
-            valueLabel: l10n.sheetConfigCellSizeValue(_cellSizeMm),
-            value: _cellSizeMm,
-            min: minMm,
-            max: maxMm,
-            onChanged: (v) => setState(() {
-              _cellSizeMm = v;
-              if (!_showStrokeOrder) {
-                final maxS = PracticeSheetController.maxSlotsFor(
-                  showStrokeOrder: false,
-                  cellSizeMm: v.toDouble(),
-                );
-                _traceSlots = math.min(_traceSlots, maxS);
-                _blankSlots = math.min(_blankSlots, maxS);
-              }
-            }),
-          ),
-          const SizedBox(height: 16),
-          _SlotStepper(
-            label: l10n.sheetConfigTraceSlots,
-            hint: l10n.sheetConfigTraceHint,
-            valueLabel: '$_traceSlots',
-            value: _traceSlots,
-            min: PracticeSheetController.minSlots,
-            max: slotMax,
-            onChanged: (v) => setState(() => _traceSlots = v),
-            fitPageWidthLabel: showFit ? l10n.sheetConfigFitPageWidth : null,
-            fitPageWidthTooltip:
-                showFit ? l10n.sheetConfigFitPageWidthHint : null,
-            onFitPageWidth: showFit ? _fitTraceToPageWidth : null,
-          ),
-          const SizedBox(height: 16),
-          _SlotStepper(
-            label: l10n.sheetConfigBlankSlots,
-            hint: l10n.sheetConfigBlankHint,
-            valueLabel: '$_blankSlots',
-            value: _blankSlots,
-            min: PracticeSheetController.minSlots,
-            max: slotMax,
-            onChanged: (v) => setState(() => _blankSlots = v),
-            fitPageWidthLabel: showFit ? l10n.sheetConfigFitPageWidth : null,
-            fitPageWidthTooltip:
-                showFit ? l10n.sheetConfigFitPageWidthHint : null,
-            onFitPageWidth: showFit ? _fitBlankToPageWidth : null,
-          ),
-          const SizedBox(height: 24),
-          Row(
-            children: [
-              Expanded(
-                child: OutlinedButton(
-                  onPressed: _resetDefaults,
-                  child: Text(l10n.sheetConfigResetDefaults),
+              ],
+              selected: {_pageOrientation},
+              onSelectionChanged: (next) {
+                HapticFeedback.selectionClick();
+                setState(() {
+                  _pageOrientation = next.first;
+                  _clampSlotsToMax();
+                });
+              },
+            ),
+            const SizedBox(height: 16),
+            Text(
+              l10n.sheetConfigStrokeOrder,
+              style: Theme.of(context).textTheme.titleSmall,
+            ),
+            const SizedBox(height: 4),
+            Text(
+              l10n.sheetConfigStrokeOrderHint,
+              style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                  ),
+            ),
+            const SizedBox(height: 8),
+            SegmentedButton<bool>(
+              segments: [
+                ButtonSegment<bool>(
+                  value: true,
+                  label: Text(l10n.sheetConfigStrokeOrderOn),
                 ),
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: FilledButton(
-                  onPressed: _apply,
-                  child: Text(l10n.sheetConfigDone),
+                ButtonSegment<bool>(
+                  value: false,
+                  label: Text(l10n.sheetConfigStrokeOrderOff),
                 ),
-              ),
-            ],
-          ),
-        ],
+              ],
+              selected: {_showStrokeOrder},
+              onSelectionChanged: (next) {
+                HapticFeedback.selectionClick();
+                setState(() {
+                  _showStrokeOrder = next.first;
+                  _clampSlotsToMax();
+                });
+              },
+            ),
+            const SizedBox(height: 16),
+            _SlotStepper(
+              label: l10n.sheetConfigCellSize,
+              hint: l10n.sheetConfigCellSizeHint,
+              valueLabel: l10n.sheetConfigCellSizeValue(_cellSizeMm),
+              value: _cellSizeMm,
+              min: minMm,
+              max: maxMm,
+              onChanged: (v) => setState(() {
+                _cellSizeMm = v;
+                _clampSlotsToMax();
+              }),
+            ),
+            const SizedBox(height: 16),
+            _SlotStepper(
+              label: l10n.sheetConfigTraceSlots,
+              hint: l10n.sheetConfigTraceHint,
+              valueLabel: '$_traceSlots',
+              value: _traceSlots,
+              min: PracticeSheetController.minSlots,
+              max: slotMax,
+              onChanged: (v) => setState(() => _traceSlots = v),
+              fitPageWidthLabel: showFit ? l10n.sheetConfigFitPageWidth : null,
+              fitPageWidthTooltip:
+                  showFit ? l10n.sheetConfigFitPageWidthHint : null,
+              onFitPageWidth: showFit ? _fitTraceToPageWidth : null,
+            ),
+            const SizedBox(height: 16),
+            _SlotStepper(
+              label: l10n.sheetConfigBlankSlots,
+              hint: l10n.sheetConfigBlankHint,
+              valueLabel: '$_blankSlots',
+              value: _blankSlots,
+              min: PracticeSheetController.minSlots,
+              max: slotMax,
+              onChanged: (v) => setState(() => _blankSlots = v),
+              fitPageWidthLabel: showFit ? l10n.sheetConfigFitPageWidth : null,
+              fitPageWidthTooltip:
+                  showFit ? l10n.sheetConfigFitPageWidthHint : null,
+              onFitPageWidth: showFit ? _fitBlankToPageWidth : null,
+            ),
+            const SizedBox(height: 24),
+            Row(
+              children: [
+                Expanded(
+                  child: OutlinedButton(
+                    onPressed: _resetDefaults,
+                    child: Text(l10n.sheetConfigResetDefaults),
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: FilledButton(
+                    onPressed: _apply,
+                    child: Text(l10n.sheetConfigDone),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }

@@ -17,7 +17,7 @@ import '../models/stroke_path_convention.dart';
 ///
 /// 系统打印见 [layoutPrint]；另存为文件与分享见 `practice_sheet_export.dart`。
 ///
-/// 页面格式固定为 A4 横向（[PdfPageFormat.a4.landscape]）；布局算法与 [A4PracticeSheetPreview] 对齐。
+/// 页面格式为 A4 横向或竖向（由 [SheetPageOrientation] 决定）；布局算法与 [A4PracticeSheetPreview] 对齐。
 class PracticeSheetPdfService {
   PracticeSheetPdfService._();
 
@@ -25,24 +25,26 @@ class PracticeSheetPdfService {
     'com.leoxp.handwritingpractice/print',
   );
 
-  /// A4 横向：练字行沿 297mm 长边排列。
+  /// 默认 A4 横向格式（兼容旧调用）。
   static final PdfPageFormat pageFormat = PdfPageFormat.a4.landscape;
 
+  /// 按方向返回 PDF 页面格式。
+  static PdfPageFormat pageFormatFor(SheetPageOrientation orientation) =>
+      A4SheetLayout.pageFormatFor(orientation);
+
   /// 生成 PDF 字节（矢量路径，非位图）。
-  ///
-  /// [pageFormat] 默认 [PracticeSheetPdfService.pageFormat]；打印使用固定横向 A4，
-  /// 保存/分享同此格式。
   static Future<Uint8List> buildPdfBytes({
     required List<PracticeSheetEntry> rows,
     required int traceSlots,
     required int blankSlots,
     bool showStrokeOrder = true,
+    SheetPageOrientation pageOrientation = A4SheetLayout.defaultOrientation,
     double cellSizeMm = A4SheetLayout.practiceCellSizeMm,
     double rowGap = 4,
     double pagePadding = 18,
     PdfPageFormat? pageFormat,
   }) async {
-    final fmt = pageFormat ?? PracticeSheetPdfService.pageFormat;
+    final fmt = pageFormat ?? pageFormatFor(pageOrientation);
     final doc = pw.Document();
     final pages = A4SheetLayout.paginateEntries(
       entries: rows,
@@ -51,6 +53,7 @@ class PracticeSheetPdfService {
       rowGap: rowGap,
       targetCellSize: A4SheetLayout.cellSizePtFromMm(cellSizeMm),
       showStrokeOrder: showStrokeOrder,
+      orientation: pageOrientation,
     );
     final pageRows = pages.isEmpty ? const <List<PracticeSheetEntry>>[[]] : pages;
 
@@ -100,18 +103,21 @@ class PracticeSheetPdfService {
     required int traceSlots,
     required int blankSlots,
     bool showStrokeOrder = true,
+    SheetPageOrientation pageOrientation = A4SheetLayout.defaultOrientation,
     double cellSizeMm = A4SheetLayout.practiceCellSizeMm,
     String name = '练字帖',
     Uint8List? bytes,
   }) async {
+    final fmt = pageFormatFor(pageOrientation);
     final pdfBytes = bytes ??
         await buildPdfBytes(
           rows: rows,
           traceSlots: traceSlots,
           blankSlots: blankSlots,
           showStrokeOrder: showStrokeOrder,
+          pageOrientation: pageOrientation,
           cellSizeMm: cellSizeMm,
-          pageFormat: pageFormat,
+          pageFormat: fmt,
         );
 
     // iOS：绕过 `printing` 插件的 FFI setDocument（SPM 静态链接 + App Store strip
@@ -121,14 +127,14 @@ class PracticeSheetPdfService {
       await _iosPrintChannel.invokeMethod<void>('printPdf', <String, Object?>{
         'bytes': pdfBytes,
         'name': name,
-        'landscape': true,
+        'landscape': pageOrientation.isLandscape,
       });
       return;
     }
 
     await Printing.layoutPdf(
       name: name,
-      format: pageFormat,
+      format: fmt,
       dynamicLayout: false,
       onLayout: (_) async => pdfBytes,
     );

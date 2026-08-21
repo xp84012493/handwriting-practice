@@ -74,6 +74,8 @@ enum PracticeSheetPrintChannel {
       info.outputType = .general
       if landscape {
         info.orientation = .landscape
+      } else {
+        info.orientation = .portrait
       }
       controller.printInfo = info
       controller.printingItem = data

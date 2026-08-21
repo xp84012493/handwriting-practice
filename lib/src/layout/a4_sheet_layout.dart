@@ -5,10 +5,40 @@ import 'package:pdf/pdf.dart';
 import '../models/practice_sheet_entry.dart';
 import 'practice_sheet_wrap.dart';
 
-/// A4 字帖版式：横向放置，练字行沿 297mm 长边排列。
+/// A4 纸张方向：横向（297×210）或竖向（210×297）。
+enum SheetPageOrientation {
+  /// 横向：练字行沿长边排列。
+  landscape,
+
+  /// 竖向：练字行沿短边排列。
+  portrait;
+
+  bool get isLandscape => this == SheetPageOrientation.landscape;
+
+  /// SharedPreferences 存储值。
+  String get prefsValue => name;
+
+  static SheetPageOrientation fromPrefs(String? value) {
+    if (value == SheetPageOrientation.portrait.name) {
+      return SheetPageOrientation.portrait;
+    }
+    return SheetPageOrientation.landscape;
+  }
+}
+
+/// A4 字帖版式：支持横向 / 竖向，练字行沿纸张宽度方向排列。
 abstract final class A4SheetLayout {
-  /// 宽:高 = 297:210（A4 横向）。
+  /// 默认方向（横向）。
+  static const SheetPageOrientation defaultOrientation =
+      SheetPageOrientation.landscape;
+
+  /// 宽:高 = 297:210（A4 横向，兼容旧调用）。
   static const double aspectRatio = 297 / 210;
+
+  /// 指定方向的宽高比（宽 / 高）。
+  static double aspectRatioFor(SheetPageOrientation orientation) {
+    return orientation.isLandscape ? 297 / 210 : 210 / 297;
+  }
 
   /// 练字米字格边长（mm）默认值。
   static const double practiceCellSizeMm = 13;
@@ -28,18 +58,35 @@ abstract final class A4SheetLayout {
   /// 打印/PDF 下的默认格边长（pt）。
   static double get practiceCellSizePt => cellSizePtFromMm(practiceCellSizeMm);
 
-  static double get pdfInnerWidthPt =>
-      PdfPageFormat.a4.landscape.width - 2 * defaultPagePaddingPt;
+  /// PDF 页面格式。
+  static PdfPageFormat pageFormatFor(SheetPageOrientation orientation) {
+    return orientation.isLandscape
+        ? PdfPageFormat.a4.landscape
+        : PdfPageFormat.a4;
+  }
 
+  /// 可打印区域内宽（pt）。默认横向，兼容旧调用。
+  static double get pdfInnerWidthPt =>
+      pdfInnerWidthPtFor(defaultOrientation);
+
+  /// 可打印区域内高（pt）。默认横向，兼容旧调用。
   static double get pdfInnerHeightPt =>
-      PdfPageFormat.a4.landscape.height - 2 * defaultPagePaddingPt;
+      pdfInnerHeightPtFor(defaultOrientation);
+
+  static double pdfInnerWidthPtFor(SheetPageOrientation orientation) =>
+      pageFormatFor(orientation).width - 2 * defaultPagePaddingPt;
+
+  static double pdfInnerHeightPtFor(SheetPageOrientation orientation) =>
+      pageFormatFor(orientation).height - 2 * defaultPagePaddingPt;
 
   /// 屏幕预览：按可打印区域宽度等比缩放目标格大小。
   static double targetCellSizeForPreview(
     double previewInnerW, {
     double cellSizeMm = practiceCellSizeMm,
+    SheetPageOrientation orientation = defaultOrientation,
   }) {
-    return cellSizePtFromMm(cellSizeMm) * (previewInnerW / pdfInnerWidthPt);
+    final pageInnerW = pdfInnerWidthPtFor(orientation);
+    return cellSizePtFromMm(cellSizeMm) * (previewInnerW / pageInnerW);
   }
 
   /// 固定 [cellSize] 时，一行最多容纳多少列。
@@ -94,9 +141,10 @@ abstract final class A4SheetLayout {
   static int maxPhysicalRowsOnSheet({
     double rowGap = defaultRowGap,
     double? targetCellSize,
+    SheetPageOrientation orientation = defaultOrientation,
   }) {
     final cell = targetCellSize ?? practiceCellSizePt;
-    final innerH = pdfInnerHeightPt;
+    final innerH = pdfInnerHeightPtFor(orientation);
     if (cell <= 0) return 1;
     return math.max(
       1,
@@ -112,12 +160,14 @@ abstract final class A4SheetLayout {
     double rowGap = defaultRowGap,
     double? targetCellSize,
     bool showStrokeOrder = true,
+    SheetPageOrientation orientation = defaultOrientation,
   }) {
     final cell = targetCellSize ?? practiceCellSizePt;
-    final colsPerLine = columnsPerLine(pdfInnerWidthPt, cell);
+    final colsPerLine = columnsPerLine(pdfInnerWidthPtFor(orientation), cell);
     final maxPhysical = maxPhysicalRowsOnSheet(
       rowGap: rowGap,
       targetCellSize: cell,
+      orientation: orientation,
     );
 
     if (maxStrokeCountHint != null) {
@@ -189,14 +239,16 @@ abstract final class A4SheetLayout {
     double rowGap = defaultRowGap,
     double? targetCellSize,
     bool showStrokeOrder = true,
+    SheetPageOrientation orientation = defaultOrientation,
   }) {
     if (entries.isEmpty) return const [];
 
     final cell = targetCellSize ?? practiceCellSizePt;
-    final colsPerLine = columnsPerLine(pdfInnerWidthPt, cell);
+    final colsPerLine = columnsPerLine(pdfInnerWidthPtFor(orientation), cell);
     final maxPhysical = maxPhysicalRowsOnSheet(
       rowGap: rowGap,
       targetCellSize: cell,
+      orientation: orientation,
     );
 
     final pages = <List<PracticeSheetEntry>>[];

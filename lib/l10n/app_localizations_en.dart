@@ -396,6 +396,19 @@ class AppLocalizationsEn extends AppLocalizations {
   String get sheetConfigStrokeOrderOff => 'No strokes';
 
   @override
+  String get sheetConfigPageOrientation => 'Page orientation';
+
+  @override
+  String get sheetConfigPageOrientationHint =>
+      'Landscape or portrait A4. Preview and print follow this setting.';
+
+  @override
+  String get sheetConfigPageOrientationLandscape => 'Landscape';
+
+  @override
+  String get sheetConfigPageOrientationPortrait => 'Portrait';
+
+  @override
   String get sheetConfigCellSize => 'Character size';
 
   @override

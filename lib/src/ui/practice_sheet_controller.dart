@@ -49,6 +49,7 @@ class PracticeSheetController extends ChangeNotifier {
     int blankSlots = defaultBlankSlots,
     double cellSizeMm = defaultCellSizeMm,
     bool showStrokeOrder = defaultShowStrokeOrder,
+    SheetPageOrientation pageOrientation = defaultPageOrientation,
   })  : _traceSlots = traceSlots.clamp(minSlots, maxSlots),
         _blankSlots = blankSlots.clamp(minSlots, maxSlots),
         _cellSizeMm = cellSizeMm
@@ -57,7 +58,8 @@ class PracticeSheetController extends ChangeNotifier {
               A4SheetLayout.maxPracticeCellSizeMm,
             )
             .toDouble(),
-        _showStrokeOrder = showStrokeOrder;
+        _showStrokeOrder = showStrokeOrder,
+        _pageOrientation = pageOrientation;
 
   static const int defaultTraceSlots = 3;
   static const int defaultBlankSlots = 3;
@@ -73,19 +75,23 @@ class PracticeSheetController extends ChangeNotifier {
   static int maxSlotsFor({
     required bool showStrokeOrder,
     required double cellSizeMm,
+    SheetPageOrientation orientation = A4SheetLayout.defaultOrientation,
   }) {
     if (showStrokeOrder) return maxSlots;
     final cols = A4SheetLayout.columnsPerLine(
-      A4SheetLayout.pdfInnerWidthPt,
+      A4SheetLayout.pdfInnerWidthPtFor(orientation),
       A4SheetLayout.cellSizePtFromMm(cellSizeMm),
     );
     return math.max(maxSlots, cols - 1).clamp(maxSlots, maxSlotsNoStrokeOrder);
   }
 
   /// 无笔画模式下，使「示范 + 描红 + 空白」刚好占满一行所需的练习格总数。
-  static int practiceSlotsToFillLine(double cellSizeMm) {
+  static int practiceSlotsToFillLine(
+    double cellSizeMm, {
+    SheetPageOrientation orientation = A4SheetLayout.defaultOrientation,
+  }) {
     final cols = A4SheetLayout.columnsPerLine(
-      A4SheetLayout.pdfInnerWidthPt,
+      A4SheetLayout.pdfInnerWidthPtFor(orientation),
       A4SheetLayout.cellSizePtFromMm(cellSizeMm),
     );
     return math.max(0, cols - 1);
@@ -95,6 +101,9 @@ class PracticeSheetController extends ChangeNotifier {
   static const _prefBlankSlots = 'sheet_blank_slots';
   static const _prefCellSizeMm = 'sheet_cell_size_mm';
   static const _prefShowStrokeOrder = 'sheet_show_stroke_order';
+  static const _prefPageOrientation = 'sheet_page_orientation';
+  static const SheetPageOrientation defaultPageOrientation =
+      A4SheetLayout.defaultOrientation;
 
   /// 笔画字典（JSON 数组），见 [HanziGraphicsParser.loadDictionaryFromAsset]。
   final String dictionaryAssetPath;
@@ -103,6 +112,7 @@ class PracticeSheetController extends ChangeNotifier {
   int _blankSlots;
   double _cellSizeMm;
   bool _showStrokeOrder;
+  SheetPageOrientation _pageOrientation;
 
   /// 每行末尾「描红」完整叠字的格数。
   int get traceSlots => _traceSlots;
@@ -116,12 +126,16 @@ class PracticeSheetController extends ChangeNotifier {
   /// 是否包含递进笔顺格（有笔画 / 无笔画）。
   bool get showStrokeOrder => _showStrokeOrder;
 
+  /// A4 纸张方向（横向 / 竖向）。
+  SheetPageOrientation get pageOrientation => _pageOrientation;
+
   Future<void> load() async {
     final prefs = await SharedPreferences.getInstance();
     final trace = prefs.getInt(_prefTraceSlots);
     final blank = prefs.getInt(_prefBlankSlots);
     final cell = prefs.getDouble(_prefCellSizeMm);
     final strokes = prefs.getBool(_prefShowStrokeOrder);
+    final orientation = prefs.getString(_prefPageOrientation);
     if (trace != null) {
       _traceSlots = trace.clamp(minSlots, maxSlotsNoStrokeOrder);
     }
@@ -139,6 +153,9 @@ class PracticeSheetController extends ChangeNotifier {
     if (strokes != null) {
       _showStrokeOrder = strokes;
     }
+    if (orientation != null) {
+      _pageOrientation = SheetPageOrientation.fromPrefs(orientation);
+    }
     notifyListeners();
   }
 
@@ -147,10 +164,12 @@ class PracticeSheetController extends ChangeNotifier {
     required int blankSlots,
     required double cellSizeMm,
     required bool showStrokeOrder,
+    required SheetPageOrientation pageOrientation,
   }) async {
     final maxS = maxSlotsFor(
       showStrokeOrder: showStrokeOrder,
       cellSizeMm: cellSizeMm,
+      orientation: pageOrientation,
     );
     final nextTrace = traceSlots.clamp(minSlots, maxS);
     final nextBlank = blankSlots.clamp(minSlots, maxS);
@@ -163,18 +182,21 @@ class PracticeSheetController extends ChangeNotifier {
     if (nextTrace == _traceSlots &&
         nextBlank == _blankSlots &&
         nextCell == _cellSizeMm &&
-        showStrokeOrder == _showStrokeOrder) {
+        showStrokeOrder == _showStrokeOrder &&
+        pageOrientation == _pageOrientation) {
       return;
     }
     _traceSlots = nextTrace;
     _blankSlots = nextBlank;
     _cellSizeMm = nextCell;
     _showStrokeOrder = showStrokeOrder;
+    _pageOrientation = pageOrientation;
     final prefs = await SharedPreferences.getInstance();
     await prefs.setInt(_prefTraceSlots, _traceSlots);
     await prefs.setInt(_prefBlankSlots, _blankSlots);
     await prefs.setDouble(_prefCellSizeMm, _cellSizeMm);
     await prefs.setBool(_prefShowStrokeOrder, _showStrokeOrder);
+    await prefs.setString(_prefPageOrientation, _pageOrientation.prefsValue);
 
     final raw = textController.text.trim();
     if (raw.isNotEmpty) {
@@ -232,11 +254,12 @@ class PracticeSheetController extends ChangeNotifier {
   /// 兼容：约一页可排字数（仅作空状态提示参考）。
   int get maxMultiCharacters {
     final colsPerLine = A4SheetLayout.columnsPerLine(
-      A4SheetLayout.pdfInnerWidthPt,
+      A4SheetLayout.pdfInnerWidthPtFor(_pageOrientation),
       _cellSizePt,
     );
     final maxPhysical = A4SheetLayout.maxPhysicalRowsOnSheet(
       targetCellSize: _cellSizePt,
+      orientation: _pageOrientation,
     );
     final minColsPerChar =
         1 + (_showStrokeOrder ? 1 : 0) + _traceSlots + _blankSlots;
@@ -300,6 +323,7 @@ class PracticeSheetController extends ChangeNotifier {
       blankSlots: _blankSlots,
       targetCellSize: _cellSizePt,
       showStrokeOrder: _showStrokeOrder,
+      orientation: _pageOrientation,
     );
     if (_pages.isEmpty) {
       _previewPageIndex = 0;

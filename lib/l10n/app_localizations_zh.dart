@@ -384,6 +384,18 @@ class AppLocalizationsZh extends AppLocalizations {
   String get sheetConfigStrokeOrderOff => '无笔画';
 
   @override
+  String get sheetConfigPageOrientation => '纸张方向';
+
+  @override
+  String get sheetConfigPageOrientationHint => '横向：A4 横放；竖向：A4 竖放。预览与打印同步。';
+
+  @override
+  String get sheetConfigPageOrientationLandscape => '横向';
+
+  @override
+  String get sheetConfigPageOrientationPortrait => '竖向';
+
+  @override
   String get sheetConfigCellSize => '字体大小';
 
   @override
@@ -823,6 +835,18 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String get sheetConfigStrokeOrderOff => '無筆畫';
+
+  @override
+  String get sheetConfigPageOrientation => '紙張方向';
+
+  @override
+  String get sheetConfigPageOrientationHint => '橫向：A4 橫放；豎向：A4 豎放。預覽與列印同步。';
+
+  @override
+  String get sheetConfigPageOrientationLandscape => '橫向';
+
+  @override
+  String get sheetConfigPageOrientationPortrait => '豎向';
 
   @override
   String get sheetConfigCellSize => '字體大小';

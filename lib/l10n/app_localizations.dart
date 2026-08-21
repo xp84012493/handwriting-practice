@@ -741,6 +741,30 @@ abstract class AppLocalizations {
   /// **'No strokes'**
   String get sheetConfigStrokeOrderOff;
 
+  /// No description provided for @sheetConfigPageOrientation.
+  ///
+  /// In en, this message translates to:
+  /// **'Page orientation'**
+  String get sheetConfigPageOrientation;
+
+  /// No description provided for @sheetConfigPageOrientationHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Landscape or portrait A4. Preview and print follow this setting.'**
+  String get sheetConfigPageOrientationHint;
+
+  /// No description provided for @sheetConfigPageOrientationLandscape.
+  ///
+  /// In en, this message translates to:
+  /// **'Landscape'**
+  String get sheetConfigPageOrientationLandscape;
+
+  /// No description provided for @sheetConfigPageOrientationPortrait.
+  ///
+  /// In en, this message translates to:
+  /// **'Portrait'**
+  String get sheetConfigPageOrientationPortrait;
+
   /// No description provided for @sheetConfigCellSize.
   ///
   /// In en, this message translates to:

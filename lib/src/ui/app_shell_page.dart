@@ -155,6 +155,7 @@ class _AppShellPageState extends State<AppShellPage> {
       traceSlots: _controller.traceSlots,
       blankSlots: _controller.blankSlots,
       showStrokeOrder: _controller.showStrokeOrder,
+      pageOrientation: _controller.pageOrientation,
       cellSizeMm: _controller.cellSizeMm,
     );
   }
@@ -198,6 +199,7 @@ class _AppShellPageState extends State<AppShellPage> {
         traceSlots: _controller.traceSlots,
         blankSlots: _controller.blankSlots,
         showStrokeOrder: _controller.showStrokeOrder,
+        pageOrientation: _controller.pageOrientation,
         cellSizeMm: _controller.cellSizeMm,
         name: _sheetPdfBaseName(),
         bytes: bytes,
@@ -627,6 +629,7 @@ class _PreviewBody extends StatelessWidget {
                           traceSlots: controller.traceSlots,
                           blankSlots: controller.blankSlots,
                           showStrokeOrder: controller.showStrokeOrder,
+                          pageOrientation: controller.pageOrientation,
                           cellSizeMm: controller.cellSizeMm,
                         ),
                       ],
