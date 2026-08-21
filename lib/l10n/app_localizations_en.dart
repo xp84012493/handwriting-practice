@@ -418,7 +418,7 @@ class AppLocalizationsEn extends AppLocalizations {
       'Pick a character set to fill the input and generate a sheet.';
 
   @override
-  String get presetMoreChip => 'More presets';
+  String get presetMoreChip => 'Preset sheets';
 
   @override
   String get presetOpenAll => 'Browse all presets';

@@ -780,7 +780,7 @@ abstract class AppLocalizations {
   /// No description provided for @presetMoreChip.
   ///
   /// In en, this message translates to:
-  /// **'More presets'**
+  /// **'Preset sheets'**
   String get presetMoreChip;
 
   /// No description provided for @presetOpenAll.

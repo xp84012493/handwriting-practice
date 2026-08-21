@@ -303,7 +303,6 @@ class _AppShellPageState extends State<AppShellPage> {
               presets: _presets,
               onGenerate: _onGenerate,
               onPdfExportMenu: _onPdfExportMenu,
-              onPresetSelected: _applyPreset,
               onOpenPresetSheet: _openPresetSheet,
             ),
             RecentSheetsPage(onSheetSelected: _onRecentSheetSelected),
@@ -346,7 +345,6 @@ class _PracticeTab extends StatelessWidget {
     required this.presets,
     required this.onGenerate,
     required this.onPdfExportMenu,
-    required this.onPresetSelected,
     required this.onOpenPresetSheet,
   });
 
@@ -355,7 +353,6 @@ class _PracticeTab extends StatelessWidget {
   final PresetListService presets;
   final VoidCallback onGenerate;
   final ValueChanged<_PdfExportAction> onPdfExportMenu;
-  final ValueChanged<PresetSheetList> onPresetSelected;
   final Future<void> Function({String? initialCategoryId}) onOpenPresetSheet;
 
   @override
@@ -430,8 +427,6 @@ class _PracticeTab extends StatelessWidget {
                 onGenerate: onGenerate,
                 theme: theme,
                 quota: quota,
-                featuredPresets: presets.featuredPresets,
-                onPresetSelected: onPresetSelected,
                 onOpenPresetSheet: () => onOpenPresetSheet(),
               ),
               SizedBox(
@@ -445,9 +440,6 @@ class _PracticeTab extends StatelessWidget {
                 child: _PreviewBody(
                   controller: controller,
                   theme: theme,
-                  featuredPresets: presets.featuredPresets,
-                  onPresetSelected: onPresetSelected,
-                  onOpenPresetSheet: () => onOpenPresetSheet(),
                 ),
               ),
             ],
@@ -464,8 +456,6 @@ class _ControlBar extends StatelessWidget {
     required this.onGenerate,
     required this.theme,
     required this.quota,
-    required this.featuredPresets,
-    required this.onPresetSelected,
     required this.onOpenPresetSheet,
   });
 
@@ -473,15 +463,11 @@ class _ControlBar extends StatelessWidget {
   final VoidCallback onGenerate;
   final ThemeData theme;
   final UsageQuotaService quota;
-  final List<PresetSheetList> featuredPresets;
-  final ValueChanged<PresetSheetList> onPresetSelected;
   final VoidCallback onOpenPresetSheet;
 
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
-    final mq = MediaQuery.of(context);
-    final isNarrow = mq.size.width < 420;
 
     final field = TextField(
       controller: controller.textController,
@@ -517,11 +503,22 @@ class _ControlBar extends StatelessWidget {
       ],
     );
 
-    final button = FilledButton.icon(
+    final generateButton = FilledButton.icon(
       onPressed: controller.loading ? null : onGenerate,
       icon: const Icon(Icons.auto_fix_high_outlined, size: 20),
       label: Text(l10n.generateButton),
       style: FilledButton.styleFrom(
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+        visualDensity: VisualDensity.compact,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+      ),
+    );
+
+    final presetButton = OutlinedButton.icon(
+      onPressed: onOpenPresetSheet,
+      icon: const Icon(Icons.apps_outlined, size: 20),
+      label: Text(l10n.presetMoreChip),
+      style: OutlinedButton.styleFrom(
         padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
         visualDensity: VisualDensity.compact,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
@@ -547,31 +544,15 @@ class _ControlBar extends StatelessWidget {
                   ),
                 ),
               ),
-            isNarrow
-                ? Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      field,
-                      const SizedBox(height: 8),
-                      button,
-                    ],
-                  )
-                : Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Expanded(child: field),
-                      const SizedBox(width: 10),
-                      button,
-                    ],
-                  ),
-            if (featuredPresets.isNotEmpty) ...[
-              const SizedBox(height: 8),
-              PresetQuickChips(
-                presets: featuredPresets,
-                onPresetSelected: onPresetSelected,
-                onMore: onOpenPresetSheet,
-              ),
-            ],
+            field,
+            const SizedBox(height: 8),
+            Row(
+              children: [
+                Expanded(child: generateButton),
+                const SizedBox(width: 10),
+                Expanded(child: presetButton),
+              ],
+            ),
           ],
         ),
       ),
@@ -583,16 +564,10 @@ class _PreviewBody extends StatelessWidget {
   const _PreviewBody({
     required this.controller,
     required this.theme,
-    required this.featuredPresets,
-    required this.onPresetSelected,
-    required this.onOpenPresetSheet,
   });
 
   final PracticeSheetController controller;
   final ThemeData theme;
-  final List<PresetSheetList> featuredPresets;
-  final ValueChanged<PresetSheetList> onPresetSelected;
-  final VoidCallback onOpenPresetSheet;
 
   @override
   Widget build(BuildContext context) {
@@ -624,35 +599,13 @@ class _PreviewBody extends StatelessWidget {
                         ),
                       ],
                     )
-                  : Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        Text(
-                          l10n.emptyStateBody,
-                          textAlign: TextAlign.center,
-                          style: theme.textTheme.bodyLarge?.copyWith(
-                            color: theme.colorScheme.onSurfaceVariant,
-                            height: 1.45,
-                          ),
-                        ),
-                        if (featuredPresets.isNotEmpty) ...[
-                          const SizedBox(height: 20),
-                          Text(
-                            l10n.presetEmptyHint,
-                            textAlign: TextAlign.center,
-                            style: theme.textTheme.bodyMedium?.copyWith(
-                              color: theme.colorScheme.onSurfaceVariant,
-                            ),
-                          ),
-                          const SizedBox(height: 12),
-                          PresetQuickChips(
-                            presets: featuredPresets,
-                            onPresetSelected: onPresetSelected,
-                            onMore: onOpenPresetSheet,
-                            centered: true,
-                          ),
-                        ],
-                      ],
+                  : Text(
+                      l10n.emptyStateBody,
+                      textAlign: TextAlign.center,
+                      style: theme.textTheme.bodyLarge?.copyWith(
+                        color: theme.colorScheme.onSurfaceVariant,
+                        height: 1.45,
+                      ),
                     ),
             ),
           ),

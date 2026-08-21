@@ -5,66 +5,6 @@ import '../models/preset_sheet_list.dart';
 import '../services/preset_list_service.dart';
 import 'preset_category_icon.dart';
 
-/// 快捷预设 chip 行（输入框下方 / 空状态）。
-class PresetQuickChips extends StatelessWidget {
-  const PresetQuickChips({
-    super.key,
-    required this.presets,
-    required this.onPresetSelected,
-    required this.onMore,
-    this.centered = false,
-  });
-
-  final List<PresetSheetList> presets;
-  final ValueChanged<PresetSheetList> onPresetSelected;
-  final VoidCallback onMore;
-  final bool centered;
-
-  @override
-  Widget build(BuildContext context) {
-    if (presets.isEmpty) return const SizedBox.shrink();
-
-    final l10n = context.l10n;
-    final locale = Localizations.localeOf(context);
-
-    final chips = [
-      ...presets.map((preset) {
-        final label = preset.title.resolve(locale);
-        return ActionChip(
-          label: Text(label),
-          onPressed: () => onPresetSelected(preset),
-        );
-      }),
-      ActionChip(
-        avatar: const Icon(Icons.apps_outlined, size: 18),
-        label: Text(l10n.presetMoreChip),
-        onPressed: onMore,
-      ),
-    ];
-
-    if (centered) {
-      return Wrap(
-        alignment: WrapAlignment.center,
-        spacing: 8,
-        runSpacing: 8,
-        children: chips,
-      );
-    }
-
-    return SingleChildScrollView(
-      scrollDirection: Axis.horizontal,
-      child: Row(
-        children: [
-          for (var i = 0; i < chips.length; i++) ...[
-            if (i > 0) const SizedBox(width: 8),
-            chips[i],
-          ],
-        ],
-      ),
-    );
-  }
-}
-
 /// 底部弹层：分类 Tab + 预设列表。
 Future<void> showPresetListSheet(
   BuildContext context, {
