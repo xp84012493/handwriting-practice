@@ -221,10 +221,13 @@ class _PracticeSheetPdfPainter {
       final y0 = top + i * (cell + rowGap);
       final strokeCount = slice.entry.prepared.strokeCount;
 
+      final colCount = slice.endCol - slice.startCol;
+      _paintRowGrid(g, left, y0, cell, colCount);
+
       for (var col = slice.startCol; col < slice.endCol; col++) {
         final local = col - slice.startCol;
         final x0 = left + local * cell;
-        _paintPracticeGrid(g, x0, y0, cell);
+        _paintPracticeGridGuides(g, x0, y0, cell);
 
         final kind = _cellKind(col, strokeCount);
         if (kind == _CellKind.blank) continue;
@@ -269,31 +272,55 @@ class _PracticeSheetPdfPainter {
     return _CellKind.blank;
   }
 
-  void _paintPracticeGrid(PdfGraphics g, double x, double y, double size) {
+  void _paintRowGrid(
+    PdfGraphics g,
+    double x,
+    double y,
+    double cellSize,
+    int colCount,
+  ) {
+    if (colCount <= 0 || cellSize <= 0) return;
+
     g.saveContext();
-    final pad = 0.5;
-    final left = x + pad;
-    final top = y + pad;
-    final w = size - 2 * pad;
-    final h = size - 2 * pad;
+    g.setLineDashPattern(const []);
+    g.setLineWidth(PracticeGridMetrics.borderStrokeWidth);
+    g.setStrokeColor(_borderColor);
+
+    final rowW = colCount * cellSize;
+    final rowH = cellSize;
+
+    void line(double x1, double y1, double x2, double y2) {
+      g.drawShape('M $x1 $y1 L $x2 $y2');
+      g.strokePath(close: false);
+    }
+
+    for (var i = 0; i <= colCount; i++) {
+      final xi = x + i * cellSize;
+      line(xi, y, xi, y + rowH);
+    }
+    line(x, y, x + rowW, y);
+    line(x, y + rowH, x + rowW, y + rowH);
+
+    g.restoreContext();
+  }
+
+  void _paintPracticeGridGuides(PdfGraphics g, double x, double y, double size) {
+    g.saveContext();
+    final left = x;
+    final top = y;
+    final w = size;
+    final h = size;
     if (w <= 0 || h <= 0) {
       g.restoreContext();
       return;
     }
 
     g.setLineDashPattern(const []);
-    g.setLineWidth(1.1);
-    g.setStrokeColor(_borderColor);
-    g.drawShape(
-      'M $left $top L ${left + w} $top L ${left + w} ${top + h} L $left ${top + h} Z',
-    );
-    g.strokePath(close: false);
-
     final cx = left + w / 2;
     final cy = top + h / 2;
-    g.setLineWidth(1.0);
+    g.setLineWidth(PracticeGridMetrics.guideStrokeWidth);
     g.setStrokeColor(_guideColor);
-    g.setLineDashPattern(const [5, 3]);
+    g.setLineDashPattern(const [5, 3.5]);
 
     void dashLine(double x1, double y1, double x2, double y2) {
       g.drawShape('M $x1 $y1 L $x2 $y2');

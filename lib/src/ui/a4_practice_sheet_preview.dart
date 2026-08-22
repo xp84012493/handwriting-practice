@@ -6,6 +6,7 @@ import '../models/practice_sheet_entry.dart';
 import '../style/practice_sheet_font.dart';
 import '../style/practice_grid_style.dart';
 import '../style/practice_stroke_colors.dart';
+import '../painters/mizi_grid_painter.dart';
 import '../widgets/hanzi_practice_cell.dart';
 
 /// A4 横向比例（宽:高 = 297:210）下的字帖预览：固定格宽，超宽自动换行。
@@ -196,6 +197,7 @@ class _PracticeRowSlice extends StatelessWidget {
                 prepared: prepared,
                 kind: HanziPracticeCellKind.model,
                 gridStyle: gridStyle,
+                drawOuterBorder: false,
                 strokeWidth: strokeWidth,
                 glyphCharacter: showStrokeOrder
                     ? null
@@ -212,12 +214,14 @@ class _PracticeRowSlice extends StatelessWidget {
                   showStrokeOrder: showStrokeOrder,
                 )!,
                 gridStyle: gridStyle,
+                drawOuterBorder: false,
                 strokeWidth: strokeWidth,
               ),
             PracticeCellKind.trace => HanziPracticeCell(
                 prepared: prepared,
                 kind: HanziPracticeCellKind.trace,
                 gridStyle: gridStyle,
+                drawOuterBorder: false,
                 strokeWidth: strokeWidth,
                 traceColor: traceColor,
                 glyphCharacter: showStrokeOrder
@@ -231,6 +235,7 @@ class _PracticeRowSlice extends StatelessWidget {
                 prepared: prepared,
                 kind: HanziPracticeCellKind.blank,
                 gridStyle: gridStyle,
+                drawOuterBorder: false,
                 strokeWidth: strokeWidth,
               ),
           },
@@ -238,9 +243,25 @@ class _PracticeRowSlice extends StatelessWidget {
       );
     }
 
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: children,
+    final rowW = children.length * cellSize;
+    return Stack(
+      clipBehavior: Clip.none,
+      children: [
+        SizedBox(
+          width: rowW,
+          height: cellSize,
+          child: CustomPaint(
+            painter: PracticeRowGridPainter(
+              colCount: children.length,
+              cellSize: cellSize,
+            ),
+          ),
+        ),
+        Row(
+          mainAxisSize: MainAxisSize.min,
+          children: children,
+        ),
+      ],
     );
   }
 }

@@ -1,3 +1,10 @@
+/// 练字格线宽与虚线参数（预览与 PDF 共用）。
+abstract final class PracticeGridMetrics {
+  static const double borderStrokeWidth = 0.75;
+  static const double guideStrokeWidth = 0.65;
+  static const List<double> guideDashPattern = [5.0, 3.5];
+}
+
 /// 练字格线样式。
 enum PracticeGridStyle {
   /// 米字格：十字 + 对角虚线。

@@ -38,6 +38,7 @@ class HanziPracticeCell extends StatelessWidget {
     this.glyphCharacter,
     this.fontFamily,
     this.gridStyle = PracticeGridStyle.mizi,
+    this.drawOuterBorder = true,
   }) : assert(stepIndex >= 0);
 
   final PreparedHanziStrokes prepared;
@@ -58,6 +59,9 @@ class HanziPracticeCell extends StatelessWidget {
 
   /// 练字格线样式（米字格 / 田字格）。
   final PracticeGridStyle gridStyle;
+
+  /// 是否绘制单格外框。字帖行内由 [PracticeRowGridPainter] 统一绘制外框时应为 false。
+  final bool drawOuterBorder;
 
   bool get _useFontGlyph =>
       fontFamily != null &&
@@ -90,7 +94,10 @@ class HanziPracticeCell extends StatelessWidget {
               fit: StackFit.expand,
               children: [
                 CustomPaint(
-                  painter: MiziGridPainter(gridStyle: gridStyle),
+                  painter: MiziGridPainter(
+                    gridStyle: gridStyle,
+                    drawOuterBorder: drawOuterBorder,
+                  ),
                   size: Size(side, side),
                 ),
                 if (kind != HanziPracticeCellKind.blank)
