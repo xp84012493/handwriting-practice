@@ -11,6 +11,7 @@ import 'package:vector_math/vector_math_64.dart' show Matrix4;
 import '../layout/a4_sheet_layout.dart';
 import '../models/practice_sheet_entry.dart';
 import '../style/practice_sheet_font.dart';
+import '../style/practice_grid_style.dart';
 import '../style/practice_stroke_colors.dart';
 import '../models/stroke_path_convention.dart';
 
@@ -40,6 +41,7 @@ class PracticeSheetPdfService {
     required int blankSlots,
     bool showStrokeOrder = true,
     PracticeSheetFont sheetFont = PracticeSheetFont.appDefault,
+    PracticeGridStyle gridStyle = PracticeGridStyle.mizi,
     SheetPageOrientation pageOrientation = A4SheetLayout.defaultOrientation,
     double cellSizeMm = A4SheetLayout.practiceCellSizeMm,
     double rowGap = 4,
@@ -90,6 +92,7 @@ class PracticeSheetPdfService {
                       showStrokeOrder: showStrokeOrder,
                       cellSizeMm: cellSizeMm,
                       rowGap: rowGap,
+                      gridStyle: gridStyle,
                       glyphFont: glyphFont?.getFont(context),
                       contentHeight: innerSize.y,
                     ).paint(canvas, innerSize);
@@ -114,6 +117,7 @@ class PracticeSheetPdfService {
     required int blankSlots,
     bool showStrokeOrder = true,
     PracticeSheetFont sheetFont = PracticeSheetFont.appDefault,
+    PracticeGridStyle gridStyle = PracticeGridStyle.mizi,
     SheetPageOrientation pageOrientation = A4SheetLayout.defaultOrientation,
     double cellSizeMm = A4SheetLayout.practiceCellSizeMm,
     String name = '练字帖',
@@ -127,6 +131,7 @@ class PracticeSheetPdfService {
           blankSlots: blankSlots,
           showStrokeOrder: showStrokeOrder,
           sheetFont: sheetFont,
+          gridStyle: gridStyle,
           pageOrientation: pageOrientation,
           cellSizeMm: cellSizeMm,
           pageFormat: fmt,
@@ -162,6 +167,7 @@ class _PracticeSheetPdfPainter {
     required this.showStrokeOrder,
     required this.cellSizeMm,
     required this.rowGap,
+    this.gridStyle = PracticeGridStyle.mizi,
     this.glyphFont,
     this.contentHeight = 0,
   });
@@ -172,6 +178,7 @@ class _PracticeSheetPdfPainter {
   final bool showStrokeOrder;
   final double cellSizeMm;
   final double rowGap;
+  final PracticeGridStyle gridStyle;
   final PdfFont? glyphFont;
   final double contentHeight;
 
@@ -217,7 +224,7 @@ class _PracticeSheetPdfPainter {
       for (var col = slice.startCol; col < slice.endCol; col++) {
         final local = col - slice.startCol;
         final x0 = left + local * cell;
-        _paintMiziGrid(g, x0, y0, cell);
+        _paintPracticeGrid(g, x0, y0, cell);
 
         final kind = _cellKind(col, strokeCount);
         if (kind == _CellKind.blank) continue;
@@ -262,7 +269,7 @@ class _PracticeSheetPdfPainter {
     return _CellKind.blank;
   }
 
-  void _paintMiziGrid(PdfGraphics g, double x, double y, double size) {
+  void _paintPracticeGrid(PdfGraphics g, double x, double y, double size) {
     g.saveContext();
     final pad = 0.5;
     final left = x + pad;
@@ -295,8 +302,10 @@ class _PracticeSheetPdfPainter {
 
     dashLine(left, cy, left + w, cy);
     dashLine(cx, top, cx, top + h);
-    dashLine(left, top, left + w, top + h);
-    dashLine(left + w, top, left, top + h);
+    if (gridStyle.drawDiagonals) {
+      dashLine(left, top, left + w, top + h);
+      dashLine(left + w, top, left, top + h);
+    }
 
     g.setLineDashPattern(const []);
     g.restoreContext();

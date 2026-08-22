@@ -12,6 +12,7 @@ import '../locale/practice_sheet_messages.dart';
 import '../models/hanzi_character.dart';
 import '../models/practice_sheet_entry.dart';
 import '../style/practice_sheet_font.dart';
+import '../style/practice_grid_style.dart';
 import '../parsers/hanzi_graphics_parser.dart';
 
 /// 多字输入：仅保留基本汉字区字符。
@@ -52,6 +53,7 @@ class PracticeSheetController extends ChangeNotifier {
     bool showStrokeOrder = defaultShowStrokeOrder,
     SheetPageOrientation pageOrientation = defaultPageOrientation,
     PracticeSheetFont sheetFont = defaultSheetFont,
+    PracticeGridStyle gridStyle = defaultGridStyle,
   })  : _traceSlots = traceSlots.clamp(minSlots, maxSlots),
         _blankSlots = blankSlots.clamp(minSlots, maxSlots),
         _cellSizeMm = cellSizeMm
@@ -62,7 +64,8 @@ class PracticeSheetController extends ChangeNotifier {
             .toDouble(),
         _showStrokeOrder = showStrokeOrder,
         _pageOrientation = pageOrientation,
-        _sheetFont = sheetFont;
+        _sheetFont = sheetFont,
+        _gridStyle = gridStyle;
 
   static const int defaultTraceSlots = 3;
   static const int defaultBlankSlots = 3;
@@ -75,6 +78,7 @@ class PracticeSheetController extends ChangeNotifier {
   static const bool defaultShowStrokeOrder = true;
   static const PracticeSheetFont defaultSheetFont =
       PracticeSheetFont.appDefault;
+  static const PracticeGridStyle defaultGridStyle = PracticeGridStyle.mizi;
 
   /// 描红/空白格可调上限：有笔画用 [maxSlots]；无笔画可提到填满一行所需。
   static int maxSlotsFor({
@@ -108,6 +112,7 @@ class PracticeSheetController extends ChangeNotifier {
   static const _prefShowStrokeOrder = 'sheet_show_stroke_order';
   static const _prefPageOrientation = 'sheet_page_orientation';
   static const _prefSheetFont = 'sheet_font';
+  static const _prefGridStyle = 'sheet_grid_style';
   static const SheetPageOrientation defaultPageOrientation =
       A4SheetLayout.defaultOrientation;
 
@@ -120,6 +125,7 @@ class PracticeSheetController extends ChangeNotifier {
   bool _showStrokeOrder;
   SheetPageOrientation _pageOrientation;
   PracticeSheetFont _sheetFont;
+  PracticeGridStyle _gridStyle;
 
   /// 每行末尾「描红」完整叠字的格数。
   int get traceSlots => _traceSlots;
@@ -139,6 +145,9 @@ class PracticeSheetController extends ChangeNotifier {
   /// 无笔画模式下的示范/描红字体（有笔画时忽略）。
   PracticeSheetFont get sheetFont => _sheetFont;
 
+  /// 练字格线样式（米字格 / 田字格）。
+  PracticeGridStyle get gridStyle => _gridStyle;
+
   Future<void> load() async {
     final prefs = await SharedPreferences.getInstance();
     final trace = prefs.getInt(_prefTraceSlots);
@@ -147,6 +156,7 @@ class PracticeSheetController extends ChangeNotifier {
     final strokes = prefs.getBool(_prefShowStrokeOrder);
     final orientation = prefs.getString(_prefPageOrientation);
     final font = prefs.getString(_prefSheetFont);
+    final grid = prefs.getString(_prefGridStyle);
     if (trace != null) {
       _traceSlots = trace.clamp(minSlots, maxSlotsNoStrokeOrder);
     }
@@ -170,6 +180,9 @@ class PracticeSheetController extends ChangeNotifier {
     if (font != null) {
       _sheetFont = PracticeSheetFont.fromPrefs(font);
     }
+    if (grid != null) {
+      _gridStyle = PracticeGridStyle.fromPrefs(grid);
+    }
     notifyListeners();
   }
 
@@ -180,6 +193,7 @@ class PracticeSheetController extends ChangeNotifier {
     required bool showStrokeOrder,
     required SheetPageOrientation pageOrientation,
     required PracticeSheetFont sheetFont,
+    required PracticeGridStyle gridStyle,
   }) async {
     final maxS = maxSlotsFor(
       showStrokeOrder: showStrokeOrder,
@@ -199,7 +213,8 @@ class PracticeSheetController extends ChangeNotifier {
         nextCell == _cellSizeMm &&
         showStrokeOrder == _showStrokeOrder &&
         pageOrientation == _pageOrientation &&
-        sheetFont == _sheetFont) {
+        sheetFont == _sheetFont &&
+        gridStyle == _gridStyle) {
       return;
     }
     _traceSlots = nextTrace;
@@ -208,6 +223,7 @@ class PracticeSheetController extends ChangeNotifier {
     _showStrokeOrder = showStrokeOrder;
     _pageOrientation = pageOrientation;
     _sheetFont = sheetFont;
+    _gridStyle = gridStyle;
     final prefs = await SharedPreferences.getInstance();
     await prefs.setInt(_prefTraceSlots, _traceSlots);
     await prefs.setInt(_prefBlankSlots, _blankSlots);
@@ -215,6 +231,7 @@ class PracticeSheetController extends ChangeNotifier {
     await prefs.setBool(_prefShowStrokeOrder, _showStrokeOrder);
     await prefs.setString(_prefPageOrientation, _pageOrientation.prefsValue);
     await prefs.setString(_prefSheetFont, _sheetFont.prefsValue);
+    await prefs.setString(_prefGridStyle, _gridStyle.prefsValue);
 
     final raw = textController.text.trim();
     if (raw.isNotEmpty) {

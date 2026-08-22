@@ -3,11 +3,14 @@ import 'dart:ui' show Canvas, Offset, Paint, PaintingStyle, Path, Rect, Size;
 import 'package:flutter/widgets.dart';
 import 'package:path_drawing/path_drawing.dart';
 
-/// 标准「米字格」：外框实线，内部十字与对角线为虚线。
+import '../style/practice_grid_style.dart';
+
+/// 练字格：外框实线，内部十字虚线；米字格另含对角虚线。
 ///
 /// [padding] 为外框向内缩进，便于与父级边框叠加时留出像素对齐余量。
 class MiziGridPainter extends CustomPainter {
   MiziGridPainter({
+    this.gridStyle = PracticeGridStyle.mizi,
     this.borderColor = const Color(0xFF2C2C2C),
     this.guideColor = const Color(0xFF9E9E9E),
     this.strokeWidth = 1.2,
@@ -15,6 +18,7 @@ class MiziGridPainter extends CustomPainter {
     this.padding = 0.5,
   });
 
+  final PracticeGridStyle gridStyle;
   final Color borderColor;
   final Color guideColor;
   final double strokeWidth;
@@ -50,18 +54,20 @@ class MiziGridPainter extends CustomPainter {
 
     _dashLine(canvas, Offset(rect.left, cy), Offset(rect.right, cy), guidePaint);
     _dashLine(canvas, Offset(cx, rect.top), Offset(cx, rect.bottom), guidePaint);
-    _dashLine(
-      canvas,
-      rect.topLeft,
-      rect.bottomRight,
-      guidePaint,
-    );
-    _dashLine(
-      canvas,
-      rect.topRight,
-      rect.bottomLeft,
-      guidePaint,
-    );
+    if (gridStyle.drawDiagonals) {
+      _dashLine(
+        canvas,
+        rect.topLeft,
+        rect.bottomRight,
+        guidePaint,
+      );
+      _dashLine(
+        canvas,
+        rect.topRight,
+        rect.bottomLeft,
+        guidePaint,
+      );
+    }
   }
 
   void _dashLine(Canvas canvas, Offset a, Offset b, Paint paint) {
@@ -75,7 +81,8 @@ class MiziGridPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(covariant MiziGridPainter oldDelegate) {
-    return oldDelegate.borderColor != borderColor ||
+    return oldDelegate.gridStyle != gridStyle ||
+        oldDelegate.borderColor != borderColor ||
         oldDelegate.guideColor != guideColor ||
         oldDelegate.strokeWidth != strokeWidth ||
         oldDelegate.padding != padding ||

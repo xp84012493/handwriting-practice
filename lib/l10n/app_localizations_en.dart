@@ -412,6 +412,19 @@ class AppLocalizationsEn extends AppLocalizations {
   String get sheetConfigFontZhenKai => 'LXGW ZhenKai';
 
   @override
+  String get sheetConfigGridStyle => 'Grid style';
+
+  @override
+  String get sheetConfigGridStyleHint =>
+      'Mizi grid includes diagonal guides; Tianzi grid uses cross lines only.';
+
+  @override
+  String get sheetConfigGridMizi => 'Mizi';
+
+  @override
+  String get sheetConfigGridTianzi => 'Tianzi';
+
+  @override
   String get sheetConfigPageOrientation => 'Page orientation';
 
   @override

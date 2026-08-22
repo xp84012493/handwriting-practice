@@ -399,6 +399,18 @@ class AppLocalizationsZh extends AppLocalizations {
   String get sheetConfigFontZhenKai => '霞鹜臻楷';
 
   @override
+  String get sheetConfigGridStyle => '格线样式';
+
+  @override
+  String get sheetConfigGridStyleHint => '米字格含对角辅助线；田字格仅十字虚线。';
+
+  @override
+  String get sheetConfigGridMizi => '米字格';
+
+  @override
+  String get sheetConfigGridTianzi => '田字格';
+
+  @override
   String get sheetConfigPageOrientation => '纸张方向';
 
   @override
@@ -865,6 +877,18 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String get sheetConfigFontZhenKai => '霞鶩臻楷';
+
+  @override
+  String get sheetConfigGridStyle => '格線樣式';
+
+  @override
+  String get sheetConfigGridStyleHint => '米字格含對角輔助線；田字格僅十字虛線。';
+
+  @override
+  String get sheetConfigGridMizi => '米字格';
+
+  @override
+  String get sheetConfigGridTianzi => '田字格';
 
   @override
   String get sheetConfigPageOrientation => '紙張方向';

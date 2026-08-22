@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../engine/prepared_hanzi_strokes.dart';
 import '../painters/hanzi_strokes_painter.dart';
 import '../painters/mizi_grid_painter.dart';
+import '../style/practice_grid_style.dart';
 import '../style/practice_stroke_colors.dart';
 
 /// 练字格展示类型。
@@ -36,6 +37,7 @@ class HanziPracticeCell extends StatelessWidget {
     this.traceColor = PracticeStrokeColors.trace,
     this.glyphCharacter,
     this.fontFamily,
+    this.gridStyle = PracticeGridStyle.mizi,
   }) : assert(stepIndex >= 0);
 
   final PreparedHanziStrokes prepared;
@@ -53,6 +55,9 @@ class HanziPracticeCell extends StatelessWidget {
 
   /// 无笔画模式下的字体 family；为 null 时仍用笔画路径。
   final String? fontFamily;
+
+  /// 练字格线样式（米字格 / 田字格）。
+  final PracticeGridStyle gridStyle;
 
   bool get _useFontGlyph =>
       fontFamily != null &&
@@ -85,7 +90,7 @@ class HanziPracticeCell extends StatelessWidget {
               fit: StackFit.expand,
               children: [
                 CustomPaint(
-                  painter: MiziGridPainter(),
+                  painter: MiziGridPainter(gridStyle: gridStyle),
                   size: Size(side, side),
                 ),
                 if (kind != HanziPracticeCellKind.blank)

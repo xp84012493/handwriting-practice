@@ -771,6 +771,30 @@ abstract class AppLocalizations {
   /// **'LXGW ZhenKai'**
   String get sheetConfigFontZhenKai;
 
+  /// No description provided for @sheetConfigGridStyle.
+  ///
+  /// In en, this message translates to:
+  /// **'Grid style'**
+  String get sheetConfigGridStyle;
+
+  /// No description provided for @sheetConfigGridStyleHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Mizi grid includes diagonal guides; Tianzi grid uses cross lines only.'**
+  String get sheetConfigGridStyleHint;
+
+  /// No description provided for @sheetConfigGridMizi.
+  ///
+  /// In en, this message translates to:
+  /// **'Mizi'**
+  String get sheetConfigGridMizi;
+
+  /// No description provided for @sheetConfigGridTianzi.
+  ///
+  /// In en, this message translates to:
+  /// **'Tianzi'**
+  String get sheetConfigGridTianzi;
+
   /// No description provided for @sheetConfigPageOrientation.
   ///
   /// In en, this message translates to:

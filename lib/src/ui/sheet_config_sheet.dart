@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 
 import '../l10n/l10n_extension.dart';
 import '../layout/a4_sheet_layout.dart';
+import '../style/practice_grid_style.dart';
 import '../style/practice_sheet_font.dart';
 import 'practice_sheet_controller.dart';
 
@@ -38,6 +39,7 @@ class _SheetConfigSheetState extends State<_SheetConfigSheet> {
   late SheetPageOrientation _pageOrientation =
       widget.controller.pageOrientation;
   late PracticeSheetFont _sheetFont = widget.controller.sheetFont;
+  late PracticeGridStyle _gridStyle = widget.controller.gridStyle;
 
   int get _slotMax => PracticeSheetController.maxSlotsFor(
         showStrokeOrder: _showStrokeOrder,
@@ -53,6 +55,7 @@ class _SheetConfigSheetState extends State<_SheetConfigSheet> {
       showStrokeOrder: _showStrokeOrder,
       pageOrientation: _pageOrientation,
       sheetFont: _sheetFont,
+      gridStyle: _gridStyle,
     );
     if (mounted) Navigator.of(context).pop();
   }
@@ -104,6 +107,7 @@ class _SheetConfigSheetState extends State<_SheetConfigSheet> {
       _traceSlots = PracticeSheetController.defaultTraceSlots;
       _blankSlots = PracticeSheetController.defaultBlankSlots;
       _sheetFont = PracticeSheetController.defaultSheetFont;
+      _gridStyle = PracticeSheetController.defaultGridStyle;
     });
   }
 
@@ -173,6 +177,37 @@ class _SheetConfigSheetState extends State<_SheetConfigSheet> {
                   _pageOrientation = next.first;
                   _clampSlotsToMax();
                 });
+              },
+            ),
+            const SizedBox(height: 16),
+            Text(
+              l10n.sheetConfigGridStyle,
+              style: Theme.of(context).textTheme.titleSmall,
+            ),
+            const SizedBox(height: 4),
+            Text(
+              l10n.sheetConfigGridStyleHint,
+              style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                  ),
+            ),
+            const SizedBox(height: 8),
+            SegmentedButton<PracticeGridStyle>(
+              showSelectedIcon: false,
+              segments: [
+                ButtonSegment<PracticeGridStyle>(
+                  value: PracticeGridStyle.mizi,
+                  label: Text(l10n.sheetConfigGridMizi),
+                ),
+                ButtonSegment<PracticeGridStyle>(
+                  value: PracticeGridStyle.tianzi,
+                  label: Text(l10n.sheetConfigGridTianzi),
+                ),
+              ],
+              selected: {_gridStyle},
+              onSelectionChanged: (next) {
+                HapticFeedback.selectionClick();
+                setState(() => _gridStyle = next.first);
               },
             ),
             const SizedBox(height: 16),
