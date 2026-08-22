@@ -110,7 +110,6 @@ class PracticeSheetPdfService {
                       gridStyle: gridStyle,
                       glyphFont: glyphFont?.getFont(context),
                       pinyinFont: pinyinFont?.getFont(context),
-                      contentHeight: innerSize.y,
                     ).paint(canvas, innerSize);
                   },
                 ),
@@ -192,7 +191,6 @@ class _PracticeSheetPdfPainter {
     this.gridStyle = PracticeGridStyle.mizi,
     this.glyphFont,
     this.pinyinFont,
-    this.contentHeight = 0,
   });
 
   final List<PracticeSheetEntry> rows;
@@ -206,7 +204,6 @@ class _PracticeSheetPdfPainter {
   final PracticeGridStyle gridStyle;
   final PdfFont? glyphFont;
   final PdfFont? pinyinFont;
-  final double contentHeight;
 
   static final PdfColor _borderColor = PdfColor.fromInt(0xFF2C2C2C);
   static final PdfColor _guideColor = PdfColor.fromInt(0xFF9E9E9E);
@@ -460,6 +457,36 @@ class _PracticeSheetPdfPainter {
     g.restoreContext();
   }
 
+  void _paintCenteredText(
+    PdfGraphics g,
+    PdfFont font,
+    double fontSize,
+    String text,
+    double cx,
+    double cy,
+    PdfColor color,
+  ) {
+    final metrics = font.stringMetrics(text) * fontSize;
+    final textW = metrics.width;
+
+    g.saveContext();
+    // 父级 CTM 已是自上而下布局坐标；局部再翻转一次使文字正向朝上。
+    g.setTransform(
+      Matrix4.identity()
+        ..translateByDouble(cx, cy, 0, 1)
+        ..scaleByDouble(1.0, -1.0, 1, 1),
+    );
+    g.setFillColor(color);
+    g.drawString(
+      font,
+      fontSize,
+      text,
+      -textW / 2,
+      fontSize * 0.35,
+    );
+    g.restoreContext();
+  }
+
   void _paintPinyinLabel(
     PdfGraphics g,
     String pinyin,
@@ -473,31 +500,11 @@ class _PracticeSheetPdfPainter {
     if (font == null) return;
 
     final fontSize = math.min(cellW, cellH * 2) * 0.32;
-    final metrics = font.stringMetrics(pinyin) * fontSize;
-    final textW = metrics.width;
     final cx = cellX + cellW / 2;
     final cy = cellY + cellH / 2;
-
-    g.saveContext();
-    g.setTransform(
-      Matrix4.identity()
-        ..translateByDouble(0.0, contentHeight, 0, 1)
-        ..scaleByDouble(1.0, -1.0, 1, 1)
-        ..translateByDouble(cx, cy, 0, 1)
-        ..scaleByDouble(1.0, -1.0, 1, 1),
-    );
-    g.setFillColor(_completed);
-    g.drawString(
-      font,
-      fontSize,
-      pinyin,
-      -textW / 2,
-      fontSize * 0.35,
-    );
-    g.restoreContext();
+    _paintCenteredText(g, font, fontSize, pinyin, cx, cy, _completed);
   }
 
-  
   void _paintFontGlyph(
     PdfGraphics g,
     String character,
@@ -512,31 +519,12 @@ class _PracticeSheetPdfPainter {
     final inset = cell * 0.14;
     final fontSize = (cell - 2 * inset) * 0.88;
     final color = kind == _CellKind.trace ? _trace : _completed;
-    final metrics = font.stringMetrics(character) * fontSize;
-    final textW = metrics.width;
     final cx = cellX + cell / 2;
     final cy = cellY + cell / 2;
-
-    g.saveContext();
-    // Parent CTM flips Y; counter-flip so glyphs stay upright.
-    g.setTransform(
-      Matrix4.identity()
-        ..translateByDouble(0.0, contentHeight, 0, 1)
-        ..scaleByDouble(1.0, -1.0, 1, 1)
-        ..translateByDouble(cx, cy, 0, 1)
-        ..scaleByDouble(1.0, -1.0, 1, 1),
-    );
-    g.setFillColor(color);
-    g.drawString(
-      font,
-      fontSize,
-      character,
-      -textW / 2,
-      fontSize * 0.35,
-    );
-    g.restoreContext();
+    _paintCenteredText(g, font, fontSize, character, cx, cy, color);
   }
-void _paintStrokesForCell(
+
+  void _paintStrokesForCell(
     PdfGraphics g,
     PracticeSheetEntry entry,
     double cellX,
