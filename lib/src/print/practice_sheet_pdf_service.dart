@@ -468,6 +468,8 @@ class _PracticeSheetPdfPainter {
   ) {
     final metrics = font.stringMetrics(text) * fontSize;
     final textW = metrics.width;
+    // layout_y(anchor) = cy - yDs；令字形 bbox 顶部 = cy - maxHeight/2（与 Flutter Center 一致）
+    final yDs = metrics.maxHeight / 2 - metrics.ascent;
 
     g.saveContext();
     // 父级 CTM 已是自上而下布局坐标；局部再翻转一次使文字正向朝上。
@@ -482,7 +484,7 @@ class _PracticeSheetPdfPainter {
       fontSize,
       text,
       -textW / 2,
-      fontSize * 0.35,
+      yDs,
     );
     g.restoreContext();
   }
