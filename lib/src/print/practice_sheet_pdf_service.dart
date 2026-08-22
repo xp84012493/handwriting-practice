@@ -210,6 +210,8 @@ class _PracticeSheetPdfPainter {
   static final PdfColor _highlight = PracticeStrokeColors.pdfHighlight;
   static final PdfColor _completed = PracticeStrokeColors.pdfCompleted;
   static final PdfColor _trace = PracticeStrokeColors.pdfTrace;
+  static final PdfColor _progressiveCompleted =
+      PracticeStrokeColors.pdfProgressiveCompleted;
 
   void paint(PdfGraphics g, PdfPoint innerSize) {
     final innerW = innerSize.x;
@@ -584,13 +586,10 @@ class _PracticeSheetPdfPainter {
     final visible = step + 1;
     for (var i = 0; i < visible; i++) {
       g.saveContext();
-      g.setLineJoin(PdfLineJoin.round);
-      g.setLineCap(PdfLineCap.round);
-      g.setLineWidth(strokeW);
-      g.setStrokeColor(i == step ? _highlight : _completed);
       g.setTransform(ctm);
+      g.setFillColor(i == step ? _trace : _progressiveCompleted);
       g.drawShape(character.strokePathData[i]);
-      g.strokePath(close: false);
+      g.fillPath(evenOdd: true);
       g.restoreContext();
     }
   }

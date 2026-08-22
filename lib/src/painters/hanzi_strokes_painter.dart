@@ -9,7 +9,8 @@ import '../models/stroke_path_convention.dart';
 /// 在 [glyphRect] 内绘制笔画。
 ///
 /// - **示范**：[modelStyle] 为 true 时，全部笔画 [completedColor]。
-/// - **递进**：[traceStyle] 与 [modelStyle] 均为 false 时，最后一笔 [highlightColor]，其余 [completedColor]。
+/// - **递进**：[traceStyle] 与 [modelStyle] 均为 false 时，新笔 [highlightColor] 实心浅红，
+///   已完成笔 [completedColor] 实心浅灰（均为 fill）。
 /// - **描红**：[traceStyle] 为 true 时，所有可见笔画使用 [traceColor] 实心填充。
 /// - **笔画示例**：[strokeExampleStyle] 为 true 时，已完成笔实心黑、当前笔实心红。
 ///

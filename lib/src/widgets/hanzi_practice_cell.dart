@@ -168,6 +168,10 @@ class HanziPracticeCell extends StatelessWidget {
                         glyphRect: glyphRect,
                         visibleStrokeCount: progressiveVisible,
                         highlightStrokeIndex: safeStep,
+                        fillStrokes: true,
+                        highlightColor: traceColor,
+                        completedColor:
+                            PracticeStrokeColors.progressiveCompleted,
                         strokePaintWidth: strokeWidth,
                       ),
                     HanziPracticeCellKind.strokeExample => HanziStrokesPainter(
