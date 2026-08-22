@@ -567,14 +567,11 @@ void _paintStrokesForCell(
 
     if (kind == _CellKind.trace) {
       g.saveContext();
-      g.setLineJoin(PdfLineJoin.round);
-      g.setLineCap(PdfLineCap.round);
-      g.setLineWidth(strokeW);
-      g.setStrokeColor(_trace);
       g.setTransform(ctm);
+      g.setFillColor(_trace);
       for (var i = 0; i < n; i++) {
         g.drawShape(character.strokePathData[i]);
-        g.strokePath(close: false);
+        g.fillPath(evenOdd: true);
       }
       g.restoreContext();
       return;

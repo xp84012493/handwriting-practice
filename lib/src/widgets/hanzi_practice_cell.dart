@@ -125,13 +125,14 @@ class HanziPracticeCell extends StatelessWidget {
               if (_useFontGlyph)
                 Positioned.fromRect(
                   rect: glyphRect,
-                  child: Center(
+                  child: FittedBox(
+                    fit: BoxFit.contain,
                     child: Text(
                       glyphCharacter!,
                       textAlign: TextAlign.center,
                       style: TextStyle(
                         fontFamily: fontFamily,
-                        fontSize: glyphRect.width * 0.88,
+                        fontSize: 100,
                         height: 1,
                         color: kind == HanziPracticeCellKind.trace
                             ? traceColor

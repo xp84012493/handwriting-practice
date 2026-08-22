@@ -10,7 +10,7 @@ import '../models/stroke_path_convention.dart';
 ///
 /// - **示范**：[modelStyle] 为 true 时，全部笔画 [completedColor]。
 /// - **递进**：[traceStyle] 与 [modelStyle] 均为 false 时，最后一笔 [highlightColor]，其余 [completedColor]。
-/// - **描红**：[traceStyle] 为 true 时，所有可见笔画使用 [traceColor] 描边（空心）。
+/// - **描红**：[traceStyle] 为 true 时，所有可见笔画使用 [traceColor] 实心填充。
 /// - **笔画示例**：[strokeExampleStyle] 为 true 时，已完成笔实心黑、当前笔实心红。
 ///
 /// 使用 [Canvas.transform] 将规范化 path 映射到米字格，避免每帧 [Path.addPath] 拷贝。
@@ -107,7 +107,10 @@ class HanziStrokesPainter extends CustomPainter {
     }
 
     if (traceStyle) {
-      final p = paintFor(traceColor);
+      final p = Paint()
+        ..color = traceColor
+        ..style = PaintingStyle.fill
+        ..isAntiAlias = true;
       for (var i = 0; i < visibleStrokeCount; i++) {
         canvas.drawPath(strokes.pathsInNormalizedSpace[i], p);
       }

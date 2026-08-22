@@ -10,10 +10,10 @@ abstract final class PracticeStrokeColors {
   /// 当前新笔：深红。
   static const Color highlight = Color(0xFFB71C1C);
 
-  /// 描红叠字：红色描边（笔画路径空心）；无笔画字体描红同色。
-  static const Color trace = Color(0xFFB71C1C);
+  /// 描红叠字：浅红半透明实心填充（笔画路径与字体字形共用）。
+  static const Color trace = Color(0x55EF9A9A);
 
   static final PdfColor pdfCompleted = PdfColor.fromInt(0xFF1A1A1A);
   static final PdfColor pdfHighlight = PdfColor.fromInt(0xFFB71C1C);
-  static final PdfColor pdfTrace = PdfColor.fromInt(0xFFB71C1C);
+  static final PdfColor pdfTrace = PdfColor.fromInt(0x55EF9A9A);
 }
