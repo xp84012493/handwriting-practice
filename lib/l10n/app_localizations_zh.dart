@@ -397,6 +397,19 @@ class AppLocalizationsZh extends AppLocalizations {
   String get sheetConfigStrokeExamplesOff => '关闭';
 
   @override
+  String get sheetConfigStrokePinyin => '显示拼音';
+
+  @override
+  String get sheetConfigStrokePinyinHint =>
+      '仅在笔画示例启用时可用。在示例行最前显示该字拼音，宽度与下方示范字格对齐。';
+
+  @override
+  String get sheetConfigStrokePinyinOn => '启用';
+
+  @override
+  String get sheetConfigStrokePinyinOff => '关闭';
+
+  @override
   String get sheetConfigFont => '字体';
 
   @override
@@ -888,6 +901,19 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String get sheetConfigStrokeExamplesOff => '關閉';
+
+  @override
+  String get sheetConfigStrokePinyin => '顯示拼音';
+
+  @override
+  String get sheetConfigStrokePinyinHint =>
+      '僅在筆畫示例啟用時可用。在示例行最前顯示該字拼音，寬度與下方示範字格對齊。';
+
+  @override
+  String get sheetConfigStrokePinyinOn => '啟用';
+
+  @override
+  String get sheetConfigStrokePinyinOff => '關閉';
 
   @override
   String get sheetConfigFont => '字體';

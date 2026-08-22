@@ -21,11 +21,15 @@ class StrokeExampleSlice {
     required this.entry,
     required this.startStroke,
     required this.endStroke,
+    this.showPinyinPrefix = false,
   });
 
   final PracticeSheetEntry entry;
   final int startStroke;
   final int endStroke;
+
+  /// 本行示例最前是否为拼音格（与下方示范字同宽）。
+  final bool showPinyinPrefix;
 
   int get strokeCount => endStroke - startStroke;
 }

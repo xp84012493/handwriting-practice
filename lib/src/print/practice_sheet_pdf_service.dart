@@ -9,6 +9,7 @@ import 'package:pdf/widgets.dart' as pw;
 import 'package:printing/printing.dart';
 import 'package:vector_math/vector_math_64.dart' show Matrix4;
 
+import '../locale/hanzi_pinyin.dart';
 import '../layout/a4_sheet_layout.dart';
 import '../layout/practice_sheet_wrap.dart';
 import '../models/practice_sheet_entry.dart';
@@ -43,6 +44,7 @@ class PracticeSheetPdfService {
     required int blankSlots,
     bool showStrokeOrder = true,
     bool showStrokeExamples = false,
+    bool showStrokePinyin = false,
     PracticeSheetFont sheetFont = PracticeSheetFont.appDefault,
     PracticeGridStyle gridStyle = PracticeGridStyle.mizi,
     SheetPageOrientation pageOrientation = A4SheetLayout.defaultOrientation,
@@ -54,10 +56,16 @@ class PracticeSheetPdfService {
     final fmt = pageFormat ?? pageFormatFor(pageOrientation);
     final doc = pw.Document();
     pw.Font? glyphFont;
+    pw.Font? pinyinFont;
     final fontAsset = sheetFont.assetPath;
     if (!showStrokeOrder && fontAsset != null) {
       final fontData = await rootBundle.load(fontAsset);
       glyphFont = pw.Font.ttf(fontData);
+      pinyinFont = glyphFont;
+    } else if (showStrokeExamples && showStrokePinyin) {
+      final fontData =
+          await rootBundle.load('assets/fonts/LXGWWenKaiGB-Regular.ttf');
+      pinyinFont = pw.Font.ttf(fontData);
     }
     final pages = A4SheetLayout.paginateEntries(
       entries: rows,
@@ -67,6 +75,7 @@ class PracticeSheetPdfService {
       targetCellSize: A4SheetLayout.cellSizePtFromMm(cellSizeMm),
       showStrokeOrder: showStrokeOrder,
       showStrokeExamples: showStrokeExamples,
+      showStrokePinyin: showStrokePinyin,
       orientation: pageOrientation,
     );
     final pageRows = pages.isEmpty ? const <List<PracticeSheetEntry>>[[]] : pages;
@@ -95,10 +104,12 @@ class PracticeSheetPdfService {
                       blankSlots: blankSlots,
                       showStrokeOrder: showStrokeOrder,
                       showStrokeExamples: showStrokeExamples,
+                      showStrokePinyin: showStrokePinyin,
                       cellSizeMm: cellSizeMm,
                       rowGap: rowGap,
                       gridStyle: gridStyle,
                       glyphFont: glyphFont?.getFont(context),
+                      pinyinFont: pinyinFont?.getFont(context),
                       contentHeight: innerSize.y,
                     ).paint(canvas, innerSize);
                   },
@@ -122,6 +133,7 @@ class PracticeSheetPdfService {
     required int blankSlots,
     bool showStrokeOrder = true,
     bool showStrokeExamples = false,
+    bool showStrokePinyin = false,
     PracticeSheetFont sheetFont = PracticeSheetFont.appDefault,
     PracticeGridStyle gridStyle = PracticeGridStyle.mizi,
     SheetPageOrientation pageOrientation = A4SheetLayout.defaultOrientation,
@@ -137,6 +149,7 @@ class PracticeSheetPdfService {
           blankSlots: blankSlots,
           showStrokeOrder: showStrokeOrder,
           showStrokeExamples: showStrokeExamples,
+          showStrokePinyin: showStrokePinyin,
           sheetFont: sheetFont,
           gridStyle: gridStyle,
           pageOrientation: pageOrientation,
@@ -173,10 +186,12 @@ class _PracticeSheetPdfPainter {
     required this.blankSlots,
     required this.showStrokeOrder,
     required this.showStrokeExamples,
+    required this.showStrokePinyin,
     required this.cellSizeMm,
     required this.rowGap,
     this.gridStyle = PracticeGridStyle.mizi,
     this.glyphFont,
+    this.pinyinFont,
     this.contentHeight = 0,
   });
 
@@ -185,10 +200,12 @@ class _PracticeSheetPdfPainter {
   final int blankSlots;
   final bool showStrokeOrder;
   final bool showStrokeExamples;
+  final bool showStrokePinyin;
   final double cellSizeMm;
   final double rowGap;
   final PracticeGridStyle gridStyle;
   final PdfFont? glyphFont;
+  final PdfFont? pinyinFont;
   final double contentHeight;
 
   static final PdfColor _borderColor = PdfColor.fromInt(0xFF2C2C2C);
@@ -220,6 +237,7 @@ class _PracticeSheetPdfPainter {
       targetCellSize: targetCell,
       showStrokeOrder: showStrokeOrder,
       showStrokeExamples: showStrokeExamples,
+      showStrokePinyin: showStrokePinyin,
     );
     final cell = layout.cellSize;
     final strokeW = layout.strokeWidth;
@@ -239,10 +257,24 @@ class _PracticeSheetPdfPainter {
         case StrokeExamplePhysicalRow():
           final slice = row.slice;
           final strokeCellW = A4SheetLayout.strokeExampleCellWidth(cell);
+          final pinyinOffset =
+              slice.showPinyinPrefix ? cell : 0.0;
+          if (slice.showPinyinPrefix) {
+            final pinyin =
+                HanziPinyin.forCharacter(slice.entry.character.character);
+            _paintPinyinLabel(
+              g,
+              pinyin,
+              left,
+              y,
+              cell,
+              rowH,
+            );
+          }
           for (var stroke = slice.startStroke; stroke < slice.endStroke; stroke++) {
             final local = stroke - slice.startStroke;
-            final x0 = left + local * strokeCellW;
-            _paintSingleStrokeForCell(
+            final x0 = left + pinyinOffset + local * strokeCellW;
+            _paintStrokeExampleForCell(
               g,
               slice.entry,
               x0,
@@ -387,7 +419,7 @@ class _PracticeSheetPdfPainter {
     g.restoreContext();
   }
 
-  void _paintSingleStrokeForCell(
+  void _paintStrokeExampleForCell(
     PdfGraphics g,
     PracticeSheetEntry entry,
     double cellX,
@@ -415,16 +447,53 @@ class _PracticeSheetPdfPainter {
     final ctm = Matrix4.copy(fit)..multiply(data);
     final n = character.strokePathData.length;
     if (n == 0) return;
-    final i = strokeIndex.clamp(0, n - 1);
+    final step = strokeIndex.clamp(0, n - 1);
+    final visible = step + 1;
 
     g.saveContext();
-    g.setLineJoin(PdfLineJoin.round);
-    g.setLineCap(PdfLineCap.round);
-    g.setLineWidth(strokeW * 0.9);
-    g.setStrokeColor(_highlight);
     g.setTransform(ctm);
-    g.drawShape(character.strokePathData[i]);
-    g.strokePath(close: false);
+    for (var i = 0; i < visible; i++) {
+      g.setFillColor(i == step ? _highlight : _completed);
+      g.drawShape(character.strokePathData[i]);
+      g.fillPath(evenOdd: true);
+    }
+    g.restoreContext();
+  }
+
+  void _paintPinyinLabel(
+    PdfGraphics g,
+    String pinyin,
+    double cellX,
+    double cellY,
+    double cellW,
+    double cellH,
+  ) {
+    if (pinyin.isEmpty) return;
+    final font = pinyinFont ?? glyphFont;
+    if (font == null) return;
+
+    final fontSize = math.min(cellW, cellH * 2) * 0.32;
+    final metrics = font.stringMetrics(pinyin) * fontSize;
+    final textW = metrics.width;
+    final cx = cellX + cellW / 2;
+    final cy = cellY + cellH / 2;
+
+    g.saveContext();
+    g.setTransform(
+      Matrix4.identity()
+        ..translateByDouble(0.0, contentHeight, 0, 1)
+        ..scaleByDouble(1.0, -1.0, 1, 1)
+        ..translateByDouble(cx, cy, 0, 1)
+        ..scaleByDouble(1.0, -1.0, 1, 1),
+    );
+    g.setFillColor(_completed);
+    g.drawString(
+      font,
+      fontSize,
+      pinyin,
+      -textW / 2,
+      fontSize * 0.35,
+    );
     g.restoreContext();
   }
 

@@ -10,7 +10,8 @@ import '../models/stroke_path_convention.dart';
 ///
 /// - **示范**：[modelStyle] 为 true 时，全部笔画 [completedColor]。
 /// - **递进**：[traceStyle] 与 [modelStyle] 均为 false 时，最后一笔 [highlightColor]，其余 [completedColor]。
-/// - **描红**：[traceStyle] 为 true 时，所有可见笔画使用 [traceColor]（建议带透明度）。
+/// - **描红**：[traceStyle] 为 true 时，所有可见笔画使用 [traceColor] 描边（空心）。
+/// - **笔画示例**：[strokeExampleStyle] 为 true 时，已完成笔实心黑、当前笔实心红。
 ///
 /// 使用 [Canvas.transform] 将规范化 path 映射到米字格，避免每帧 [Path.addPath] 拷贝。
 @immutable
@@ -27,9 +28,9 @@ class HanziStrokesPainter extends CustomPainter {
     this.highlightColor = PracticeStrokeColors.highlight,
     this.completedColor = PracticeStrokeColors.completed,
     this.strokePaintWidth = 3.0,
-    this.onlyStrokeIndex,
+    this.strokeExampleStyle = false,
   }) : assert(
-         onlyStrokeIndex == null ||
+         !strokeExampleStyle ||
              (visibleStrokeCount >= 1 &&
                  highlightStrokeIndex >= 0 &&
                  highlightStrokeIndex < visibleStrokeCount),
@@ -60,8 +61,8 @@ class HanziStrokesPainter extends CustomPainter {
   final Color completedColor;
   final double strokePaintWidth;
 
-  /// 仅绘制该索引的单笔（笔画示例格）。
-  final int? onlyStrokeIndex;
+  /// 笔画示例：已完成笔实心黑，当前笔实心红。
+  final bool strokeExampleStyle;
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -92,10 +93,15 @@ class HanziStrokesPainter extends CustomPainter {
       return p;
     }
 
-    if (onlyStrokeIndex != null) {
-      final i = onlyStrokeIndex!.clamp(0, strokes.strokeCount - 1);
-      final p = paintFor(highlightColor);
-      canvas.drawPath(strokes.pathsInNormalizedSpace[i], p);
+    if (strokeExampleStyle) {
+      final count = highlightStrokeIndex + 1;
+      for (var i = 0; i < count; i++) {
+        final p = Paint()
+          ..color = i == highlightStrokeIndex ? highlightColor : completedColor
+          ..style = PaintingStyle.fill
+          ..isAntiAlias = true;
+        canvas.drawPath(strokes.pathsInNormalizedSpace[i], p);
+      }
       canvas.restore();
       return;
     }
@@ -135,6 +141,6 @@ class HanziStrokesPainter extends CustomPainter {
         oldDelegate.highlightColor != highlightColor ||
         oldDelegate.completedColor != completedColor ||
         oldDelegate.strokePaintWidth != strokePaintWidth ||
-        oldDelegate.onlyStrokeIndex != onlyStrokeIndex;
+        oldDelegate.strokeExampleStyle != strokeExampleStyle;
   }
 }

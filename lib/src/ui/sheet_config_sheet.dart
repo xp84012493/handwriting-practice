@@ -48,6 +48,7 @@ class _SheetConfigSheetState extends State<_SheetConfigSheet> {
   late PracticeSheetFont _sheetFont = widget.controller.sheetFont;
   late PracticeGridStyle _gridStyle = widget.controller.gridStyle;
   late bool _showStrokeExamples = widget.controller.showStrokeExamples;
+  late bool _showStrokePinyin = widget.controller.showStrokePinyin;
 
   int get _slotMax => PracticeSheetController.maxSlotsFor(
         showStrokeOrder: _showStrokeOrder,
@@ -65,6 +66,7 @@ class _SheetConfigSheetState extends State<_SheetConfigSheet> {
       sheetFont: _sheetFont,
       gridStyle: _gridStyle,
       showStrokeExamples: _showStrokeExamples,
+      showStrokePinyin: _showStrokePinyin,
     );
     if (mounted) Navigator.of(context).pop();
   }
@@ -118,6 +120,7 @@ class _SheetConfigSheetState extends State<_SheetConfigSheet> {
       _sheetFont = PracticeSheetController.defaultSheetFont;
       _gridStyle = PracticeSheetController.defaultGridStyle;
       _showStrokeExamples = PracticeSheetController.defaultShowStrokeExamples;
+      _showStrokePinyin = PracticeSheetController.defaultShowStrokePinyin;
     });
   }
 
@@ -259,6 +262,7 @@ class _SheetConfigSheetState extends State<_SheetConfigSheet> {
                   _showStrokeOrder = next.first;
                   if (_showStrokeOrder) {
                     _showStrokeExamples = false;
+                    _showStrokePinyin = false;
                   }
                   _clampSlotsToMax();
                 });
@@ -295,7 +299,48 @@ class _SheetConfigSheetState extends State<_SheetConfigSheet> {
                   selected: {_showStrokeExamples},
                   onSelectionChanged: (next) {
                     HapticFeedback.selectionClick();
-                    setState(() => _showStrokeExamples = next.first);
+                    setState(() {
+                      _showStrokeExamples = next.first;
+                      if (!_showStrokeExamples) {
+                        _showStrokePinyin = false;
+                      }
+                    });
+                  },
+                ),
+              ),
+            ),
+            const SizedBox(height: 16),
+            Text(
+              l10n.sheetConfigStrokePinyin,
+              style: Theme.of(context).textTheme.titleSmall,
+            ),
+            const SizedBox(height: 4),
+            Text(
+              l10n.sheetConfigStrokePinyinHint,
+              style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                  ),
+            ),
+            const SizedBox(height: 8),
+            IgnorePointer(
+              ignoring: _showStrokeOrder || !_showStrokeExamples,
+              child: Opacity(
+                opacity: _showStrokeOrder || !_showStrokeExamples ? 0.45 : 1,
+                child: SegmentedButton<bool>(
+                  segments: [
+                    ButtonSegment<bool>(
+                      value: true,
+                      label: Text(l10n.sheetConfigStrokePinyinOn),
+                    ),
+                    ButtonSegment<bool>(
+                      value: false,
+                      label: Text(l10n.sheetConfigStrokePinyinOff),
+                    ),
+                  ],
+                  selected: {_showStrokePinyin},
+                  onSelectionChanged: (next) {
+                    HapticFeedback.selectionClick();
+                    setState(() => _showStrokePinyin = next.first);
                   },
                 ),
               ),

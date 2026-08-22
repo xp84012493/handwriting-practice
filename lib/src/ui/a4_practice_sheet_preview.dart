@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../locale/hanzi_pinyin.dart';
 import '../layout/a4_sheet_layout.dart';
 import '../layout/practice_sheet_wrap.dart';
 import '../models/practice_sheet_entry.dart';
@@ -18,6 +19,7 @@ class A4PracticeSheetPreview extends StatelessWidget {
     required this.blankSlots,
     this.showStrokeOrder = true,
     this.showStrokeExamples = false,
+    this.showStrokePinyin = false,
     this.sheetFont = PracticeSheetFont.appDefault,
     this.gridStyle = PracticeGridStyle.mizi,
     this.pageOrientation = A4SheetLayout.defaultOrientation,
@@ -32,6 +34,7 @@ class A4PracticeSheetPreview extends StatelessWidget {
   final int blankSlots;
   final bool showStrokeOrder;
   final bool showStrokeExamples;
+  final bool showStrokePinyin;
   final PracticeSheetFont sheetFont;
   final PracticeGridStyle gridStyle;
   final SheetPageOrientation pageOrientation;
@@ -92,6 +95,7 @@ class A4PracticeSheetPreview extends StatelessWidget {
                       targetCellSize: targetCell,
                       showStrokeOrder: showStrokeOrder,
                       showStrokeExamples: showStrokeExamples,
+                      showStrokePinyin: showStrokePinyin,
                     );
 
                     return Stack(
@@ -210,6 +214,27 @@ class _StrokeExampleRowSlice extends StatelessWidget {
     final strokeCellW =
         A4SheetLayout.strokeExampleCellWidth(practiceCellSize);
     final children = <Widget>[];
+
+    if (slice.showPinyinPrefix) {
+      final pinyin = HanziPinyin.forCharacter(slice.entry.character.character);
+      children.add(
+        SizedBox(
+          width: practiceCellSize,
+          height: rowHeight,
+          child: Center(
+            child: Text(
+              pinyin,
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: practiceCellSize * 0.32,
+                height: 1,
+                color: const Color(0xFF2C2C2C),
+              ),
+            ),
+          ),
+        ),
+      );
+    }
 
     for (var stroke = slice.startStroke; stroke < slice.endStroke; stroke++) {
       children.add(

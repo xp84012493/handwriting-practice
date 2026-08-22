@@ -765,6 +765,30 @@ abstract class AppLocalizations {
   /// **'Off'**
   String get sheetConfigStrokeExamplesOff;
 
+  /// No description provided for @sheetConfigStrokePinyin.
+  ///
+  /// In en, this message translates to:
+  /// **'Show pinyin'**
+  String get sheetConfigStrokePinyin;
+
+  /// No description provided for @sheetConfigStrokePinyinHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Available only when stroke examples are on. Shows the character\'s pinyin at the start of the example row, aligned with the demo cell below.'**
+  String get sheetConfigStrokePinyinHint;
+
+  /// No description provided for @sheetConfigStrokePinyinOn.
+  ///
+  /// In en, this message translates to:
+  /// **'On'**
+  String get sheetConfigStrokePinyinOn;
+
+  /// No description provided for @sheetConfigStrokePinyinOff.
+  ///
+  /// In en, this message translates to:
+  /// **'Off'**
+  String get sheetConfigStrokePinyinOff;
+
   /// No description provided for @sheetConfigFont.
   ///
   /// In en, this message translates to:

@@ -62,6 +62,9 @@ abstract final class A4SheetLayout {
   static int strokeExampleColsPerLine(int practiceColsPerLine) =>
       math.max(1, practiceColsPerLine * 2);
 
+  /// 拼音前缀占用的半宽格位数（等于一个练字格宽）。
+  static const int strokeExamplePinyinSlotCount = 2;
+
   /// 将毫米格边长转为 PDF 点。
   static double cellSizePtFromMm(double cellSizeMm) =>
       cellSizeMm.clamp(minPracticeCellSizeMm, maxPracticeCellSizeMm) *
@@ -137,19 +140,31 @@ abstract final class A4SheetLayout {
   static List<StrokeExampleSlice> sliceStrokeExampleRow(
     PracticeSheetEntry entry, {
     required int colsPerLine,
+    bool showPinyin = false,
   }) {
     final total = entry.prepared.strokeCount;
     if (total <= 0) return const [];
-    final strokesPerLine = strokeExampleColsPerLine(colsPerLine);
+    final slotsPerRow = strokeExampleColsPerLine(colsPerLine);
+    final pinyinSlots =
+        showPinyin ? strokeExamplePinyinSlotCount : 0;
     final slices = <StrokeExampleSlice>[];
-    for (var start = 0; start < total; start += strokesPerLine) {
+    var start = 0;
+    var isFirstRow = true;
+
+    while (start < total) {
+      final reserved = isFirstRow ? pinyinSlots : 0;
+      final capacity = math.max(1, slotsPerRow - reserved);
+      final end = math.min(start + capacity, total);
       slices.add(
         StrokeExampleSlice(
           entry: entry,
           startStroke: start,
-          endStroke: math.min(start + strokesPerLine, total),
+          endStroke: end,
+          showPinyinPrefix: isFirstRow && showPinyin,
         ),
       );
+      start = end;
+      isFirstRow = false;
     }
     return slices;
   }
@@ -178,10 +193,15 @@ abstract final class A4SheetLayout {
     required int colsPerLine,
     bool showStrokeOrder = true,
     bool showStrokeExamples = false,
+    bool showStrokePinyin = false,
   }) {
     final rows = <SheetPhysicalRow>[];
     if (showStrokeExamples && !showStrokeOrder) {
-      for (final slice in sliceStrokeExampleRow(entry, colsPerLine: colsPerLine)) {
+      for (final slice in sliceStrokeExampleRow(
+        entry,
+        colsPerLine: colsPerLine,
+        showPinyin: showStrokePinyin,
+      )) {
         rows.add(StrokeExamplePhysicalRow(slice: slice));
       }
     }
@@ -224,6 +244,7 @@ abstract final class A4SheetLayout {
     double? targetCellSize,
     bool showStrokeOrder = true,
     bool showStrokeExamples = false,
+    bool showStrokePinyin = false,
     SheetPageOrientation orientation = defaultOrientation,
     double exampleHeightFraction = strokeExampleRowHeightFraction,
   }) {
@@ -240,6 +261,7 @@ abstract final class A4SheetLayout {
           colsPerLine: colsPerLine,
           showStrokeOrder: showStrokeOrder,
           showStrokeExamples: showStrokeExamples,
+          showStrokePinyin: showStrokePinyin,
         ),
       );
     }
@@ -330,6 +352,7 @@ abstract final class A4SheetLayout {
     double? targetCellSize,
     bool showStrokeOrder = true,
     bool showStrokeExamples = false,
+    bool showStrokePinyin = false,
   }) {
     final cell = targetCellSize ?? practiceCellSizePt;
     final colsPerLine = columnsPerLine(innerW, cell);
@@ -344,6 +367,7 @@ abstract final class A4SheetLayout {
           colsPerLine: colsPerLine,
           showStrokeOrder: showStrokeOrder,
           showStrokeExamples: showStrokeExamples,
+          showStrokePinyin: showStrokePinyin,
         ),
       );
     }
@@ -375,6 +399,7 @@ abstract final class A4SheetLayout {
     double? targetCellSize,
     bool showStrokeOrder = true,
     bool showStrokeExamples = false,
+    bool showStrokePinyin = false,
     SheetPageOrientation orientation = defaultOrientation,
   }) {
     if (entries.isEmpty) return const [];
@@ -397,6 +422,7 @@ abstract final class A4SheetLayout {
             targetCellSize: cell,
             showStrokeOrder: showStrokeOrder,
             showStrokeExamples: showStrokeExamples,
+            showStrokePinyin: showStrokePinyin,
             orientation: orientation,
           )) {
         pages.add(current);

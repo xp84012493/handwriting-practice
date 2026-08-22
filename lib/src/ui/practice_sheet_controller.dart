@@ -55,6 +55,7 @@ class PracticeSheetController extends ChangeNotifier {
     PracticeSheetFont sheetFont = defaultSheetFont,
     PracticeGridStyle gridStyle = defaultGridStyle,
     bool showStrokeExamples = defaultShowStrokeExamples,
+    bool showStrokePinyin = defaultShowStrokePinyin,
   })  : _traceSlots = traceSlots.clamp(minSlots, maxSlots),
         _blankSlots = blankSlots.clamp(minSlots, maxSlots),
         _cellSizeMm = cellSizeMm
@@ -67,7 +68,8 @@ class PracticeSheetController extends ChangeNotifier {
         _pageOrientation = pageOrientation,
         _sheetFont = sheetFont,
         _gridStyle = gridStyle,
-        _showStrokeExamples = showStrokeExamples;
+        _showStrokeExamples = showStrokeExamples,
+        _showStrokePinyin = showStrokePinyin;
 
   static const int defaultTraceSlots = 3;
   static const int defaultBlankSlots = 3;
@@ -82,6 +84,7 @@ class PracticeSheetController extends ChangeNotifier {
       PracticeSheetFont.appDefault;
   static const PracticeGridStyle defaultGridStyle = PracticeGridStyle.mizi;
   static const bool defaultShowStrokeExamples = false;
+  static const bool defaultShowStrokePinyin = false;
 
   /// 描红/空白格可调上限：有笔画用 [maxSlots]；无笔画可提到填满一行所需。
   static int maxSlotsFor({
@@ -117,6 +120,7 @@ class PracticeSheetController extends ChangeNotifier {
   static const _prefSheetFont = 'sheet_font';
   static const _prefGridStyle = 'sheet_grid_style';
   static const _prefShowStrokeExamples = 'sheet_show_stroke_examples';
+  static const _prefShowStrokePinyin = 'sheet_show_stroke_pinyin';
   static const SheetPageOrientation defaultPageOrientation =
       A4SheetLayout.defaultOrientation;
 
@@ -131,6 +135,7 @@ class PracticeSheetController extends ChangeNotifier {
   PracticeSheetFont _sheetFont;
   PracticeGridStyle _gridStyle;
   bool _showStrokeExamples;
+  bool _showStrokePinyin;
 
   /// 每行末尾「描红」完整叠字的格数。
   int get traceSlots => _traceSlots;
@@ -156,6 +161,10 @@ class PracticeSheetController extends ChangeNotifier {
   /// 无笔画模式下是否在每行上方展示半高笔画示例行。
   bool get showStrokeExamples => _showStrokeExamples && !_showStrokeOrder;
 
+  /// 笔画示例行最前显示拼音（需同时启用笔画示例）。
+  bool get showStrokePinyin =>
+      _showStrokePinyin && showStrokeExamples;
+
   Future<void> load() async {
     final prefs = await SharedPreferences.getInstance();
     final trace = prefs.getInt(_prefTraceSlots);
@@ -166,6 +175,7 @@ class PracticeSheetController extends ChangeNotifier {
     final font = prefs.getString(_prefSheetFont);
     final grid = prefs.getString(_prefGridStyle);
     final strokeExamples = prefs.getBool(_prefShowStrokeExamples);
+    final strokePinyin = prefs.getBool(_prefShowStrokePinyin);
     if (trace != null) {
       _traceSlots = trace.clamp(minSlots, maxSlotsNoStrokeOrder);
     }
@@ -195,6 +205,9 @@ class PracticeSheetController extends ChangeNotifier {
     if (strokeExamples != null) {
       _showStrokeExamples = strokeExamples;
     }
+    if (strokePinyin != null) {
+      _showStrokePinyin = strokePinyin;
+    }
     notifyListeners();
   }
 
@@ -207,6 +220,7 @@ class PracticeSheetController extends ChangeNotifier {
     required PracticeSheetFont sheetFont,
     required PracticeGridStyle gridStyle,
     bool showStrokeExamples = defaultShowStrokeExamples,
+    bool showStrokePinyin = defaultShowStrokePinyin,
   }) async {
     final maxS = maxSlotsFor(
       showStrokeOrder: showStrokeOrder,
@@ -222,6 +236,8 @@ class PracticeSheetController extends ChangeNotifier {
         )
         .toDouble();
     final nextExamples = showStrokeOrder ? false : showStrokeExamples;
+    final nextPinyin =
+        showStrokeOrder || !nextExamples ? false : showStrokePinyin;
     if (nextTrace == _traceSlots &&
         nextBlank == _blankSlots &&
         nextCell == _cellSizeMm &&
@@ -229,7 +245,8 @@ class PracticeSheetController extends ChangeNotifier {
         pageOrientation == _pageOrientation &&
         sheetFont == _sheetFont &&
         gridStyle == _gridStyle &&
-        nextExamples == _showStrokeExamples) {
+        nextExamples == _showStrokeExamples &&
+        nextPinyin == _showStrokePinyin) {
       return;
     }
     _traceSlots = nextTrace;
@@ -240,6 +257,7 @@ class PracticeSheetController extends ChangeNotifier {
     _sheetFont = sheetFont;
     _gridStyle = gridStyle;
     _showStrokeExamples = nextExamples;
+    _showStrokePinyin = nextPinyin;
     final prefs = await SharedPreferences.getInstance();
     await prefs.setInt(_prefTraceSlots, _traceSlots);
     await prefs.setInt(_prefBlankSlots, _blankSlots);
@@ -249,6 +267,7 @@ class PracticeSheetController extends ChangeNotifier {
     await prefs.setString(_prefSheetFont, _sheetFont.prefsValue);
     await prefs.setString(_prefGridStyle, _gridStyle.prefsValue);
     await prefs.setBool(_prefShowStrokeExamples, _showStrokeExamples);
+    await prefs.setBool(_prefShowStrokePinyin, _showStrokePinyin);
 
     final raw = textController.text.trim();
     if (raw.isNotEmpty) {
@@ -376,6 +395,7 @@ class PracticeSheetController extends ChangeNotifier {
       targetCellSize: _cellSizePt,
       showStrokeOrder: _showStrokeOrder,
       showStrokeExamples: _showStrokeExamples,
+      showStrokePinyin: _showStrokePinyin,
       orientation: _pageOrientation,
     );
     if (_pages.isEmpty) {

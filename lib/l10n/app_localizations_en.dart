@@ -409,6 +409,19 @@ class AppLocalizationsEn extends AppLocalizations {
   String get sheetConfigStrokeExamplesOff => 'Off';
 
   @override
+  String get sheetConfigStrokePinyin => 'Show pinyin';
+
+  @override
+  String get sheetConfigStrokePinyinHint =>
+      'Available only when stroke examples are on. Shows the character\'s pinyin at the start of the example row, aligned with the demo cell below.';
+
+  @override
+  String get sheetConfigStrokePinyinOn => 'On';
+
+  @override
+  String get sheetConfigStrokePinyinOff => 'Off';
+
+  @override
   String get sheetConfigFont => 'Font';
 
   @override

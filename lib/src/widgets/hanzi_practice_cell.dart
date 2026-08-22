@@ -172,9 +172,9 @@ class HanziPracticeCell extends StatelessWidget {
                     HanziPracticeCellKind.strokeExample => HanziStrokesPainter(
                         strokes: prepared,
                         glyphRect: glyphRect,
-                        visibleStrokeCount: 1,
-                        highlightStrokeIndex: 0,
-                        onlyStrokeIndex: safeStep,
+                        visibleStrokeCount: progressiveVisible,
+                        highlightStrokeIndex: safeStep,
+                        strokeExampleStyle: true,
                         strokePaintWidth: strokeWidth * 0.9,
                       ),
                     HanziPracticeCellKind.blank => throw StateError(
