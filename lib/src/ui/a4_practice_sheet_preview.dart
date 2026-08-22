@@ -17,6 +17,7 @@ class A4PracticeSheetPreview extends StatelessWidget {
     required this.traceSlots,
     required this.blankSlots,
     this.showStrokeOrder = true,
+    this.showStrokeExamples = false,
     this.sheetFont = PracticeSheetFont.appDefault,
     this.gridStyle = PracticeGridStyle.mizi,
     this.pageOrientation = A4SheetLayout.defaultOrientation,
@@ -30,6 +31,7 @@ class A4PracticeSheetPreview extends StatelessWidget {
   final int traceSlots;
   final int blankSlots;
   final bool showStrokeOrder;
+  final bool showStrokeExamples;
   final PracticeSheetFont sheetFont;
   final PracticeGridStyle gridStyle;
   final SheetPageOrientation pageOrientation;
@@ -89,6 +91,7 @@ class A4PracticeSheetPreview extends StatelessWidget {
                       rowGap: rowGap,
                       targetCellSize: targetCell,
                       showStrokeOrder: showStrokeOrder,
+                      showStrokeExamples: showStrokeExamples,
                     );
 
                     return Stack(
@@ -111,32 +114,14 @@ class A4PracticeSheetPreview extends StatelessWidget {
                           child: ClipRect(
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
-                              children: List.generate(
-                                layout.physicalRows.length,
-                                (index) {
-                                  final slice = layout.physicalRows[index];
-                                  return Padding(
-                                    padding: EdgeInsets.only(
-                                      bottom: index ==
-                                              layout.physicalRows.length - 1
-                                          ? 0
-                                          : rowGap,
-                                    ),
-                                    child: SizedBox(
-                                      height: layout.cellSize,
-                                      child: _PracticeRowSlice(
-                                        slice: slice,
-                                        traceSlots: traceSlots,
-                                        showStrokeOrder: showStrokeOrder,
-                                        sheetFont: sheetFont,
-                                        gridStyle: gridStyle,
-                                        cellSize: layout.cellSize,
-                                        strokeWidth: layout.strokeWidth,
-                                        traceColor: traceColor,
-                                      ),
-                                    ),
-                                  );
-                                },
+                              children: _physicalRowWidgets(
+                                layout: layout,
+                                traceSlots: traceSlots,
+                                showStrokeOrder: showStrokeOrder,
+                                sheetFont: sheetFont,
+                                gridStyle: gridStyle,
+                                traceColor: traceColor,
+                                rowGap: rowGap,
                               ),
                             ),
                           ),
@@ -150,6 +135,103 @@ class A4PracticeSheetPreview extends StatelessWidget {
           ),
         );
       },
+    );
+  }
+
+  List<Widget> _physicalRowWidgets({
+    required WrappedSheetLayout layout,
+    required int traceSlots,
+    required bool showStrokeOrder,
+    required PracticeSheetFont sheetFont,
+    required PracticeGridStyle gridStyle,
+    required Color traceColor,
+    required double rowGap,
+  }) {
+    final widgets = <Widget>[];
+    final cell = layout.cellSize;
+    final exampleFraction = A4SheetLayout.strokeExampleRowHeightFraction;
+
+    for (var i = 0; i < layout.physicalRows.length; i++) {
+      final row = layout.physicalRows[i];
+      final rowH = row.rowHeight(cell, exampleFraction);
+      final next = i + 1 < layout.physicalRows.length
+          ? layout.physicalRows[i + 1]
+          : null;
+      final gapAfter = next != null &&
+          A4SheetLayout.gapBetweenPhysicalRows(row, next);
+
+      widgets.add(
+        Padding(
+          padding: EdgeInsets.only(bottom: gapAfter ? rowGap : 0),
+          child: SizedBox(
+            height: rowH,
+            child: switch (row) {
+              StrokeExamplePhysicalRow() => _StrokeExampleRowSlice(
+                  slice: row.slice,
+                  practiceCellSize: cell,
+                  rowHeight: rowH,
+                  strokeWidth: layout.strokeWidth,
+                ),
+              PracticePhysicalRow() => _PracticeRowSlice(
+                  slice: row.slice,
+                  traceSlots: traceSlots,
+                  showStrokeOrder: showStrokeOrder,
+                  sheetFont: sheetFont,
+                  gridStyle: gridStyle,
+                  cellSize: cell,
+                  strokeWidth: layout.strokeWidth,
+                  traceColor: traceColor,
+                ),
+            },
+          ),
+        ),
+      );
+    }
+    return widgets;
+  }
+}
+
+class _StrokeExampleRowSlice extends StatelessWidget {
+  const _StrokeExampleRowSlice({
+    required this.slice,
+    required this.practiceCellSize,
+    required this.rowHeight,
+    required this.strokeWidth,
+  });
+
+  final StrokeExampleSlice slice;
+  final double practiceCellSize;
+  final double rowHeight;
+  final double strokeWidth;
+
+  @override
+  Widget build(BuildContext context) {
+    final prepared = slice.entry.prepared;
+    final strokeCellW =
+        A4SheetLayout.strokeExampleCellWidth(practiceCellSize);
+    final children = <Widget>[];
+
+    for (var stroke = slice.startStroke; stroke < slice.endStroke; stroke++) {
+      children.add(
+        SizedBox(
+          width: strokeCellW,
+          height: rowHeight,
+          child: HanziPracticeCell(
+            prepared: prepared,
+            kind: HanziPracticeCellKind.strokeExample,
+            stepIndex: stroke,
+            drawGrid: false,
+            drawOuterBorder: false,
+            squareCell: false,
+            strokeWidth: strokeWidth,
+          ),
+        ),
+      );
+    }
+
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: children,
     );
   }
 }

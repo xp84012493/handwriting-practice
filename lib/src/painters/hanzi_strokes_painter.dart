@@ -27,8 +27,13 @@ class HanziStrokesPainter extends CustomPainter {
     this.highlightColor = PracticeStrokeColors.highlight,
     this.completedColor = PracticeStrokeColors.completed,
     this.strokePaintWidth = 3.0,
-  }) : assert(visibleStrokeCount >= 1),
-       assert(highlightStrokeIndex >= 0 && highlightStrokeIndex < visibleStrokeCount);
+    this.onlyStrokeIndex,
+  }) : assert(
+         onlyStrokeIndex == null ||
+             (visibleStrokeCount >= 1 &&
+                 highlightStrokeIndex >= 0 &&
+                 highlightStrokeIndex < visibleStrokeCount),
+       );
 
   final PreparedHanziStrokes strokes;
   final Rect glyphRect;
@@ -54,6 +59,9 @@ class HanziStrokesPainter extends CustomPainter {
   final Color highlightColor;
   final Color completedColor;
   final double strokePaintWidth;
+
+  /// 仅绘制该索引的单笔（笔画示例格）。
+  final int? onlyStrokeIndex;
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -82,6 +90,14 @@ class HanziStrokesPainter extends CustomPainter {
           ..strokeCap = StrokeCap.round;
       }
       return p;
+    }
+
+    if (onlyStrokeIndex != null) {
+      final i = onlyStrokeIndex!.clamp(0, strokes.strokeCount - 1);
+      final p = paintFor(highlightColor);
+      canvas.drawPath(strokes.pathsInNormalizedSpace[i], p);
+      canvas.restore();
+      return;
     }
 
     if (traceStyle) {
@@ -118,6 +134,7 @@ class HanziStrokesPainter extends CustomPainter {
         oldDelegate.traceColor != traceColor ||
         oldDelegate.highlightColor != highlightColor ||
         oldDelegate.completedColor != completedColor ||
-        oldDelegate.strokePaintWidth != strokePaintWidth;
+        oldDelegate.strokePaintWidth != strokePaintWidth ||
+        oldDelegate.onlyStrokeIndex != onlyStrokeIndex;
   }
 }

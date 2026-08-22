@@ -15,6 +15,49 @@ class PracticeRowSlice {
   int get columnCount => endCol - startCol;
 }
 
+/// 笔画示例行切片（按页宽拆成多段半高物理行）。
+class StrokeExampleSlice {
+  const StrokeExampleSlice({
+    required this.entry,
+    required this.startStroke,
+    required this.endStroke,
+  });
+
+  final PracticeSheetEntry entry;
+  final int startStroke;
+  final int endStroke;
+
+  int get strokeCount => endStroke - startStroke;
+}
+
+/// 字帖物理行：半高笔画示例行，或整格练字行。
+sealed class SheetPhysicalRow {
+  const SheetPhysicalRow();
+
+  double rowHeight(double cellSize, double exampleHeightFraction);
+}
+
+/// 半高行：逐笔展示笔画路径示例。
+final class StrokeExamplePhysicalRow extends SheetPhysicalRow {
+  const StrokeExamplePhysicalRow({required this.slice});
+
+  final StrokeExampleSlice slice;
+
+  @override
+  double rowHeight(double cellSize, double exampleHeightFraction) =>
+      cellSize * exampleHeightFraction;
+}
+
+/// 整格高练字行。
+final class PracticePhysicalRow extends SheetPhysicalRow {
+  const PracticePhysicalRow({required this.slice});
+
+  final PracticeRowSlice slice;
+
+  @override
+  double rowHeight(double cellSize, double exampleHeightFraction) => cellSize;
+}
+
 /// 固定格宽 + 自动换行后的字帖布局计划。
 class WrappedSheetLayout {
   const WrappedSheetLayout({
@@ -33,7 +76,7 @@ class WrappedSheetLayout {
   final double contentWidth;
   final double totalHeight;
   final int colsPerLine;
-  final List<PracticeRowSlice> physicalRows;
+  final List<SheetPhysicalRow> physicalRows;
 }
 
 /// 练字格类型（列索引决定）。

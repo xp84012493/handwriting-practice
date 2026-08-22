@@ -50,6 +50,18 @@ abstract final class A4SheetLayout {
   static const double defaultRowGap = 4;
   static const double defaultPagePaddingPt = 18;
 
+  /// 无笔画笔画示例行高度 = 格边长 × 该系数。
+  static const double strokeExampleRowHeightFraction = 0.5;
+
+  /// 笔画示例格宽 = 练字格宽 × 该系数（两笔示例对应下一行一字宽）。
+  static const double strokeExampleWidthFraction = 0.5;
+
+  static double strokeExampleCellWidth(double cellSize) =>
+      cellSize * strokeExampleWidthFraction;
+
+  static int strokeExampleColsPerLine(int practiceColsPerLine) =>
+      math.max(1, practiceColsPerLine * 2);
+
   /// 将毫米格边长转为 PDF 点。
   static double cellSizePtFromMm(double cellSizeMm) =>
       cellSizeMm.clamp(minPracticeCellSizeMm, maxPracticeCellSizeMm) *
@@ -121,7 +133,125 @@ abstract final class A4SheetLayout {
     return slices;
   }
 
-  /// 单条逻辑行占用的物理行数。
+  /// 笔画示例行拆成若干半高物理行（每行最多 [strokeExampleColsPerLine] 笔）。
+  static List<StrokeExampleSlice> sliceStrokeExampleRow(
+    PracticeSheetEntry entry, {
+    required int colsPerLine,
+  }) {
+    final total = entry.prepared.strokeCount;
+    if (total <= 0) return const [];
+    final strokesPerLine = strokeExampleColsPerLine(colsPerLine);
+    final slices = <StrokeExampleSlice>[];
+    for (var start = 0; start < total; start += strokesPerLine) {
+      slices.add(
+        StrokeExampleSlice(
+          entry: entry,
+          startStroke: start,
+          endStroke: math.min(start + strokesPerLine, total),
+        ),
+      );
+    }
+    return slices;
+  }
+
+  /// 示例行与练字行之间、或同字多段示例行之间不加 [rowGap]。
+  static bool gapBetweenPhysicalRows(
+    SheetPhysicalRow a,
+    SheetPhysicalRow b,
+  ) {
+    if (a is StrokeExamplePhysicalRow) {
+      if (b is PracticePhysicalRow && a.slice.entry == b.slice.entry) {
+        return false;
+      }
+      if (b is StrokeExamplePhysicalRow && a.slice.entry == b.slice.entry) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  /// 单字在字帖上占用的全部物理行（可选笔画示例 + 练字行）。
+  static List<SheetPhysicalRow> buildPhysicalRowsForEntry(
+    PracticeSheetEntry entry, {
+    required int traceSlots,
+    required int blankSlots,
+    required int colsPerLine,
+    bool showStrokeOrder = true,
+    bool showStrokeExamples = false,
+  }) {
+    final rows = <SheetPhysicalRow>[];
+    if (showStrokeExamples && !showStrokeOrder) {
+      for (final slice in sliceStrokeExampleRow(entry, colsPerLine: colsPerLine)) {
+        rows.add(StrokeExamplePhysicalRow(slice: slice));
+      }
+    }
+    for (final slice in sliceLogicalRow(
+      entry,
+      traceSlots: traceSlots,
+      blankSlots: blankSlots,
+      colsPerLine: colsPerLine,
+      showStrokeOrder: showStrokeOrder,
+    )) {
+      rows.add(PracticePhysicalRow(slice: slice));
+    }
+    return rows;
+  }
+
+  static double totalHeightForPhysicalRows(
+    List<SheetPhysicalRow> rows, {
+    required double cellSize,
+    double rowGap = defaultRowGap,
+    double exampleHeightFraction = strokeExampleRowHeightFraction,
+  }) {
+    if (rows.isEmpty) return 0;
+    var total = 0.0;
+    for (var i = 0; i < rows.length; i++) {
+      total += rows[i].rowHeight(cellSize, exampleHeightFraction);
+      if (i < rows.length - 1 &&
+          gapBetweenPhysicalRows(rows[i], rows[i + 1])) {
+        total += rowGap;
+      }
+    }
+    return total;
+  }
+
+  static bool entriesFitOnSheet(
+    List<PracticeSheetEntry> entries, {
+    required int traceSlots,
+    required int blankSlots,
+    required double innerH,
+    double rowGap = defaultRowGap,
+    double? targetCellSize,
+    bool showStrokeOrder = true,
+    bool showStrokeExamples = false,
+    SheetPageOrientation orientation = defaultOrientation,
+    double exampleHeightFraction = strokeExampleRowHeightFraction,
+  }) {
+    final cell = targetCellSize ?? practiceCellSizePt;
+    final colsPerLine =
+        columnsPerLine(pdfInnerWidthPtFor(orientation), cell);
+    final rows = <SheetPhysicalRow>[];
+    for (final entry in entries) {
+      rows.addAll(
+        buildPhysicalRowsForEntry(
+          entry,
+          traceSlots: traceSlots,
+          blankSlots: blankSlots,
+          colsPerLine: colsPerLine,
+          showStrokeOrder: showStrokeOrder,
+          showStrokeExamples: showStrokeExamples,
+        ),
+      );
+    }
+    return totalHeightForPhysicalRows(
+      rows,
+      cellSize: cell,
+      rowGap: rowGap,
+      exampleHeightFraction: exampleHeightFraction,
+    ) <= innerH;
+  }
+
+  /// 单条逻辑行占用的物理行数（仅练字行，不含笔画示例）。
   static int physicalLineCountForEntry(
     PracticeSheetEntry entry, {
     required int traceSlots,
@@ -199,25 +329,30 @@ abstract final class A4SheetLayout {
     double rowGap = defaultRowGap,
     double? targetCellSize,
     bool showStrokeOrder = true,
+    bool showStrokeExamples = false,
   }) {
     final cell = targetCellSize ?? practiceCellSizePt;
     final colsPerLine = columnsPerLine(innerW, cell);
-    final physicalRows = <PracticeRowSlice>[];
+    final physicalRows = <SheetPhysicalRow>[];
 
     for (final entry in logicalRows) {
       physicalRows.addAll(
-        sliceLogicalRow(
+        buildPhysicalRowsForEntry(
           entry,
           traceSlots: traceSlots,
           blankSlots: blankSlots,
           colsPerLine: colsPerLine,
           showStrokeOrder: showStrokeOrder,
+          showStrokeExamples: showStrokeExamples,
         ),
       );
     }
 
-    final gapTotal = rowGap * math.max(0, physicalRows.length - 1);
-    final totalH = cell * physicalRows.length + gapTotal;
+    final totalH = totalHeightForPhysicalRows(
+      physicalRows,
+      cellSize: cell,
+      rowGap: rowGap,
+    );
     const top = 0.0;
 
     return WrappedSheetLayout(
@@ -239,38 +374,36 @@ abstract final class A4SheetLayout {
     double rowGap = defaultRowGap,
     double? targetCellSize,
     bool showStrokeOrder = true,
+    bool showStrokeExamples = false,
     SheetPageOrientation orientation = defaultOrientation,
   }) {
     if (entries.isEmpty) return const [];
 
     final cell = targetCellSize ?? practiceCellSizePt;
-    final colsPerLine = columnsPerLine(pdfInnerWidthPtFor(orientation), cell);
-    final maxPhysical = maxPhysicalRowsOnSheet(
-      rowGap: rowGap,
-      targetCellSize: cell,
-      orientation: orientation,
-    );
+    final innerH = pdfInnerHeightPtFor(orientation);
 
     final pages = <List<PracticeSheetEntry>>[];
     var current = <PracticeSheetEntry>[];
-    var used = 0;
 
     for (final entry in entries) {
-      final lines = physicalLineCountForEntry(
-        entry,
-        traceSlots: traceSlots,
-        blankSlots: blankSlots,
-        colsPerLine: colsPerLine,
-        showStrokeOrder: showStrokeOrder,
-      );
-      final need = math.max(1, lines);
-      if (current.isNotEmpty && used + need > maxPhysical) {
+      final trial = [...current, entry];
+      if (trial.length > 1 &&
+          !entriesFitOnSheet(
+            trial,
+            traceSlots: traceSlots,
+            blankSlots: blankSlots,
+            innerH: innerH,
+            rowGap: rowGap,
+            targetCellSize: cell,
+            showStrokeOrder: showStrokeOrder,
+            showStrokeExamples: showStrokeExamples,
+            orientation: orientation,
+          )) {
         pages.add(current);
-        current = <PracticeSheetEntry>[];
-        used = 0;
+        current = <PracticeSheetEntry>[entry];
+      } else {
+        current = trial;
       }
-      current.add(entry);
-      used += need;
     }
     if (current.isNotEmpty) {
       pages.add(current);

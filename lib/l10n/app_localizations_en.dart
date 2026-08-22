@@ -396,6 +396,19 @@ class AppLocalizationsEn extends AppLocalizations {
   String get sheetConfigStrokeOrderOff => 'No strokes';
 
   @override
+  String get sheetConfigStrokeExamples => 'Stroke examples';
+
+  @override
+  String get sheetConfigStrokeExamplesHint =>
+      'Available only when stroke order is off. Adds a seamless half-height row above each line: half-width stroke samples (two strokes per practice cell below), no grid lines.';
+
+  @override
+  String get sheetConfigStrokeExamplesOn => 'On';
+
+  @override
+  String get sheetConfigStrokeExamplesOff => 'Off';
+
+  @override
   String get sheetConfigFont => 'Font';
 
   @override

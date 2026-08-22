@@ -741,6 +741,30 @@ abstract class AppLocalizations {
   /// **'No strokes'**
   String get sheetConfigStrokeOrderOff;
 
+  /// No description provided for @sheetConfigStrokeExamples.
+  ///
+  /// In en, this message translates to:
+  /// **'Stroke examples'**
+  String get sheetConfigStrokeExamples;
+
+  /// No description provided for @sheetConfigStrokeExamplesHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Available only when stroke order is off. Adds a seamless half-height row above each line: half-width stroke samples (two strokes per practice cell below), no grid lines.'**
+  String get sheetConfigStrokeExamplesHint;
+
+  /// No description provided for @sheetConfigStrokeExamplesOn.
+  ///
+  /// In en, this message translates to:
+  /// **'On'**
+  String get sheetConfigStrokeExamplesOn;
+
+  /// No description provided for @sheetConfigStrokeExamplesOff.
+  ///
+  /// In en, this message translates to:
+  /// **'Off'**
+  String get sheetConfigStrokeExamplesOff;
+
   /// No description provided for @sheetConfigFont.
   ///
   /// In en, this message translates to:

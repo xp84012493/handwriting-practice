@@ -1,5 +1,7 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter/cupertino.dart';
 
 import '../l10n/l10n_extension.dart';
 import '../layout/a4_sheet_layout.dart';
@@ -7,18 +9,21 @@ import '../style/practice_grid_style.dart';
 import '../style/practice_sheet_font.dart';
 import 'practice_sheet_controller.dart';
 
-/// 字帖描红 / 空白格数 / 字体大小 / 有无笔画配置（底部弹层）。
+/// 字帖描红 / 空白格数 / 字体大小 / 有无笔画配置（全屏页，iOS/macOS 支持右滑缘返回）。
 Future<void> showSheetConfigSheet(
   BuildContext context,
   PracticeSheetController controller,
 ) {
-  return showModalBottomSheet<void>(
-    context: context,
-    isScrollControlled: true,
-    showDragHandle: true,
-    builder: (sheetContext) {
-      return _SheetConfigSheet(controller: controller);
-    },
+  final page = _SheetConfigSheet(controller: controller);
+  final navigator = Navigator.of(context);
+  if (defaultTargetPlatform == TargetPlatform.iOS ||
+      defaultTargetPlatform == TargetPlatform.macOS) {
+    return navigator.push<void>(
+      CupertinoPageRoute<void>(builder: (_) => page),
+    );
+  }
+  return navigator.push<void>(
+    MaterialPageRoute<void>(builder: (_) => page),
   );
 }
 
@@ -32,6 +37,8 @@ class _SheetConfigSheet extends StatefulWidget {
 }
 
 class _SheetConfigSheetState extends State<_SheetConfigSheet> {
+  late final ScrollController _scrollController = ScrollController();
+
   late int _traceSlots = widget.controller.traceSlots;
   late int _blankSlots = widget.controller.blankSlots;
   late int _cellSizeMm = widget.controller.cellSizeMm.round();
@@ -40,6 +47,7 @@ class _SheetConfigSheetState extends State<_SheetConfigSheet> {
       widget.controller.pageOrientation;
   late PracticeSheetFont _sheetFont = widget.controller.sheetFont;
   late PracticeGridStyle _gridStyle = widget.controller.gridStyle;
+  late bool _showStrokeExamples = widget.controller.showStrokeExamples;
 
   int get _slotMax => PracticeSheetController.maxSlotsFor(
         showStrokeOrder: _showStrokeOrder,
@@ -56,6 +64,7 @@ class _SheetConfigSheetState extends State<_SheetConfigSheet> {
       pageOrientation: _pageOrientation,
       sheetFont: _sheetFont,
       gridStyle: _gridStyle,
+      showStrokeExamples: _showStrokeExamples,
     );
     if (mounted) Navigator.of(context).pop();
   }
@@ -108,6 +117,7 @@ class _SheetConfigSheetState extends State<_SheetConfigSheet> {
       _blankSlots = PracticeSheetController.defaultBlankSlots;
       _sheetFont = PracticeSheetController.defaultSheetFont;
       _gridStyle = PracticeSheetController.defaultGridStyle;
+      _showStrokeExamples = PracticeSheetController.defaultShowStrokeExamples;
     });
   }
 
@@ -118,31 +128,39 @@ class _SheetConfigSheetState extends State<_SheetConfigSheet> {
   }
 
   @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
-    final bottom = MediaQuery.paddingOf(context).bottom;
+    final theme = Theme.of(context);
     final minMm = A4SheetLayout.minPracticeCellSizeMm.round();
     final maxMm = A4SheetLayout.maxPracticeCellSizeMm.round();
     final slotMax = _slotMax;
     final showFit = !_showStrokeOrder;
 
-    return Padding(
-      padding: EdgeInsets.fromLTRB(20, 0, 20, 16 + bottom),
-      child: SingleChildScrollView(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
+    return Scaffold(
+      appBar: AppBar(
+        centerTitle: true,
+        title: Text(l10n.sheetConfigTitle),
+      ),
+      body: Scrollbar(
+        controller: _scrollController,
+        thumbVisibility: true,
+        child: SingleChildScrollView(
+          controller: _scrollController,
+          padding: const EdgeInsets.fromLTRB(20, 0, 20, 16),
+          child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Text(
-              l10n.sheetConfigTitle,
-              style: Theme.of(context).textTheme.titleLarge,
-            ),
-            const SizedBox(height: 8),
-            Text(
               l10n.sheetConfigSubtitle,
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: Theme.of(context).colorScheme.onSurfaceVariant,
-                  ),
+              style: theme.textTheme.bodyMedium?.copyWith(
+                color: theme.colorScheme.onSurfaceVariant,
+              ),
             ),
             const SizedBox(height: 20),
             Text(
@@ -239,9 +257,48 @@ class _SheetConfigSheetState extends State<_SheetConfigSheet> {
                 HapticFeedback.selectionClick();
                 setState(() {
                   _showStrokeOrder = next.first;
+                  if (_showStrokeOrder) {
+                    _showStrokeExamples = false;
+                  }
                   _clampSlotsToMax();
                 });
               },
+            ),
+            const SizedBox(height: 16),
+            Text(
+              l10n.sheetConfigStrokeExamples,
+              style: Theme.of(context).textTheme.titleSmall,
+            ),
+            const SizedBox(height: 4),
+            Text(
+              l10n.sheetConfigStrokeExamplesHint,
+              style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                  ),
+            ),
+            const SizedBox(height: 8),
+            IgnorePointer(
+              ignoring: _showStrokeOrder,
+              child: Opacity(
+                opacity: _showStrokeOrder ? 0.45 : 1,
+                child: SegmentedButton<bool>(
+                  segments: [
+                    ButtonSegment<bool>(
+                      value: true,
+                      label: Text(l10n.sheetConfigStrokeExamplesOn),
+                    ),
+                    ButtonSegment<bool>(
+                      value: false,
+                      label: Text(l10n.sheetConfigStrokeExamplesOff),
+                    ),
+                  ],
+                  selected: {_showStrokeExamples},
+                  onSelectionChanged: (next) {
+                    HapticFeedback.selectionClick();
+                    setState(() => _showStrokeExamples = next.first);
+                  },
+                ),
+              ),
             ),
             const SizedBox(height: 16),
             Text(
@@ -325,8 +382,19 @@ class _SheetConfigSheetState extends State<_SheetConfigSheet> {
                   showFit ? l10n.sheetConfigFitPageWidthHint : null,
               onFitPageWidth: showFit ? _fitBlankToPageWidth : null,
             ),
-            const SizedBox(height: 24),
-            Row(
+          ],
+        ),
+        ),
+      ),
+      bottomNavigationBar: Material(
+        elevation: 3,
+        shadowColor: theme.shadowColor.withValues(alpha: 0.12),
+        color: theme.colorScheme.surface,
+        child: SafeArea(
+          top: false,
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(20, 12, 20, 12),
+            child: Row(
               children: [
                 Expanded(
                   child: OutlinedButton(
@@ -343,7 +411,7 @@ class _SheetConfigSheetState extends State<_SheetConfigSheet> {
                 ),
               ],
             ),
-          ],
+          ),
         ),
       ),
     );

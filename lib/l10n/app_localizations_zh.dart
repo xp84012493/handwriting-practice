@@ -384,6 +384,19 @@ class AppLocalizationsZh extends AppLocalizations {
   String get sheetConfigStrokeOrderOff => '无笔画';
 
   @override
+  String get sheetConfigStrokeExamples => '笔画示例';
+
+  @override
+  String get sheetConfigStrokeExamplesHint =>
+      '仅在无笔画时可用。练字行上方增加半高空行，按半格宽逐笔展示笔画形态（两笔对应下一行一字宽），与练字格无缝衔接。';
+
+  @override
+  String get sheetConfigStrokeExamplesOn => '启用';
+
+  @override
+  String get sheetConfigStrokeExamplesOff => '关闭';
+
+  @override
   String get sheetConfigFont => '字体';
 
   @override
@@ -862,6 +875,19 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String get sheetConfigStrokeOrderOff => '無筆畫';
+
+  @override
+  String get sheetConfigStrokeExamples => '筆畫示例';
+
+  @override
+  String get sheetConfigStrokeExamplesHint =>
+      '僅在無筆畫時可用。練字行上方增加半高空行，按半格寬逐筆展示筆畫形態（兩筆對應下一行一字寬），與練字格無縫銜接。';
+
+  @override
+  String get sheetConfigStrokeExamplesOn => '啟用';
+
+  @override
+  String get sheetConfigStrokeExamplesOff => '關閉';
 
   @override
   String get sheetConfigFont => '字體';

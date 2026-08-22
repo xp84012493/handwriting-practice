@@ -1,3 +1,4 @@
+import 'dart:math' as math;
 import 'dart:ui' show Rect;
 
 import 'package:flutter/foundation.dart'
@@ -9,6 +10,7 @@ import 'package:printing/printing.dart';
 import 'package:vector_math/vector_math_64.dart' show Matrix4;
 
 import '../layout/a4_sheet_layout.dart';
+import '../layout/practice_sheet_wrap.dart';
 import '../models/practice_sheet_entry.dart';
 import '../style/practice_sheet_font.dart';
 import '../style/practice_grid_style.dart';
@@ -40,6 +42,7 @@ class PracticeSheetPdfService {
     required int traceSlots,
     required int blankSlots,
     bool showStrokeOrder = true,
+    bool showStrokeExamples = false,
     PracticeSheetFont sheetFont = PracticeSheetFont.appDefault,
     PracticeGridStyle gridStyle = PracticeGridStyle.mizi,
     SheetPageOrientation pageOrientation = A4SheetLayout.defaultOrientation,
@@ -63,6 +66,7 @@ class PracticeSheetPdfService {
       rowGap: rowGap,
       targetCellSize: A4SheetLayout.cellSizePtFromMm(cellSizeMm),
       showStrokeOrder: showStrokeOrder,
+      showStrokeExamples: showStrokeExamples,
       orientation: pageOrientation,
     );
     final pageRows = pages.isEmpty ? const <List<PracticeSheetEntry>>[[]] : pages;
@@ -90,6 +94,7 @@ class PracticeSheetPdfService {
                       traceSlots: traceSlots,
                       blankSlots: blankSlots,
                       showStrokeOrder: showStrokeOrder,
+                      showStrokeExamples: showStrokeExamples,
                       cellSizeMm: cellSizeMm,
                       rowGap: rowGap,
                       gridStyle: gridStyle,
@@ -116,6 +121,7 @@ class PracticeSheetPdfService {
     required int traceSlots,
     required int blankSlots,
     bool showStrokeOrder = true,
+    bool showStrokeExamples = false,
     PracticeSheetFont sheetFont = PracticeSheetFont.appDefault,
     PracticeGridStyle gridStyle = PracticeGridStyle.mizi,
     SheetPageOrientation pageOrientation = A4SheetLayout.defaultOrientation,
@@ -130,6 +136,7 @@ class PracticeSheetPdfService {
           traceSlots: traceSlots,
           blankSlots: blankSlots,
           showStrokeOrder: showStrokeOrder,
+          showStrokeExamples: showStrokeExamples,
           sheetFont: sheetFont,
           gridStyle: gridStyle,
           pageOrientation: pageOrientation,
@@ -165,6 +172,7 @@ class _PracticeSheetPdfPainter {
     required this.traceSlots,
     required this.blankSlots,
     required this.showStrokeOrder,
+    required this.showStrokeExamples,
     required this.cellSizeMm,
     required this.rowGap,
     this.gridStyle = PracticeGridStyle.mizi,
@@ -176,6 +184,7 @@ class _PracticeSheetPdfPainter {
   final int traceSlots;
   final int blankSlots;
   final bool showStrokeOrder;
+  final bool showStrokeExamples;
   final double cellSizeMm;
   final double rowGap;
   final PracticeGridStyle gridStyle;
@@ -210,54 +219,87 @@ class _PracticeSheetPdfPainter {
       rowGap: rowGap,
       targetCellSize: targetCell,
       showStrokeOrder: showStrokeOrder,
+      showStrokeExamples: showStrokeExamples,
     );
     final cell = layout.cellSize;
     final strokeW = layout.strokeWidth;
     final top = layout.top;
+    final exampleFraction = A4SheetLayout.strokeExampleRowHeightFraction;
+    var y = top;
 
     for (var i = 0; i < layout.physicalRows.length; i++) {
-      final slice = layout.physicalRows[i];
+      final row = layout.physicalRows[i];
       const left = 0.0;
-      final y0 = top + i * (cell + rowGap);
-      final strokeCount = slice.entry.prepared.strokeCount;
+      final rowH = row.rowHeight(cell, exampleFraction);
+      final next = i + 1 < layout.physicalRows.length
+          ? layout.physicalRows[i + 1]
+          : null;
 
-      final colCount = slice.endCol - slice.startCol;
-      _paintRowGrid(g, left, y0, cell, colCount);
+      switch (row) {
+        case StrokeExamplePhysicalRow():
+          final slice = row.slice;
+          final strokeCellW = A4SheetLayout.strokeExampleCellWidth(cell);
+          for (var stroke = slice.startStroke; stroke < slice.endStroke; stroke++) {
+            final local = stroke - slice.startStroke;
+            final x0 = left + local * strokeCellW;
+            _paintSingleStrokeForCell(
+              g,
+              slice.entry,
+              x0,
+              y,
+              strokeCellW,
+              rowH,
+              strokeW,
+              strokeIndex: stroke,
+            );
+          }
+        case PracticePhysicalRow():
+          final slice = row.slice;
+          final strokeCount = slice.entry.prepared.strokeCount;
+          final colCount = slice.endCol - slice.startCol;
+          _paintRowGrid(g, left, y, cell, colCount);
 
-      for (var col = slice.startCol; col < slice.endCol; col++) {
-        final local = col - slice.startCol;
-        final x0 = left + local * cell;
-        _paintPracticeGridGuides(g, x0, y0, cell);
+          for (var col = slice.startCol; col < slice.endCol; col++) {
+            final local = col - slice.startCol;
+            final x0 = left + local * cell;
+            _paintPracticeGridGuides(g, x0, y, cell);
 
-        final kind = _cellKind(col, strokeCount);
-        if (kind == _CellKind.blank) continue;
+            final kind = _cellKind(col, strokeCount);
+            if (kind == _CellKind.blank) continue;
 
-        final useFont = !showStrokeOrder &&
-            glyphFont != null &&
-            (kind == _CellKind.model || kind == _CellKind.trace);
-        if (useFont) {
-          _paintFontGlyph(
-            g,
-            slice.entry.character.character,
-            x0,
-            y0,
-            cell,
-            kind: kind,
-          );
-          continue;
-        }
+            final useFont = !showStrokeOrder &&
+                glyphFont != null &&
+                (kind == _CellKind.model || kind == _CellKind.trace);
+            if (useFont) {
+              _paintFontGlyph(
+                g,
+                slice.entry.character.character,
+                x0,
+                y,
+                cell,
+                kind: kind,
+              );
+              continue;
+            }
 
-        final step = kind == _CellKind.progressive ? col - 1 : null;
-        _paintStrokesForCell(
-          g,
-          slice.entry,
-          x0,
-          y0,
-          cell,
-          strokeW,
-          kind: kind,
-          progressiveStep: step,
-        );
+            final step = kind == _CellKind.progressive ? col - 1 : null;
+            _paintStrokesForCell(
+              g,
+              slice.entry,
+              x0,
+              y,
+              cell,
+              strokeW,
+              kind: kind,
+              progressiveStep: step,
+            );
+          }
+      }
+
+      y += rowH;
+      if (next != null &&
+          A4SheetLayout.gapBetweenPhysicalRows(row, next)) {
+        y += rowGap;
       }
     }
 
@@ -277,8 +319,9 @@ class _PracticeSheetPdfPainter {
     double x,
     double y,
     double cellSize,
-    int colCount,
-  ) {
+    int colCount, {
+    double? rowH,
+  }) {
     if (colCount <= 0 || cellSize <= 0) return;
 
     g.saveContext();
@@ -287,7 +330,7 @@ class _PracticeSheetPdfPainter {
     g.setStrokeColor(_borderColor);
 
     final rowW = colCount * cellSize;
-    final rowH = cellSize;
+    final rowHeight = rowH ?? cellSize;
 
     void line(double x1, double y1, double x2, double y2) {
       g.drawShape('M $x1 $y1 L $x2 $y2');
@@ -296,20 +339,26 @@ class _PracticeSheetPdfPainter {
 
     for (var i = 0; i <= colCount; i++) {
       final xi = x + i * cellSize;
-      line(xi, y, xi, y + rowH);
+      line(xi, y, xi, y + rowHeight);
     }
     line(x, y, x + rowW, y);
-    line(x, y + rowH, x + rowW, y + rowH);
+    line(x, y + rowHeight, x + rowW, y + rowHeight);
 
     g.restoreContext();
   }
 
-  void _paintPracticeGridGuides(PdfGraphics g, double x, double y, double size) {
+  void _paintPracticeGridGuides(
+    PdfGraphics g,
+    double x,
+    double y,
+    double cellW, [
+    double? cellH,
+  ]) {
     g.saveContext();
     final left = x;
     final top = y;
-    final w = size;
-    final h = size;
+    final w = cellW;
+    final h = cellH ?? cellW;
     if (w <= 0 || h <= 0) {
       g.restoreContext();
       return;
@@ -335,6 +384,47 @@ class _PracticeSheetPdfPainter {
     }
 
     g.setLineDashPattern(const []);
+    g.restoreContext();
+  }
+
+  void _paintSingleStrokeForCell(
+    PdfGraphics g,
+    PracticeSheetEntry entry,
+    double cellX,
+    double cellY,
+    double cellW,
+    double cellH,
+    double strokeW, {
+    required int strokeIndex,
+  }) {
+    final character = entry.character;
+    final inset = math.min(cellW, cellH) * 0.14;
+    final glyph = Rect.fromLTRB(
+      cellX + inset,
+      cellY + inset,
+      cellX + cellW - inset,
+      cellY + cellH - inset,
+    );
+
+    final fit = character.convention.normalizedViewBoxToRect(
+      glyph,
+      character.viewBoxWidth,
+      character.viewBoxHeight,
+    );
+    final data = character.convention.dataToNormalizedSpace();
+    final ctm = Matrix4.copy(fit)..multiply(data);
+    final n = character.strokePathData.length;
+    if (n == 0) return;
+    final i = strokeIndex.clamp(0, n - 1);
+
+    g.saveContext();
+    g.setLineJoin(PdfLineJoin.round);
+    g.setLineCap(PdfLineCap.round);
+    g.setLineWidth(strokeW * 0.9);
+    g.setStrokeColor(_highlight);
+    g.setTransform(ctm);
+    g.drawShape(character.strokePathData[i]);
+    g.strokePath(close: false);
     g.restoreContext();
   }
 

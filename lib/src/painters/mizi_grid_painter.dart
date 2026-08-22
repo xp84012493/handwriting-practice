@@ -10,12 +10,14 @@ class PracticeRowGridPainter extends CustomPainter {
   PracticeRowGridPainter({
     required this.colCount,
     required this.cellSize,
+    this.rowHeight,
     this.borderColor = const Color(0xFF2C2C2C),
     this.strokeWidth = PracticeGridMetrics.borderStrokeWidth,
   });
 
   final int colCount;
   final double cellSize;
+  final double? rowHeight;
   final Color borderColor;
   final double strokeWidth;
 
@@ -30,7 +32,7 @@ class PracticeRowGridPainter extends CustomPainter {
       ..isAntiAlias = true;
 
     final rowW = colCount * cellSize;
-    final rowH = cellSize;
+    final rowH = rowHeight ?? cellSize;
 
     for (var i = 0; i <= colCount; i++) {
       final x = i * cellSize;
@@ -44,6 +46,7 @@ class PracticeRowGridPainter extends CustomPainter {
   bool shouldRepaint(covariant PracticeRowGridPainter oldDelegate) {
     return oldDelegate.colCount != colCount ||
         oldDelegate.cellSize != cellSize ||
+        oldDelegate.rowHeight != rowHeight ||
         oldDelegate.borderColor != borderColor ||
         oldDelegate.strokeWidth != strokeWidth;
   }
