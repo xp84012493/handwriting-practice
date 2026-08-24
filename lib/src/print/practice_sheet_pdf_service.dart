@@ -51,12 +51,14 @@ class PracticeSheetPdfService {
     double cellSizeMm = A4SheetLayout.practiceCellSizeMm,
     double rowGap = 4,
     double pagePadding = 18,
+    String sheetHeader = '',
     PdfPageFormat? pageFormat,
   }) async {
     final fmt = pageFormat ?? pageFormatFor(pageOrientation);
     final doc = pw.Document();
     pw.Font? glyphFont;
     pw.Font? pinyinFont;
+    pw.Font? headerFont;
     final fontAsset = sheetFont.assetPath;
     if (!showStrokeOrder && fontAsset != null) {
       final fontData = await rootBundle.load(fontAsset);
@@ -66,6 +68,11 @@ class PracticeSheetPdfService {
       final fontData =
           await rootBundle.load('assets/fonts/LXGWWenKaiGB-Regular.ttf');
       pinyinFont = pw.Font.ttf(fontData);
+    }
+    if (A4SheetLayout.hasSheetHeader(sheetHeader)) {
+      final fontData =
+          await rootBundle.load('assets/fonts/LXGWWenKaiGB-Regular.ttf');
+      headerFont = pw.Font.ttf(fontData);
     }
     final pages = A4SheetLayout.paginateEntries(
       entries: rows,
@@ -77,6 +84,7 @@ class PracticeSheetPdfService {
       showStrokeExamples: showStrokeExamples,
       showStrokePinyin: showStrokePinyin,
       orientation: pageOrientation,
+      sheetHeader: sheetHeader,
     );
     final pageRows = pages.isEmpty ? const <List<PracticeSheetEntry>>[[]] : pages;
 
@@ -110,6 +118,8 @@ class PracticeSheetPdfService {
                       gridStyle: gridStyle,
                       glyphFont: glyphFont?.getFont(context),
                       pinyinFont: pinyinFont?.getFont(context),
+                      headerFont: headerFont?.getFont(context),
+                      sheetHeader: sheetHeader,
                     ).paint(canvas, innerSize);
                   },
                 ),
@@ -137,6 +147,7 @@ class PracticeSheetPdfService {
     PracticeGridStyle gridStyle = PracticeGridStyle.mizi,
     SheetPageOrientation pageOrientation = A4SheetLayout.defaultOrientation,
     double cellSizeMm = A4SheetLayout.practiceCellSizeMm,
+    String sheetHeader = '',
     String name = '练字帖',
     Uint8List? bytes,
   }) async {
@@ -153,6 +164,7 @@ class PracticeSheetPdfService {
           gridStyle: gridStyle,
           pageOrientation: pageOrientation,
           cellSizeMm: cellSizeMm,
+          sheetHeader: sheetHeader,
           pageFormat: fmt,
         );
 
@@ -191,6 +203,8 @@ class _PracticeSheetPdfPainter {
     this.gridStyle = PracticeGridStyle.mizi,
     this.glyphFont,
     this.pinyinFont,
+    this.headerFont,
+    this.sheetHeader = '',
   });
 
   final List<PracticeSheetEntry> rows;
@@ -204,6 +218,8 @@ class _PracticeSheetPdfPainter {
   final PracticeGridStyle gridStyle;
   final PdfFont? glyphFont;
   final PdfFont? pinyinFont;
+  final PdfFont? headerFont;
+  final String sheetHeader;
 
   static final PdfColor _borderColor = PdfColor.fromInt(0xFF2C2C2C);
   static final PdfColor _guideColor = PdfColor.fromInt(0xFF9E9E9E);
@@ -237,11 +253,27 @@ class _PracticeSheetPdfPainter {
       showStrokeOrder: showStrokeOrder,
       showStrokeExamples: showStrokeExamples,
       showStrokePinyin: showStrokePinyin,
+      sheetHeader: sheetHeader,
     );
     final cell = layout.cellSize;
     final strokeW = layout.strokeWidth;
     final top = layout.top;
     final exampleFraction = A4SheetLayout.strokeExampleRowHeightFraction;
+
+    if (headerFont != null && A4SheetLayout.hasSheetHeader(sheetHeader)) {
+      final fontSize = A4SheetLayout.sheetHeaderFontSizePt(cell);
+      final headerH = top - A4SheetLayout.sheetHeaderGapPt;
+      _paintCenteredText(
+        g,
+        headerFont!,
+        fontSize,
+        sheetHeader.trim(),
+        innerW / 2,
+        headerH / 2,
+        _borderColor,
+      );
+    }
+
     var y = top;
 
     for (var i = 0; i < layout.physicalRows.length; i++) {

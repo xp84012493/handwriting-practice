@@ -49,6 +49,9 @@ class _SheetConfigSheetState extends State<_SheetConfigSheet> {
   late PracticeGridStyle _gridStyle = widget.controller.gridStyle;
   late bool _showStrokeExamples = widget.controller.showStrokeExamples;
   late bool _showStrokePinyin = widget.controller.showStrokePinyin;
+  late final TextEditingController _headerController = TextEditingController(
+    text: widget.controller.sheetHeader,
+  );
 
   int get _slotMax => PracticeSheetController.maxSlotsFor(
         showStrokeOrder: _showStrokeOrder,
@@ -67,6 +70,7 @@ class _SheetConfigSheetState extends State<_SheetConfigSheet> {
       gridStyle: _gridStyle,
       showStrokeExamples: _showStrokeExamples,
       showStrokePinyin: _showStrokePinyin,
+      sheetHeader: _headerController.text,
     );
     if (mounted) Navigator.of(context).pop();
   }
@@ -121,6 +125,7 @@ class _SheetConfigSheetState extends State<_SheetConfigSheet> {
       _gridStyle = PracticeSheetController.defaultGridStyle;
       _showStrokeExamples = PracticeSheetController.defaultShowStrokeExamples;
       _showStrokePinyin = PracticeSheetController.defaultShowStrokePinyin;
+      _headerController.text = PracticeSheetController.defaultSheetHeader;
     });
   }
 
@@ -133,6 +138,7 @@ class _SheetConfigSheetState extends State<_SheetConfigSheet> {
   @override
   void dispose() {
     _scrollController.dispose();
+    _headerController.dispose();
     super.dispose();
   }
 
@@ -172,9 +178,11 @@ class _SheetConfigSheetState extends State<_SheetConfigSheet> {
             ),
             const SizedBox(height: 4),
             Text(
-              l10n.sheetConfigPageOrientationHint,
-              style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+              _showStrokeOrder
+                  ? l10n.sheetConfigPageOrientationHintStrokeOn
+                  : l10n.sheetConfigPageOrientationHintStrokeOff,
+              style: theme.textTheme.bodySmall?.copyWith(
+                    color: theme.colorScheme.onSurfaceVariant,
                   ),
             ),
             const SizedBox(height: 8),
@@ -200,6 +208,16 @@ class _SheetConfigSheetState extends State<_SheetConfigSheet> {
                 });
               },
             ),
+            if (_showStrokeOrder &&
+                _pageOrientation == SheetPageOrientation.portrait) ...[
+              const SizedBox(height: 8),
+              Text(
+                l10n.sheetConfigPageOrientationPortraitStrokeWarning,
+                style: theme.textTheme.bodySmall?.copyWith(
+                  color: theme.colorScheme.tertiary,
+                ),
+              ),
+            ],
             const SizedBox(height: 16),
             Text(
               l10n.sheetConfigGridStyle,
@@ -426,6 +444,29 @@ class _SheetConfigSheetState extends State<_SheetConfigSheet> {
               fitPageWidthTooltip:
                   showFit ? l10n.sheetConfigFitPageWidthHint : null,
               onFitPageWidth: showFit ? _fitBlankToPageWidth : null,
+            ),
+            const SizedBox(height: 16),
+            Text(
+              l10n.sheetConfigHeader,
+              style: Theme.of(context).textTheme.titleSmall,
+            ),
+            const SizedBox(height: 4),
+            Text(
+              l10n.sheetConfigHeaderHint,
+              style: theme.textTheme.bodySmall?.copyWith(
+                color: theme.colorScheme.onSurfaceVariant,
+              ),
+            ),
+            const SizedBox(height: 8),
+            TextField(
+              controller: _headerController,
+              maxLength: PracticeSheetController.maxSheetHeaderLength,
+              textInputAction: TextInputAction.done,
+              decoration: InputDecoration(
+                hintText: l10n.sheetConfigHeaderPlaceholder,
+                border: const OutlineInputBorder(),
+                isDense: true,
+              ),
             ),
           ],
         ),

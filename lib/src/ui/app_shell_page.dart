@@ -161,6 +161,7 @@ class _AppShellPageState extends State<AppShellPage> {
       gridStyle: _controller.gridStyle,
       pageOrientation: _controller.pageOrientation,
       cellSizeMm: _controller.cellSizeMm,
+      sheetHeader: _controller.sheetHeader,
     );
   }
 
@@ -209,6 +210,7 @@ class _AppShellPageState extends State<AppShellPage> {
         gridStyle: _controller.gridStyle,
         pageOrientation: _controller.pageOrientation,
         cellSizeMm: _controller.cellSizeMm,
+        sheetHeader: _controller.sheetHeader,
         name: _sheetPdfBaseName(),
         bytes: bytes,
       );
@@ -643,6 +645,7 @@ class _PreviewBody extends StatelessWidget {
                           gridStyle: controller.gridStyle,
                           pageOrientation: controller.pageOrientation,
                           cellSizeMm: controller.cellSizeMm,
+                          sheetHeader: controller.sheetHeader,
                         ),
                       ],
                     )

@@ -24,6 +24,7 @@ class A4PracticeSheetPreview extends StatelessWidget {
     this.gridStyle = PracticeGridStyle.mizi,
     this.pageOrientation = A4SheetLayout.defaultOrientation,
     this.cellSizeMm = A4SheetLayout.practiceCellSizeMm,
+    this.sheetHeader = '',
     this.rowGap = 4,
     this.pagePadding = 14,
     this.traceColor = PracticeStrokeColors.trace,
@@ -39,6 +40,7 @@ class A4PracticeSheetPreview extends StatelessWidget {
   final PracticeGridStyle gridStyle;
   final SheetPageOrientation pageOrientation;
   final double cellSizeMm;
+  final String sheetHeader;
   final double rowGap;
   final double pagePadding;
   final Color traceColor;
@@ -96,10 +98,35 @@ class A4PracticeSheetPreview extends StatelessWidget {
                       showStrokeOrder: showStrokeOrder,
                       showStrokeExamples: showStrokeExamples,
                       showStrokePinyin: showStrokePinyin,
+                      sheetHeader: sheetHeader,
                     );
+                    final showHeader =
+                        A4SheetLayout.hasSheetHeader(sheetHeader);
+                    final headerFontSize =
+                        A4SheetLayout.sheetHeaderFontSizePt(targetCell);
 
                     return Stack(
                       children: [
+                        if (showHeader)
+                          Positioned(
+                            left: 0,
+                            top: 0,
+                            width: innerW,
+                            height: layout.top - A4SheetLayout.sheetHeaderGapPt,
+                            child: Center(
+                              child: Text(
+                                sheetHeader.trim(),
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: TextStyle(
+                                  fontFamily: 'LXGWWenKai',
+                                  fontSize: headerFontSize,
+                                  color: const Color(0xFF2C2C2C),
+                                  height: 1.2,
+                                ),
+                              ),
+                            ),
+                          ),
                         Positioned.fill(
                           child: CustomPaint(
                             painter: _MarginGuidePainter(

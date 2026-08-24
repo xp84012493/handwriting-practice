@@ -65,6 +65,27 @@ abstract final class A4SheetLayout {
   /// 拼音前缀占用的半宽格位数（等于一个练字格宽）。
   static const int strokeExamplePinyinSlotCount = 2;
 
+  /// 自定义字帖抬头与格区之间的间距（pt）。
+  static const double sheetHeaderGapPt = 6;
+
+  /// 标题字号相对格边长的比例（略小于格内字，但需明显可读）。
+  static const double sheetHeaderFontScale = 0.50;
+
+  static bool hasSheetHeader(String header) => header.trim().isNotEmpty;
+
+  static double sheetHeaderFontSizePt(double cellSizePt) =>
+      cellSizePt * sheetHeaderFontScale;
+
+  /// 非空抬头占用的垂直空间（含与格区的间距）。
+  static double sheetHeaderReservedHeightPt(
+    double cellSizePt,
+    String header,
+  ) {
+    if (!hasSheetHeader(header)) return 0;
+    final fontSize = sheetHeaderFontSizePt(cellSizePt);
+    return fontSize * 1.35 + sheetHeaderGapPt;
+  }
+
   /// 将毫米格边长转为 PDF 点。
   static double cellSizePtFromMm(double cellSizeMm) =>
       cellSizeMm.clamp(minPracticeCellSizeMm, maxPracticeCellSizeMm) *
@@ -247,8 +268,10 @@ abstract final class A4SheetLayout {
     bool showStrokePinyin = false,
     SheetPageOrientation orientation = defaultOrientation,
     double exampleHeightFraction = strokeExampleRowHeightFraction,
+    String sheetHeader = '',
   }) {
     final cell = targetCellSize ?? practiceCellSizePt;
+    final headerReserve = sheetHeaderReservedHeightPt(cell, sheetHeader);
     final colsPerLine =
         columnsPerLine(pdfInnerWidthPtFor(orientation), cell);
     final rows = <SheetPhysicalRow>[];
@@ -270,7 +293,7 @@ abstract final class A4SheetLayout {
       cellSize: cell,
       rowGap: rowGap,
       exampleHeightFraction: exampleHeightFraction,
-    ) <= innerH;
+    ) <= innerH - headerReserve;
   }
 
   /// 单条逻辑行占用的物理行数（仅练字行，不含笔画示例）。
@@ -353,6 +376,7 @@ abstract final class A4SheetLayout {
     bool showStrokeOrder = true,
     bool showStrokeExamples = false,
     bool showStrokePinyin = false,
+    String sheetHeader = '',
   }) {
     final cell = targetCellSize ?? practiceCellSizePt;
     final colsPerLine = columnsPerLine(innerW, cell);
@@ -377,7 +401,7 @@ abstract final class A4SheetLayout {
       cellSize: cell,
       rowGap: rowGap,
     );
-    const top = 0.0;
+    final top = sheetHeaderReservedHeightPt(cell, sheetHeader);
 
     return WrappedSheetLayout(
       cellSize: cell,
@@ -401,11 +425,13 @@ abstract final class A4SheetLayout {
     bool showStrokeExamples = false,
     bool showStrokePinyin = false,
     SheetPageOrientation orientation = defaultOrientation,
+    String sheetHeader = '',
   }) {
     if (entries.isEmpty) return const [];
 
     final cell = targetCellSize ?? practiceCellSizePt;
-    final innerH = pdfInnerHeightPtFor(orientation);
+    final innerH = pdfInnerHeightPtFor(orientation) -
+        sheetHeaderReservedHeightPt(cell, sheetHeader);
 
     final pages = <List<PracticeSheetEntry>>[];
     var current = <PracticeSheetEntry>[];
@@ -424,6 +450,7 @@ abstract final class A4SheetLayout {
             showStrokeExamples: showStrokeExamples,
             showStrokePinyin: showStrokePinyin,
             orientation: orientation,
+            sheetHeader: sheetHeader,
           )) {
         pages.add(current);
         current = <PracticeSheetEntry>[entry];

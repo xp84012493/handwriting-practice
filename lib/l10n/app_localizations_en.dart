@@ -454,14 +454,32 @@ class AppLocalizationsEn extends AppLocalizations {
   String get sheetConfigPageOrientation => 'Page orientation';
 
   @override
-  String get sheetConfigPageOrientationHint =>
-      'Landscape or portrait A4. Preview and print follow this setting.';
+  String get sheetConfigPageOrientationHintStrokeOn =>
+      'With stroke order on, landscape is recommended: progressive stroke cells need width. Preview and print follow this setting.';
+
+  @override
+  String get sheetConfigPageOrientationHintStrokeOff =>
+      'Without stroke order: portrait fits more character rows per page; landscape spreads trace and blank cells wider. Preview and print follow this setting.';
+
+  @override
+  String get sheetConfigPageOrientationPortraitStrokeWarning =>
+      'Stroke order is on with portrait: fewer cells per row; long stroke counts may wrap.';
 
   @override
   String get sheetConfigPageOrientationLandscape => 'Landscape';
 
   @override
   String get sheetConfigPageOrientationPortrait => 'Portrait';
+
+  @override
+  String get sheetConfigHeader => 'Sheet title';
+
+  @override
+  String get sheetConfigHeaderHint =>
+      'Optional. Centered at the top of each page; leave blank to hide.';
+
+  @override
+  String get sheetConfigHeaderPlaceholder => 'e.g. Grade 1 Chinese practice';
 
   @override
   String get sheetConfigCellSize => 'Character size';

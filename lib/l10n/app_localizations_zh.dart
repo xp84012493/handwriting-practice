@@ -440,13 +440,31 @@ class AppLocalizationsZh extends AppLocalizations {
   String get sheetConfigPageOrientation => '纸张方向';
 
   @override
-  String get sheetConfigPageOrientationHint => '横向：A4 横放；竖向：A4 竖放。预览与打印同步。';
+  String get sheetConfigPageOrientationHintStrokeOn =>
+      '有笔画时建议使用横向：笔顺格较多，横向 A4 可排更多格子。预览与打印同步。';
+
+  @override
+  String get sheetConfigPageOrientationHintStrokeOff =>
+      '无笔画时：竖向 A4 可在一页排更多字行，适合长篇；横向适合描红与空白格铺宽。预览与打印同步。';
+
+  @override
+  String get sheetConfigPageOrientationPortraitStrokeWarning =>
+      '当前为有笔画 + 竖向，一行格数较少，笔顺较多时可能换行。';
 
   @override
   String get sheetConfigPageOrientationLandscape => '横向';
 
   @override
   String get sheetConfigPageOrientationPortrait => '竖向';
+
+  @override
+  String get sheetConfigHeader => '字帖标题';
+
+  @override
+  String get sheetConfigHeaderHint => '可选。显示在每页顶部居中，留空则不显示。';
+
+  @override
+  String get sheetConfigHeaderPlaceholder => '例如：一年级语文练习';
 
   @override
   String get sheetConfigCellSize => '字体大小';
@@ -960,13 +978,31 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
   String get sheetConfigPageOrientation => '紙張方向';
 
   @override
-  String get sheetConfigPageOrientationHint => '橫向：A4 橫放；豎向：A4 豎放。預覽與列印同步。';
+  String get sheetConfigPageOrientationHintStrokeOn =>
+      '有筆畫時建議使用橫向：筆順格較多，橫向 A4 可排更多格子。預覽與列印同步。';
+
+  @override
+  String get sheetConfigPageOrientationHintStrokeOff =>
+      '無筆畫時：豎向 A4 可在一頁排更多字行，適合長篇；橫向適合描紅與空白格鋪寬。預覽與列印同步。';
+
+  @override
+  String get sheetConfigPageOrientationPortraitStrokeWarning =>
+      '目前為有筆畫 + 豎向，一行格數較少，筆順較多時可能換行。';
 
   @override
   String get sheetConfigPageOrientationLandscape => '橫向';
 
   @override
   String get sheetConfigPageOrientationPortrait => '豎向';
+
+  @override
+  String get sheetConfigHeader => '字帖標題';
+
+  @override
+  String get sheetConfigHeaderHint => '可選。顯示在每頁頂部居中，留空則不顯示。';
+
+  @override
+  String get sheetConfigHeaderPlaceholder => '例如：一年級語文練習';
 
   @override
   String get sheetConfigCellSize => '字體大小';

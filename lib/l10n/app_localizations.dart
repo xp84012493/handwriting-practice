@@ -849,11 +849,23 @@ abstract class AppLocalizations {
   /// **'Page orientation'**
   String get sheetConfigPageOrientation;
 
-  /// No description provided for @sheetConfigPageOrientationHint.
+  /// No description provided for @sheetConfigPageOrientationHintStrokeOn.
   ///
   /// In en, this message translates to:
-  /// **'Landscape or portrait A4. Preview and print follow this setting.'**
-  String get sheetConfigPageOrientationHint;
+  /// **'With stroke order on, landscape is recommended: progressive stroke cells need width. Preview and print follow this setting.'**
+  String get sheetConfigPageOrientationHintStrokeOn;
+
+  /// No description provided for @sheetConfigPageOrientationHintStrokeOff.
+  ///
+  /// In en, this message translates to:
+  /// **'Without stroke order: portrait fits more character rows per page; landscape spreads trace and blank cells wider. Preview and print follow this setting.'**
+  String get sheetConfigPageOrientationHintStrokeOff;
+
+  /// No description provided for @sheetConfigPageOrientationPortraitStrokeWarning.
+  ///
+  /// In en, this message translates to:
+  /// **'Stroke order is on with portrait: fewer cells per row; long stroke counts may wrap.'**
+  String get sheetConfigPageOrientationPortraitStrokeWarning;
 
   /// No description provided for @sheetConfigPageOrientationLandscape.
   ///
@@ -866,6 +878,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Portrait'**
   String get sheetConfigPageOrientationPortrait;
+
+  /// No description provided for @sheetConfigHeader.
+  ///
+  /// In en, this message translates to:
+  /// **'Sheet title'**
+  String get sheetConfigHeader;
+
+  /// No description provided for @sheetConfigHeaderHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Optional. Centered at the top of each page; leave blank to hide.'**
+  String get sheetConfigHeaderHint;
+
+  /// No description provided for @sheetConfigHeaderPlaceholder.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g. Grade 1 Chinese practice'**
+  String get sheetConfigHeaderPlaceholder;
 
   /// No description provided for @sheetConfigCellSize.
   ///
