@@ -2,634 +2,1384 @@
   "schemaVersion": 1,
   "categories": [
     {
-      "id": "grade1",
-      "sortOrder": 10,
+      "id": "textbook",
+      "sortOrder": 2,
       "icon": "school",
       "title": {
-        "zh": "一年级生字",
-        "en": "Grade 1 characters",
-        "zh_Hant": "一年級生字"
+        "zh": "教材生字",
+        "en": "Textbook characters",
+        "zh_Hant": "教材生字"
       },
       "lists": [
         {
-          "id": "grade1_unit1",
+          "id": "textbook_g1_1",
           "sortOrder": 1,
+          "section": {
+            "zh": "一年级",
+            "en": "Grade 1",
+            "zh_Hant": "一年级"
+          },
           "title": {
-            "zh": "识字 1–10",
-            "en": "Characters 1–10",
-            "zh_Hant": "識字 1–10"
+            "zh": "一年级 · 第1组",
+            "en": "一年级 · Set 1",
+            "zh_Hant": "一年级 · 第1组"
           },
           "description": {
-            "zh": "10 字 · 入门常用",
-            "en": "10 characters · basics",
-            "zh_Hant": "10 字 · 入門常用"
+            "zh": "32 字 · 统编版参考",
+            "en": "32 字 · 统编版参考",
+            "zh_Hant": "32 字 · 统编版参考"
           },
-          "text": "天地人你我他一二三四五",
-          "tags": ["grade1", "unit1"]
+          "text": "天地人你我他一二三四五上下口耳目手足站坐日月水火山石田禾六七八十",
+          "tags": [
+            "grade1",
+            "textbook"
+          ]
         },
         {
-          "id": "grade1_unit2",
+          "id": "textbook_g1_2",
           "sortOrder": 2,
-          "title": {
-            "zh": "识字 11–20",
-            "en": "Characters 11–20",
-            "zh_Hant": "識字 11–20"
+          "section": {
+            "zh": "一年级",
+            "en": "Grade 1",
+            "zh_Hant": "一年级"
           },
-          "text": "六七八九十口耳目手足",
-          "tags": ["grade1", "unit2"]
-        },
-        {
-          "id": "grade1_nature",
-          "sortOrder": 3,
           "title": {
-            "zh": "自然与方位",
-            "en": "Nature & directions",
-            "zh_Hant": "自然與方位"
-          },
-          "text": "日月水火木金土上下左右",
-          "tags": ["grade1", "nature"]
-        },
-        {
-          "id": "grade1_actions",
-          "sortOrder": 4,
-          "title": {
-            "zh": "动作与出入",
-            "en": "Actions & movement",
-            "zh_Hant": "動作與出入"
-          },
-          "text": "出入开关坐立走跑",
-          "tags": ["grade1", "actions"]
-        },
-        {
-          "id": "grade1_body",
-          "sortOrder": 5,
-          "title": {
-            "zh": "身体部位",
-            "en": "Body parts",
-            "zh_Hant": "身體部位"
-          },
-          "text": "头脸眼鼻牙手足心",
-          "tags": ["grade1", "body"]
-        },
-        {
-          "id": "grade1_animals",
-          "sortOrder": 6,
-          "title": {
-            "zh": "常见动物",
-            "en": "Common animals",
-            "zh_Hant": "常見動物"
-          },
-          "text": "马牛羊鸡鸭狗",
-          "tags": ["grade1", "animals"]
-        }
-      ]
-    },
-    {
-      "id": "grade2",
-      "sortOrder": 15,
-      "icon": "school",
-      "title": {
-        "zh": "二年级生字",
-        "en": "Grade 2 characters",
-        "zh_Hant": "二年級生字"
-      },
-      "lists": [
-        {
-          "id": "grade2_unit1",
-          "sortOrder": 1,
-          "title": {
-            "zh": "形容与伙伴",
-            "en": "Descriptions & friends",
-            "zh_Hant": "形容與夥伴"
-          },
-          "text": "美丽讲话许多伙伴",
-          "tags": ["grade2"]
-        },
-        {
-          "id": "grade2_unit2",
-          "sortOrder": 2,
-          "title": {
-            "zh": "学习与帮助",
-            "en": "Study & helping",
-            "zh_Hant": "學習與幫助"
-          },
-          "text": "科技帮助完全害怕",
-          "tags": ["grade2"]
-        },
-        {
-          "id": "grade2_unit3",
-          "sortOrder": 3,
-          "title": {
-            "zh": "自然与观察",
-            "en": "Nature & observing",
-            "zh_Hant": "自然與觀察"
-          },
-          "text": "森林枝叶茂盛",
-          "tags": ["grade2", "nature"]
-        }
-      ]
-    },
-    {
-      "id": "grade3",
-      "sortOrder": 16,
-      "icon": "school",
-      "title": {
-        "zh": "三年级生字",
-        "en": "Grade 3 characters",
-        "zh_Hant": "三年級生字"
-      },
-      "lists": [
-        {
-          "id": "grade3_unit1",
-          "sortOrder": 1,
-          "title": {
-            "zh": "宇宙与科学",
-            "en": "Space & science",
-            "zh_Hant": "宇宙與科學"
-          },
-          "text": "宇宙星球观察实验",
-          "tags": ["grade3", "science"]
-        },
-        {
-          "id": "grade3_unit2",
-          "sortOrder": 2,
-          "title": {
-            "zh": "昆虫与植物",
-            "en": "Insects & plants",
-            "zh_Hant": "昆蟲與植物"
-          },
-          "text": "蜜蜂蝴蝶花朵草树",
-          "tags": ["grade3", "nature"]
-        },
-        {
-          "id": "grade3_unit3",
-          "sortOrder": 3,
-          "title": {
-            "zh": "校园用品",
-            "en": "School supplies",
-            "zh_Hant": "校園用品"
-          },
-          "text": "教室操场黑板铅笔",
-          "tags": ["grade3", "school"]
-        },
-        {
-          "id": "grade3_unit4",
-          "sortOrder": 4,
-          "title": {
-            "zh": "品质性格",
-            "en": "Character traits",
-            "zh_Hant": "品質性格"
-          },
-          "text": "勇敢坚强诚实善良",
-          "tags": ["grade3", "character"]
-        },
-        {
-          "id": "grade3_unit5",
-          "sortOrder": 5,
-          "title": {
-            "zh": "户外活动",
-            "en": "Outdoor activities",
-            "zh_Hant": "戶外活動"
-          },
-          "text": "春游秋游野餐露营",
-          "tags": ["grade3", "activities"]
-        },
-        {
-          "id": "grade3_poetry_spring",
-          "sortOrder": 6,
-          "title": {
-            "zh": "古诗·春晓",
-            "en": "Poem: Spring Dawn",
-            "zh_Hant": "古詩·春曉"
+            "zh": "一年级 · 第2组",
+            "en": "一年级 · Set 2",
+            "zh_Hant": "一年级 · 第2组"
           },
           "description": {
-            "zh": "孟浩然《春晓》常用字",
-            "en": "Characters from a classic spring poem",
-            "zh_Hant": "孟浩然《春曉》常用字"
+            "zh": "32 字 · 统编版参考",
+            "en": "32 字 · 统编版参考",
+            "zh_Hant": "32 字 · 统编版参考"
           },
-          "text": "春眠不觉晓",
-          "tags": ["grade3", "poetry"]
+          "text": "大马路土本学校班级姓名王哥弟画花打棋积木字词句子桌纸读书鱼鸭乌鸦",
+          "tags": [
+            "grade1",
+            "textbook"
+          ]
         },
         {
-          "id": "grade3_poetry_village",
+          "id": "textbook_g1_3",
+          "sortOrder": 3,
+          "section": {
+            "zh": "一年级",
+            "en": "Grade 1",
+            "zh_Hant": "一年级"
+          },
+          "title": {
+            "zh": "一年级 · 第3组",
+            "en": "一年级 · Set 3",
+            "zh_Hant": "一年级 · 第3组"
+          },
+          "description": {
+            "zh": "32 字 · 统编版参考",
+            "en": "32 字 · 统编版参考",
+            "zh_Hant": "32 字 · 统编版参考"
+          },
+          "text": "午星期语文数写会秋气树叶片从来飞江女采莲北尖说春青蛙夏弯皮就冬男",
+          "tags": [
+            "grade1",
+            "textbook"
+          ]
+        },
+        {
+          "id": "textbook_g1_4",
+          "sortOrder": 4,
+          "section": {
+            "zh": "一年级",
+            "en": "Grade 1",
+            "zh_Hant": "一年级"
+          },
+          "title": {
+            "zh": "一年级 · 第4组",
+            "en": "一年级 · Set 4",
+            "zh_Hant": "一年级 · 第4组"
+          },
+          "description": {
+            "zh": "32 字 · 统编版参考",
+            "en": "32 字 · 统编版参考",
+            "zh_Hant": "32 字 · 统编版参考"
+          },
+          "text": "开关先远色近听无声还惊有去对云雨风鸟虫明力尘众双林森条心升国旗中",
+          "tags": [
+            "grade1",
+            "textbook"
+          ]
+        },
+        {
+          "id": "textbook_g1_5",
+          "sortOrder": 5,
+          "section": {
+            "zh": "一年级",
+            "en": "Grade 1",
+            "zh_Hant": "一年级"
+          },
+          "title": {
+            "zh": "一年级 · 第5组",
+            "en": "一年级 · Set 5",
+            "zh_Hant": "一年级 · 第5组"
+          },
+          "description": {
+            "zh": "32 字 · 统编版参考",
+            "en": "32 字 · 统编版参考",
+            "zh_Hant": "32 字 · 统编版参考"
+          },
+          "text": "红歌起么美丽立船儿两头在里看见闪影前常黑狗左右它好朋友比尾巴谁长",
+          "tags": [
+            "grade1",
+            "textbook"
+          ]
+        },
+        {
+          "id": "textbook_g1_6",
+          "sortOrder": 6,
+          "section": {
+            "zh": "一年级",
+            "en": "Grade 1",
+            "zh_Hant": "一年级"
+          },
+          "title": {
+            "zh": "一年级 · 第6组",
+            "en": "一年级 · Set 6",
+            "zh_Hant": "一年级 · 第6组"
+          },
+          "description": {
+            "zh": "32 字 · 统编版参考",
+            "en": "32 字 · 统编版参考",
+            "zh_Hant": "32 字 · 统编版参考"
+          },
+          "text": "短把伞兔最公喝处找办旁许法放进点彩半空问回答方霜吹落降飘游池入氏",
+          "tags": [
+            "grade1",
+            "textbook"
+          ]
+        },
+        {
+          "id": "textbook_g1_7",
           "sortOrder": 7,
+          "section": {
+            "zh": "一年级",
+            "en": "Grade 1",
+            "zh_Hant": "一年级"
+          },
           "title": {
-            "zh": "古诗·村居",
-            "en": "Poem: Village Life",
-            "zh_Hant": "古詩·村居"
+            "zh": "一年级 · 第7组",
+            "en": "一年级 · Set 7",
+            "zh_Hant": "一年级 · 第7组"
           },
           "description": {
-            "zh": "高鼎《村居》常用字",
-            "en": "Characters from a classic village poem",
-            "zh_Hant": "高鼎《村居》常用字"
+            "zh": "32 字 · 统编版参考",
+            "en": "32 字 · 统编版参考",
+            "zh_Hant": "32 字 · 统编版参考"
           },
-          "text": "牧童归还短笛",
-          "tags": ["grade3", "poetry"]
+          "text": "李张弓古胡吴言孙晴清请情动万多行各钟响伙伴着招呼那海亮像淘牵走挂",
+          "tags": [
+            "grade1",
+            "textbook"
+          ]
         },
         {
-          "id": "grade3_weather",
+          "id": "textbook_g1_8",
           "sortOrder": 8,
-          "title": {
-            "zh": "天气与气候",
-            "en": "Weather & climate",
-            "zh_Hant": "天氣與氣候"
+          "section": {
+            "zh": "一年级",
+            "en": "Grade 1",
+            "zh_Hant": "一年级"
           },
-          "text": "温暖凉爽湿润干燥",
-          "tags": ["grade3", "weather"]
+          "title": {
+            "zh": "一年级 · 第8组",
+            "en": "一年级 · Set 8",
+            "zh_Hant": "一年级 · 第8组"
+          },
+          "description": {
+            "zh": "32 字 · 统编版参考",
+            "en": "32 字 · 统编版参考",
+            "zh_Hant": "32 字 · 统编版参考"
+          },
+          "text": "填披吃忘纪以织饭饮物住主广门乐也习粗义相知器善教迁贵专幼玉珠摇躺",
+          "tags": [
+            "grade1",
+            "textbook"
+          ]
         },
         {
-          "id": "grade3_city",
+          "id": "textbook_g1_9",
           "sortOrder": 9,
-          "title": {
-            "zh": "城市与乡村",
-            "en": "City & countryside",
-            "zh_Hant": "城市與鄉村"
+          "section": {
+            "zh": "一年级",
+            "en": "Grade 1",
+            "zh_Hant": "一年级"
           },
-          "text": "城市乡村街道广场",
-          "tags": ["grade3", "places"]
+          "title": {
+            "zh": "一年级 · 第9组",
+            "en": "一年级 · Set 9",
+            "zh_Hant": "一年级 · 第9组"
+          },
+          "description": {
+            "zh": "32 字 · 统编版参考",
+            "en": "32 字 · 统编版参考",
+            "zh_Hant": "32 字 · 统编版参考"
+          },
+          "text": "机展透腰阴沉闷消息呢吧具铅新平盒些此仔检查所啊决定已经位表虎熊通",
+          "tags": [
+            "grade1",
+            "textbook"
+          ]
+        },
+        {
+          "id": "textbook_g1_10",
+          "sortOrder": 10,
+          "section": {
+            "zh": "一年级",
+            "en": "Grade 1",
+            "zh_Hant": "一年级"
+          },
+          "title": {
+            "zh": "一年级 · 第10组",
+            "en": "一年级 · Set 10",
+            "zh_Hant": "一年级 · 第10组"
+          },
+          "description": {
+            "zh": "32 字 · 统编版参考",
+            "en": "32 字 · 统编版参考",
+            "zh_Hant": "32 字 · 统编版参考"
+          },
+          "text": "注意百遍脸准第块非往瓜跳爬病医别干奇棉姑娘治燕咕咚熟掉湖吓啦鹿象",
+          "tags": [
+            "grade1",
+            "textbook"
+          ]
+        },
+        {
+          "id": "textbook_g1_11",
+          "sortOrder": 11,
+          "section": {
+            "zh": "一年级",
+            "en": "Grade 1",
+            "zh_Hant": "一年级"
+          },
+          "title": {
+            "zh": "一年级 · 第11组",
+            "en": "一年级 · Set 11",
+            "zh_Hant": "一年级 · 第11组"
+          },
+          "description": {
+            "zh": "4 字 · 统编版参考",
+            "en": "4 字 · 统编版参考",
+            "zh_Hant": "4 字 · 统编版参考"
+          },
+          "text": "野拦命领",
+          "tags": [
+            "grade1",
+            "textbook"
+          ]
+        },
+        {
+          "id": "textbook_g2_1",
+          "sortOrder": 12,
+          "section": {
+            "zh": "二年级",
+            "en": "Grade 2",
+            "zh_Hant": "二年级"
+          },
+          "title": {
+            "zh": "二年级 · 第1组",
+            "en": "二年级 · Set 1",
+            "zh_Hant": "二年级 · 第1组"
+          },
+          "description": {
+            "zh": "32 字 · 统编版参考",
+            "en": "32 字 · 统编版参考",
+            "zh_Hant": "32 字 · 统编版参考"
+          },
+          "text": "塘映带收饿孤舟影晴晚湖莲戏满帆房遇闲优淡浅底波景弯绕眼瞧植旅备纷",
+          "tags": [
+            "grade2",
+            "textbook"
+          ]
+        },
+        {
+          "id": "textbook_g2_2",
+          "sortOrder": 13,
+          "section": {
+            "zh": "二年级",
+            "en": "Grade 2",
+            "zh_Hant": "二年级"
+          },
+          "title": {
+            "zh": "二年级 · 第2组",
+            "en": "二年级 · Set 2",
+            "zh_Hant": "二年级 · 第2组"
+          },
+          "description": {
+            "zh": "32 字 · 统编版参考",
+            "en": "32 字 · 统编版参考",
+            "zh_Hant": "32 字 · 统编版参考"
+          },
+          "text": "刺啪炸离识粗得曹称根柱杆秤做岁站船然玲详幅评奖催脏伤另及懒并封支",
+          "tags": [
+            "grade2",
+            "textbook"
+          ]
+        },
+        {
+          "id": "textbook_g2_3",
+          "sortOrder": 14,
+          "section": {
+            "zh": "二年级",
+            "en": "Grade 2",
+            "zh_Hant": "二年级"
+          },
+          "title": {
+            "zh": "二年级 · 第3组",
+            "en": "二年级 · Set 3",
+            "zh_Hant": "二年级 · 第3组"
+          },
+          "description": {
+            "zh": "32 字 · 统编版参考",
+            "en": "32 字 · 统编版参考",
+            "zh_Hant": "32 字 · 统编版参考"
+          },
+          "text": "圆珠笔灯句电哄先闭脸发沉呼吸窗沙依尽黄层照烟直似南部闻名区省致状",
+          "tags": [
+            "grade2",
+            "textbook"
+          ]
+        },
+        {
+          "id": "textbook_g2_4",
+          "sortOrder": 15,
+          "section": {
+            "zh": "二年级",
+            "en": "Grade 2",
+            "zh_Hant": "二年级"
+          },
+          "title": {
+            "zh": "二年级 · 第4组",
+            "en": "二年级 · Set 4",
+            "zh_Hant": "二年级 · 第4组"
+          },
+          "description": {
+            "zh": "32 字 · 统编版参考",
+            "en": "32 字 · 统编版参考",
+            "zh_Hant": "32 字 · 统编版参考"
+          },
+          "text": "尤巨著胜岛央迹丽展现产份坡枝起客老城市果些种布刘抗苦志沿答渴喝话",
+          "tags": [
+            "grade2",
+            "textbook"
+          ]
+        },
+        {
+          "id": "textbook_g2_5",
+          "sortOrder": 16,
+          "section": {
+            "zh": "二年级",
+            "en": "Grade 2",
+            "zh_Hant": "二年级"
+          },
+          "title": {
+            "zh": "二年级 · 第5组",
+            "en": "二年级 · Set 5",
+            "zh_Hant": "二年级 · 第5组"
+          },
+          "description": {
+            "zh": "32 字 · 统编版参考",
+            "en": "32 字 · 统编版参考",
+            "zh_Hant": "32 字 · 统编版参考"
+          },
+          "text": "弄错际面阵朗枯却将难夜降葫藤谢啊蚜盯赛怪慢数爷变昌铺调硬卧限乘售",
+          "tags": [
+            "grade2",
+            "textbook"
+          ]
+        },
+        {
+          "id": "textbook_g2_6",
+          "sortOrder": 17,
+          "section": {
+            "zh": "二年级",
+            "en": "Grade 2",
+            "zh_Hant": "二年级"
+          },
+          "title": {
+            "zh": "二年级 · 第6组",
+            "en": "二年级 · Set 6",
+            "zh_Hant": "二年级 · 第6组"
+          },
+          "description": {
+            "zh": "32 字 · 统编版参考",
+            "en": "32 字 · 统编版参考",
+            "zh_Hant": "32 字 · 统编版参考"
+          },
+          "text": "孩于论岸屋切久散步唱赶旺旁浑候谁汽食随柴诗首望思床疑举低故胆敢外",
+          "tags": [
+            "grade2",
+            "textbook"
+          ]
+        },
+        {
+          "id": "textbook_g2_7",
+          "sortOrder": 18,
+          "section": {
+            "zh": "二年级",
+            "en": "Grade 2",
+            "zh_Hant": "二年级"
+          },
+          "title": {
+            "zh": "二年级 · 第7组",
+            "en": "二年级 · Set 7",
+            "zh_Hant": "二年级 · 第7组"
+          },
+          "description": {
+            "zh": "32 字 · 统编版参考",
+            "en": "32 字 · 统编版参考",
+            "zh_Hant": "32 字 · 统编版参考"
+          },
+          "text": "勇讲乱拉样笑节扫除洗澡盆采尖粒棵飘鲜披浮浪摇痛快乐接供给串免告造",
+          "tags": [
+            "grade2",
+            "textbook"
+          ]
+        },
+        {
+          "id": "textbook_g2_8",
+          "sortOrder": 19,
+          "section": {
+            "zh": "二年级",
+            "en": "Grade 2",
+            "zh_Hant": "二年级"
+          },
+          "title": {
+            "zh": "二年级 · 第8组",
+            "en": "二年级 · Set 8",
+            "zh_Hant": "二年级 · 第8组"
+          },
+          "description": {
+            "zh": "2 字 · 统编版参考",
+            "en": "2 字 · 统编版参考",
+            "zh_Hant": "2 字 · 统编版参考"
+          },
+          "text": "运过",
+          "tags": [
+            "grade2",
+            "textbook"
+          ]
+        },
+        {
+          "id": "textbook_g3_1",
+          "sortOrder": 20,
+          "section": {
+            "zh": "三年级",
+            "en": "Grade 3",
+            "zh_Hant": "三年级"
+          },
+          "title": {
+            "zh": "三年级 · 第1组",
+            "en": "三年级 · Set 1",
+            "zh_Hant": "三年级 · 第1组"
+          },
+          "description": {
+            "zh": "32 字 · 统编版参考",
+            "en": "32 字 · 统编版参考",
+            "zh_Hant": "32 字 · 统编版参考"
+          },
+          "text": "坝汉艳扮扬读摔跤凤洁轰荒笛功罚假裳背诵例圈糊涂呆戒厉挨楚径斜赠残",
+          "tags": [
+            "grade3",
+            "textbook"
+          ]
+        },
+        {
+          "id": "textbook_g3_2",
+          "sortOrder": 21,
+          "section": {
+            "zh": "三年级",
+            "en": "Grade 3",
+            "zh_Hant": "三年级"
+          },
+          "title": {
+            "zh": "三年级 · 第2组",
+            "en": "三年级 · Set 2",
+            "zh_Hant": "三年级 · 第2组"
+          },
+          "description": {
+            "zh": "32 字 · 统编版参考",
+            "en": "32 字 · 统编版参考",
+            "zh_Hant": "32 字 · 统编版参考"
+          },
+          "text": "犹傲君橙橘挑洼印凌增棕靴钥匙缤枚勾油频曲丰梨抖振韵掠吟辽烛焰胀互",
+          "tags": [
+            "grade3",
+            "textbook"
+          ]
+        },
+        {
+          "id": "textbook_g3_3",
+          "sortOrder": 22,
+          "section": {
+            "zh": "三年级",
+            "en": "Grade 3",
+            "zh_Hant": "三年级"
+          },
+          "title": {
+            "zh": "三年级 · 第3组",
+            "en": "三年级 · Set 3",
+            "zh_Hant": "三年级 · 第3组"
+          },
+          "description": {
+            "zh": "32 字 · 统编版参考",
+            "en": "32 字 · 统编版参考",
+            "zh_Hant": "32 字 · 统编版参考"
+          },
+          "text": "换霜降紫晨绒球落备等暴哦钻爬漂晒搭翠嘴捕望吞张合拢亦抹宜庭未磨盘",
+          "tags": [
+            "grade3",
+            "textbook"
+          ]
+        },
+        {
+          "id": "textbook_g3_4",
+          "sortOrder": 23,
+          "section": {
+            "zh": "三年级",
+            "en": "Grade 3",
+            "zh_Hant": "三年级"
+          },
+          "title": {
+            "zh": "三年级 · 第4组",
+            "en": "三年级 · Set 4",
+            "zh_Hant": "三年级 · 第4组"
+          },
+          "description": {
+            "zh": "32 字 · 统编版参考",
+            "en": "32 字 · 统编版参考",
+            "zh_Hant": "32 字 · 统编版参考"
+          },
+          "text": "富优浅错岩武栖粪辈滨灰飘封严挡坛显材软妙演琴柔感击器激滴敲鸣册宝",
+          "tags": [
+            "grade3",
+            "textbook"
+          ]
+        },
+        {
+          "id": "textbook_g3_5",
+          "sortOrder": 24,
+          "section": {
+            "zh": "三年级",
+            "en": "Grade 3",
+            "zh_Hant": "三年级"
+          },
+          "title": {
+            "zh": "三年级 · 第5组",
+            "en": "三年级 · Set 5",
+            "zh_Hant": "三年级 · 第5组"
+          },
+          "description": {
+            "zh": "32 字 · 统编版参考",
+            "en": "32 字 · 统编版参考",
+            "zh_Hant": "32 字 · 统编版参考"
+          },
+          "text": "幻仰群翔序重息黎明深腾爽司登跌众弃持雀郊养粒男或斗刚烈离血仍取匆",
+          "tags": [
+            "grade3",
+            "textbook"
+          ]
+        },
+        {
+          "id": "textbook_g3_6",
+          "sortOrder": 25,
+          "section": {
+            "zh": "三年级",
+            "en": "Grade 3",
+            "zh_Hant": "三年级"
+          },
+          "title": {
+            "zh": "三年级 · 第6组",
+            "en": "三年级 · Set 6",
+            "zh_Hant": "三年级 · 第6组"
+          },
+          "description": {
+            "zh": "32 字 · 统编版参考",
+            "en": "32 字 · 统编版参考",
+            "zh_Hant": "32 字 · 统编版参考"
+          },
+          "text": "陈缸还顿侦担融燕鸳鸯惠崇芦芽梅耕宋释冀骄谦懦弱提尘讶捧鹿腿颈配喂",
+          "tags": [
+            "grade3",
+            "textbook"
+          ]
+        },
+        {
+          "id": "textbook_g3_7",
+          "sortOrder": 26,
+          "section": {
+            "zh": "三年级",
+            "en": "Grade 3",
+            "zh_Hant": "三年级"
+          },
+          "title": {
+            "zh": "三年级 · 第7组",
+            "en": "三年级 · Set 7",
+            "zh_Hant": "三年级 · 第7组"
+          },
+          "description": {
+            "zh": "11 字 · 统编版参考",
+            "en": "11 字 · 统编版参考",
+            "zh_Hant": "11 字 · 统编版参考"
+          },
+          "text": "狮追池河海守株待兔陶罐",
+          "tags": [
+            "grade3",
+            "textbook"
+          ]
         }
       ]
     },
     {
-      "id": "themes",
-      "sortOrder": 20,
+      "id": "life",
+      "sortOrder": 3,
       "icon": "eco",
       "title": {
-        "zh": "主题词组",
-        "en": "Themed words",
-        "zh_Hant": "主題詞組"
+        "zh": "生活主题",
+        "en": "Daily life",
+        "zh_Hant": "生活主題"
       },
       "lists": [
         {
-          "id": "theme_spring",
+          "id": "life_season_spring",
           "sortOrder": 1,
+          "section": {
+            "zh": "时令自然",
+            "en": "Seasons & nature",
+            "zh_Hant": "时令自然"
+          },
           "title": {
             "zh": "春天",
             "en": "Spring",
             "zh_Hant": "春天"
           },
           "description": {
-            "zh": "季节 · 6 字",
-            "en": "Season · 6 characters",
-            "zh_Hant": "季節 · 6 字"
+            "zh": "季节 · 8 字",
+            "en": "季节 · 8 字",
+            "zh_Hant": "季节 · 8 字"
           },
-          "text": "春天花草风雨",
-          "tags": ["season", "spring"]
+          "text": "春天花草风雨温暖萌芽",
+          "tags": [
+            "life",
+            "season",
+            "spring"
+          ]
         },
         {
-          "id": "theme_summer",
+          "id": "life_season_summer",
           "sortOrder": 2,
+          "section": {
+            "zh": "时令自然",
+            "en": "Seasons & nature",
+            "zh_Hant": "时令自然"
+          },
           "title": {
             "zh": "夏天",
             "en": "Summer",
             "zh_Hant": "夏天"
           },
-          "text": "夏暑荷花荷叶",
-          "tags": ["season", "summer"]
+          "text": "夏暑荷花叶炎热雷雨",
+          "tags": [
+            "life",
+            "season",
+            "summer"
+          ]
         },
         {
-          "id": "theme_autumn",
+          "id": "life_season_autumn",
           "sortOrder": 3,
+          "section": {
+            "zh": "时令自然",
+            "en": "Seasons & nature",
+            "zh_Hant": "时令自然"
+          },
           "title": {
             "zh": "秋天",
             "en": "Autumn",
             "zh_Hant": "秋天"
           },
-          "text": "秋黄叶果实",
-          "tags": ["season", "autumn"]
+          "text": "秋黄叶果实收获凉爽",
+          "tags": [
+            "life",
+            "season",
+            "autumn"
+          ]
         },
         {
-          "id": "theme_winter",
+          "id": "life_season_winter",
           "sortOrder": 4,
+          "section": {
+            "zh": "时令自然",
+            "en": "Seasons & nature",
+            "zh_Hant": "时令自然"
+          },
           "title": {
             "zh": "冬天",
             "en": "Winter",
             "zh_Hant": "冬天"
           },
-          "text": "冬雪寒冷冰雪",
-          "tags": ["season", "winter"]
+          "text": "冬雪寒冷冰温暖",
+          "tags": [
+            "life",
+            "season",
+            "winter"
+          ]
         },
         {
-          "id": "theme_family",
+          "id": "life_nature_land",
           "sortOrder": 5,
-          "title": {
-            "zh": "家庭",
-            "en": "Family",
-            "zh_Hant": "家庭"
+          "section": {
+            "zh": "时令自然",
+            "en": "Seasons & nature",
+            "zh_Hant": "时令自然"
           },
-          "text": "爸妈爷爷奶奶哥姐弟妹",
-          "tags": ["family"]
+          "title": {
+            "zh": "山水天地",
+            "en": "Land & sky",
+            "zh_Hant": "山水天地"
+          },
+          "text": "山河湖海云霞日月星辰",
+          "tags": [
+            "life",
+            "nature"
+          ]
         },
         {
-          "id": "theme_school",
+          "id": "life_nature_plants",
           "sortOrder": 6,
+          "section": {
+            "zh": "时令自然",
+            "en": "Seasons & nature",
+            "zh_Hant": "时令自然"
+          },
+          "title": {
+            "zh": "花草树木",
+            "en": "Plants",
+            "zh_Hant": "花草树木"
+          },
+          "text": "花草树木森林枝叶果实",
+          "tags": [
+            "life",
+            "nature",
+            "plants"
+          ]
+        },
+        {
+          "id": "life_animals",
+          "sortOrder": 7,
+          "section": {
+            "zh": "时令自然",
+            "en": "Seasons & nature",
+            "zh_Hant": "时令自然"
+          },
+          "title": {
+            "zh": "常见动物",
+            "en": "Animals",
+            "zh_Hant": "常见动物"
+          },
+          "text": "猫狗鸟鱼兔马牛羊鸡鸭",
+          "tags": [
+            "life",
+            "animals"
+          ]
+        },
+        {
+          "id": "life_weather",
+          "sortOrder": 8,
+          "section": {
+            "zh": "时令自然",
+            "en": "Seasons & nature",
+            "zh_Hant": "时令自然"
+          },
+          "title": {
+            "zh": "天气",
+            "en": "Weather",
+            "zh_Hant": "天气"
+          },
+          "text": "晴雨阴风雪雷电温暖",
+          "tags": [
+            "life",
+            "weather"
+          ]
+        },
+        {
+          "id": "life_colors",
+          "sortOrder": 9,
+          "section": {
+            "zh": "时令自然",
+            "en": "Seasons & nature",
+            "zh_Hant": "时令自然"
+          },
+          "title": {
+            "zh": "颜色",
+            "en": "Colors",
+            "zh_Hant": "颜色"
+          },
+          "text": "红黄蓝绿白黑紫橙灰",
+          "tags": [
+            "life",
+            "colors"
+          ]
+        },
+        {
+          "id": "life_family",
+          "sortOrder": 10,
+          "section": {
+            "zh": "日常交流",
+            "en": "Daily life",
+            "zh_Hant": "日常交流"
+          },
+          "title": {
+            "zh": "家庭成员",
+            "en": "Family",
+            "zh_Hant": "家庭成员"
+          },
+          "text": "爸妈爷奶哥姐弟妹",
+          "tags": [
+            "life",
+            "family"
+          ]
+        },
+        {
+          "id": "life_school",
+          "sortOrder": 11,
+          "section": {
+            "zh": "日常交流",
+            "en": "Daily life",
+            "zh_Hant": "日常交流"
+          },
           "title": {
             "zh": "校园",
             "en": "School",
-            "zh_Hant": "校園"
+            "zh_Hant": "校园"
           },
-          "text": "学校老师同学读书写字",
-          "tags": ["school"]
+          "text": "学校老师同读书写字",
+          "tags": [
+            "life",
+            "school"
+          ]
         },
         {
-          "id": "theme_food",
-          "sortOrder": 7,
+          "id": "life_food",
+          "sortOrder": 12,
+          "section": {
+            "zh": "日常交流",
+            "en": "Daily life",
+            "zh_Hant": "日常交流"
+          },
           "title": {
             "zh": "食物",
             "en": "Food",
             "zh_Hant": "食物"
           },
-          "text": "米饭面包鸡蛋牛奶",
-          "tags": ["food"]
+          "text": "米饭面包鸡蛋牛奶水果蔬菜",
+          "tags": [
+            "life",
+            "food"
+          ]
         },
         {
-          "id": "theme_animals",
-          "sortOrder": 8,
-          "title": {
-            "zh": "动物",
-            "en": "Animals",
-            "zh_Hant": "動物"
+          "id": "life_home",
+          "sortOrder": 13,
+          "section": {
+            "zh": "日常交流",
+            "en": "Daily life",
+            "zh_Hant": "日常交流"
           },
-          "text": "猫狗鸟鱼兔马",
-          "tags": ["animals"]
-        },
-        {
-          "id": "theme_colors",
-          "sortOrder": 9,
           "title": {
-            "zh": "颜色",
-            "en": "Colors",
-            "zh_Hant": "顏色"
+            "zh": "家居",
+            "en": "Home",
+            "zh_Hant": "家居"
           },
-          "text": "红黄蓝绿白黑",
-          "tags": ["colors"]
+          "text": "门窗床桌灯书房间厨",
+          "tags": [
+            "life",
+            "home"
+          ]
         },
         {
-          "id": "theme_weather",
-          "sortOrder": 10,
+          "id": "life_body",
+          "sortOrder": 14,
+          "section": {
+            "zh": "日常交流",
+            "en": "Daily life",
+            "zh_Hant": "日常交流"
+          },
           "title": {
-            "zh": "天气",
-            "en": "Weather",
-            "zh_Hant": "天氣"
+            "zh": "身体",
+            "en": "Body",
+            "zh_Hant": "身体"
           },
-          "text": "晴雨阴风雪",
-          "tags": ["weather"]
+          "text": "头脸眼鼻口牙手足心",
+          "tags": [
+            "life",
+            "body"
+          ]
         },
         {
-          "id": "theme_transport",
-          "sortOrder": 11,
+          "id": "life_clothes",
+          "sortOrder": 15,
+          "section": {
+            "zh": "日常交流",
+            "en": "Daily life",
+            "zh_Hant": "日常交流"
+          },
+          "title": {
+            "zh": "衣着",
+            "en": "Clothing",
+            "zh_Hant": "衣着"
+          },
+          "text": "衣裤鞋帽袜穿戴",
+          "tags": [
+            "life",
+            "clothes"
+          ]
+        },
+        {
+          "id": "life_transport",
+          "sortOrder": 16,
+          "section": {
+            "zh": "日常交流",
+            "en": "Daily life",
+            "zh_Hant": "日常交流"
+          },
           "title": {
             "zh": "交通",
             "en": "Transport",
             "zh_Hant": "交通"
           },
-          "text": "车路桥船飞机",
-          "tags": ["transport"]
-        }
-      ]
-    },
-    {
-      "id": "daily",
-      "sortOrder": 25,
-      "icon": "chat",
-      "title": {
-        "zh": "日常用语",
-        "en": "Daily phrases",
-        "zh_Hant": "日常用語"
-      },
-      "lists": [
+          "text": "车路桥船飞机行走",
+          "tags": [
+            "life",
+            "transport"
+          ]
+        },
         {
-          "id": "daily_greetings",
-          "sortOrder": 1,
+          "id": "life_greetings",
+          "sortOrder": 17,
+          "section": {
+            "zh": "日常交流",
+            "en": "Daily life",
+            "zh_Hant": "日常交流"
+          },
           "title": {
             "zh": "问候礼貌",
             "en": "Greetings",
-            "zh_Hant": "問候禮貌"
+            "zh_Hant": "问候礼貌"
           },
-          "text": "你好谢谢对不起再见",
-          "tags": ["daily", "greetings"]
+          "text": "你好谢对不起再见请",
+          "tags": [
+            "life",
+            "daily",
+            "greetings"
+          ]
         },
         {
-          "id": "daily_polite",
-          "sortOrder": 2,
+          "id": "life_polite",
+          "sortOrder": 18,
+          "section": {
+            "zh": "日常交流",
+            "en": "Daily life",
+            "zh_Hant": "日常交流"
+          },
           "title": {
             "zh": "礼貌用语",
             "en": "Polite words",
-            "zh_Hant": "禮貌用語"
+            "zh_Hant": "礼貌用语"
           },
-          "text": "请坐慢走欢迎",
-          "tags": ["daily", "polite"]
+          "text": "请坐慢走欢迎打扰",
+          "tags": [
+            "life",
+            "daily",
+            "polite"
+          ]
         },
         {
-          "id": "daily_time",
-          "sortOrder": 3,
+          "id": "life_time",
+          "sortOrder": 19,
+          "section": {
+            "zh": "日常交流",
+            "en": "Daily life",
+            "zh_Hant": "日常交流"
+          },
           "title": {
             "zh": "时间",
             "en": "Time",
-            "zh_Hant": "時間"
+            "zh_Hant": "时间"
           },
-          "text": "早晚中午今天明天",
-          "tags": ["daily", "time"]
+          "text": "早晚中午今天明年月",
+          "tags": [
+            "life",
+            "daily",
+            "time"
+          ]
         },
         {
-          "id": "daily_weekdays",
-          "sortOrder": 4,
+          "id": "life_weekdays",
+          "sortOrder": 20,
+          "section": {
+            "zh": "日常交流",
+            "en": "Daily life",
+            "zh_Hant": "日常交流"
+          },
           "title": {
             "zh": "星期",
-            "en": "Days of the week",
+            "en": "Weekdays",
             "zh_Hant": "星期"
           },
           "description": {
             "zh": "周一至周日",
-            "en": "Monday through Sunday",
-            "zh_Hant": "週一至週日"
+            "en": "周一至周日",
+            "zh_Hant": "周一至周日"
           },
           "text": "一二三四五六日",
-          "tags": ["daily", "weekdays"]
-        }
-      ]
-    },
-    {
-      "id": "festivals",
-      "sortOrder": 30,
-      "icon": "celebration",
-      "title": {
-        "zh": "节日常用字",
-        "en": "Festival characters",
-        "zh_Hant": "節日常用字"
-      },
-      "lists": [
+          "tags": [
+            "life",
+            "daily",
+            "weekdays"
+          ]
+        },
         {
-          "id": "festival_spring_festival",
-          "sortOrder": 1,
+          "id": "life_festival_spring",
+          "sortOrder": 21,
+          "section": {
+            "zh": "节日祝福",
+            "en": "Festivals",
+            "zh_Hant": "节日祝福"
+          },
           "title": {
             "zh": "春节",
             "en": "Spring Festival",
-            "zh_Hant": "春節"
+            "zh_Hant": "春节"
           },
           "text": "春节福红包团圆饺子",
-          "tags": ["festival", "spring_festival"]
+          "tags": [
+            "life",
+            "festival",
+            "spring_festival"
+          ]
         },
         {
-          "id": "festival_mid_autumn",
-          "sortOrder": 2,
-          "title": {
-            "zh": "中秋",
-            "en": "Mid-Autumn",
-            "zh_Hant": "中秋"
+          "id": "life_festival_lantern",
+          "sortOrder": 22,
+          "section": {
+            "zh": "节日祝福",
+            "en": "Festivals",
+            "zh_Hant": "节日祝福"
           },
-          "text": "中秋月亮月饼团圆",
-          "tags": ["festival", "mid_autumn"]
-        },
-        {
-          "id": "festival_dragon_boat",
-          "sortOrder": 3,
-          "title": {
-            "zh": "端午",
-            "en": "Dragon Boat",
-            "zh_Hant": "端午"
-          },
-          "text": "端午粽子龙舟",
-          "tags": ["festival", "dragon_boat"]
-        },
-        {
-          "id": "festival_lantern",
-          "sortOrder": 4,
           "title": {
             "zh": "元宵",
             "en": "Lantern Festival",
             "zh_Hant": "元宵"
           },
           "text": "元宵灯笼汤圆",
-          "tags": ["festival", "lantern"]
+          "tags": [
+            "life",
+            "festival",
+            "lantern"
+          ]
         },
         {
-          "id": "festival_qingming",
-          "sortOrder": 5,
+          "id": "life_festival_qingming",
+          "sortOrder": 23,
+          "section": {
+            "zh": "节日祝福",
+            "en": "Festivals",
+            "zh_Hant": "节日祝福"
+          },
           "title": {
             "zh": "清明",
             "en": "Qingming",
             "zh_Hant": "清明"
           },
-          "text": "清明踏青",
-          "tags": ["festival", "qingming"]
+          "text": "清明踏青祭祖",
+          "tags": [
+            "life",
+            "festival",
+            "qingming"
+          ]
         },
         {
-          "id": "festival_wishes",
-          "sortOrder": 6,
+          "id": "life_festival_dragon",
+          "sortOrder": 24,
+          "section": {
+            "zh": "节日祝福",
+            "en": "Festivals",
+            "zh_Hant": "节日祝福"
+          },
+          "title": {
+            "zh": "端午",
+            "en": "Dragon Boat",
+            "zh_Hant": "端午"
+          },
+          "text": "端午粽子龙舟",
+          "tags": [
+            "life",
+            "festival",
+            "dragon_boat"
+          ]
+        },
+        {
+          "id": "life_festival_midautumn",
+          "sortOrder": 25,
+          "section": {
+            "zh": "节日祝福",
+            "en": "Festivals",
+            "zh_Hant": "节日祝福"
+          },
+          "title": {
+            "zh": "中秋",
+            "en": "Mid-Autumn",
+            "zh_Hant": "中秋"
+          },
+          "text": "中秋月亮饼团圆",
+          "tags": [
+            "life",
+            "festival",
+            "mid_autumn"
+          ]
+        },
+        {
+          "id": "life_festival_wishes",
+          "sortOrder": 26,
+          "section": {
+            "zh": "节日祝福",
+            "en": "Festivals",
+            "zh_Hant": "节日祝福"
+          },
           "title": {
             "zh": "祝福用语",
             "en": "Festive wishes",
-            "zh_Hant": "祝福用語"
+            "zh_Hant": "祝福用语"
           },
-          "text": "新年快乐恭喜发财",
-          "tags": ["festival", "wishes"]
+          "text": "新年快乐恭喜发财身体健康",
+          "tags": [
+            "life",
+            "festival",
+            "wishes"
+          ]
         }
       ]
     },
     {
-      "id": "practice_basics",
-      "sortOrder": 40,
+      "id": "practice",
+      "sortOrder": 4,
       "icon": "edit",
       "title": {
-        "zh": "练字基础",
+        "zh": "练字入门",
         "en": "Writing basics",
-        "zh_Hant": "練字基礎"
+        "zh_Hant": "練字入門"
       },
       "lists": [
         {
-          "id": "basics_stroke_practice",
+          "id": "practice_strokes",
           "sortOrder": 1,
+          "section": {
+            "zh": "基础笔画",
+            "en": "Basic strokes",
+            "zh_Hant": "基础笔画"
+          },
           "title": {
             "zh": "基本笔画字",
-            "en": "Basic stroke characters",
-            "zh_Hant": "基本筆畫字"
+            "en": "Stroke examples",
+            "zh_Hant": "基本笔画字"
           },
           "description": {
             "zh": "永字八法常用例字",
-            "en": "Common stroke-order examples",
+            "en": "永字八法常用例字",
             "zh_Hant": "永字八法常用例字"
           },
           "text": "永一二三十木口手",
-          "tags": ["basics", "strokes"]
+          "tags": [
+            "practice",
+            "strokes"
+          ]
         },
         {
-          "id": "basics_numbers",
+          "id": "practice_numbers",
           "sortOrder": 2,
+          "section": {
+            "zh": "基础笔画",
+            "en": "Basic strokes",
+            "zh_Hant": "基础笔画"
+          },
           "title": {
             "zh": "数字汉字",
             "en": "Chinese numerals",
-            "zh_Hant": "數字漢字"
+            "zh_Hant": "数字汉字"
           },
-          "text": "零一二三四五六七八九",
-          "tags": ["basics", "numbers"]
+          "text": "零一二三四五六七八九十百千万",
+          "tags": [
+            "practice",
+            "numbers"
+          ]
         },
         {
-          "id": "basics_directions",
+          "id": "practice_directions",
           "sortOrder": 3,
+          "section": {
+            "zh": "基础笔画",
+            "en": "Basic strokes",
+            "zh_Hant": "基础笔画"
+          },
           "title": {
             "zh": "方位",
             "en": "Directions",
             "zh_Hant": "方位"
           },
-          "text": "东南西北前后",
-          "tags": ["basics", "directions"]
+          "text": "东南西北前后左右上下",
+          "tags": [
+            "practice",
+            "directions"
+          ]
         },
         {
-          "id": "basics_size",
+          "id": "practice_size",
           "sortOrder": 4,
+          "section": {
+            "zh": "基础笔画",
+            "en": "Basic strokes",
+            "zh_Hant": "基础笔画"
+          },
           "title": {
             "zh": "大小多少",
             "en": "Size & quantity",
             "zh_Hant": "大小多少"
           },
-          "text": "大小多少长短",
-          "tags": ["basics", "size"]
-        }
-      ]
-    },
-    {
-      "id": "idioms",
-      "sortOrder": 50,
-      "icon": "menu_book",
-      "title": {
-        "zh": "常用词语",
-        "en": "Common phrases",
-        "zh_Hant": "常用詞語"
-      },
-      "lists": [
+          "text": "大小多少长短高低",
+          "tags": [
+            "practice",
+            "size"
+          ]
+        },
         {
-          "id": "idiom_study",
-          "sortOrder": 1,
+          "id": "practice_radicals",
+          "sortOrder": 5,
+          "section": {
+            "zh": "基础笔画",
+            "en": "Basic strokes",
+            "zh_Hant": "基础笔画"
+          },
+          "title": {
+            "zh": "常见偏旁",
+            "en": "Common radicals",
+            "zh_Hant": "常见偏旁"
+          },
+          "description": {
+            "zh": "偏旁部首练习",
+            "en": "偏旁部首练习",
+            "zh_Hant": "偏旁部首练习"
+          },
+          "text": "单人旁三点水木字口",
+          "tags": [
+            "practice",
+            "radicals"
+          ]
+        },
+        {
+          "id": "practice_study",
+          "sortOrder": 6,
+          "section": {
+            "zh": "词语佳句",
+            "en": "Phrases",
+            "zh_Hant": "词语佳句"
+          },
           "title": {
             "zh": "学习励志",
             "en": "Study & motivation",
-            "zh_Hant": "學習勵志"
+            "zh_Hant": "学习励志"
           },
-          "text": "好好学习天天向上",
-          "tags": ["idiom", "study"]
+          "text": "好学习天向上",
+          "tags": [
+            "practice",
+            "phrase",
+            "study"
+          ]
         },
         {
-          "id": "idiom_nature",
-          "sortOrder": 2,
+          "id": "practice_nature",
+          "sortOrder": 7,
+          "section": {
+            "zh": "词语佳句",
+            "en": "Phrases",
+            "zh_Hant": "词语佳句"
+          },
           "title": {
             "zh": "自然风光",
             "en": "Nature scenery",
-            "zh_Hant": "自然風光"
+            "zh_Hant": "自然风光"
           },
           "text": "山清水秀鸟语花香",
-          "tags": ["idiom", "nature"]
+          "tags": [
+            "practice",
+            "phrase",
+            "nature"
+          ]
         },
         {
-          "id": "idiom_happy",
-          "sortOrder": 3,
+          "id": "practice_happy",
+          "sortOrder": 8,
+          "section": {
+            "zh": "词语佳句",
+            "en": "Phrases",
+            "zh_Hant": "词语佳句"
+          },
           "title": {
             "zh": "开心快乐",
             "en": "Happiness",
-            "zh_Hant": "開心快樂"
+            "zh_Hant": "开心快乐"
           },
           "text": "开心快乐高兴",
-          "tags": ["idiom", "emotion"]
+          "tags": [
+            "practice",
+            "phrase",
+            "emotion"
+          ]
+        },
+        {
+          "id": "practice_diligence",
+          "sortOrder": 9,
+          "section": {
+            "zh": "词语佳句",
+            "en": "Phrases",
+            "zh_Hant": "词语佳句"
+          },
+          "title": {
+            "zh": "勤奋努力",
+            "en": "Diligence",
+            "zh_Hant": "勤奋努力"
+          },
+          "text": "认真努力坚持进步",
+          "tags": [
+            "practice",
+            "phrase"
+          ]
+        },
+        {
+          "id": "practice_friendship",
+          "sortOrder": 10,
+          "section": {
+            "zh": "词语佳句",
+            "en": "Phrases",
+            "zh_Hant": "词语佳句"
+          },
+          "title": {
+            "zh": "友爱互助",
+            "en": "Friendship",
+            "zh_Hant": "友爱互助"
+          },
+          "text": "团结友爱互相帮助",
+          "tags": [
+            "practice",
+            "phrase"
+          ]
         }
       ]
     }

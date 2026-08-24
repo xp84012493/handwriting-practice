@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../l10n/l10n_extension.dart';
+import '../models/localized_label.dart';
 import '../models/preset_sheet_list.dart';
 import '../services/preset_list_service.dart';
 import 'preset_category_icon.dart';
@@ -230,18 +231,10 @@ class _PresetListSheetState extends State<_PresetListSheet>
                 child: TabBarView(
                   controller: _tabController,
                   children: widget.catalog.categories.map((category) {
-                    return ListView.separated(
-                      padding: const EdgeInsets.only(top: 4, bottom: 8),
-                      itemCount: category.lists.length,
-                      separatorBuilder: (_, __) => const SizedBox(height: 8),
-                      itemBuilder: (context, index) {
-                        final preset = category.lists[index];
-                        return _PresetListTile(
-                          preset: preset,
-                          locale: locale,
-                          onTap: () => _pick(preset),
-                        );
-                      },
+                    return _PresetCategoryListView(
+                      lists: category.lists,
+                      locale: locale,
+                      onPick: _pick,
                     );
                   }).toList(),
                 ),
@@ -251,6 +244,86 @@ class _PresetListSheetState extends State<_PresetListSheet>
         ),
       ),
     );
+  }
+}
+
+class _PresetCategoryListView extends StatelessWidget {
+  const _PresetCategoryListView({
+    required this.lists,
+    required this.locale,
+    required this.onPick,
+  });
+
+  final List<PresetSheetList> lists;
+  final Locale locale;
+  final ValueChanged<PresetSheetList> onPick;
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView.builder(
+      padding: const EdgeInsets.only(top: 4, bottom: 8),
+      itemCount: _rowCount(lists),
+      itemBuilder: (context, index) {
+        final row = _rowAt(lists, index);
+        if (row.section != null) {
+          return Padding(
+            padding: EdgeInsets.only(
+              top: index == 0 ? 0 : 12,
+              bottom: 6,
+            ),
+            child: Text(
+              row.section!.resolve(locale),
+              style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                    color: Theme.of(context).colorScheme.primary,
+                    fontWeight: FontWeight.w600,
+                  ),
+            ),
+          );
+        }
+        final preset = row.preset!;
+        return Padding(
+          padding: const EdgeInsets.only(bottom: 8),
+          child: _PresetListTile(
+            preset: preset,
+            locale: locale,
+            onTap: () => onPick(preset),
+          ),
+        );
+      },
+    );
+  }
+
+  static int _rowCount(List<PresetSheetList> lists) {
+    var count = 0;
+    String? lastSection;
+    for (final list in lists) {
+      final key = list.section?.zh;
+      if (key != null && key != lastSection) {
+        count += 1;
+        lastSection = key;
+      }
+      count += 1;
+    }
+    return count;
+  }
+
+  static ({LocalizedLabel? section, PresetSheetList? preset}) _rowAt(
+    List<PresetSheetList> lists,
+    int index,
+  ) {
+    var i = 0;
+    String? lastSection;
+    for (final list in lists) {
+      final key = list.section?.zh;
+      if (key != null && key != lastSection) {
+        if (i == index) return (section: list.section, preset: null);
+        i += 1;
+        lastSection = key;
+      }
+      if (i == index) return (section: null, preset: list);
+      i += 1;
+    }
+    throw RangeError.index(index, lists, 'index');
   }
 }
 

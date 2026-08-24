@@ -12,9 +12,9 @@ class PresetListService extends ChangeNotifier {
 
   /// 输入框下方快捷 chip 对应的预设 ID。
   static const List<String> featuredPresetIds = [
-    'grade1_unit1',
-    'theme_spring',
-    'basics_stroke_practice',
+    'textbook_g1_1',
+    'life_season_spring',
+    'practice_strokes',
   ];
 
   static const String _keyRecentIds = 'preset_recent_ids';

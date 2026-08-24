@@ -7,6 +7,7 @@ class PresetSheetList {
     required this.title,
     required this.text,
     this.sortOrder = 0,
+    this.section,
     this.description,
     this.tags = const [],
     this.source,
@@ -23,6 +24,9 @@ class PresetSheetList {
 
   /// 分类内排序，越小越靠前。
   final int sortOrder;
+
+  /// 分类内二级分组（如「一年级」「时令自然」），用于列表分区标题。
+  final LocalizedLabel? section;
 
   /// 可选副标题（如「约 10 字 · 人教版上册」）。
   final LocalizedLabel? description;
@@ -48,6 +52,9 @@ class PresetSheetList {
       if (description != null) description!.zh,
       if (description?.en != null) description!.en!,
       if (description?.zhHant != null) description!.zhHant!,
+      if (section != null) section!.zh,
+      if (section?.en != null) section!.en!,
+      if (section?.zhHant != null) section!.zhHant!,
       text,
       ...tags,
     ];
@@ -79,6 +86,12 @@ class PresetSheetList {
       description = LocalizedLabel.fromJson(descJson);
     }
 
+    LocalizedLabel? sectionLabel;
+    final sectionJson = json['section'];
+    if (sectionJson is Map<String, dynamic>) {
+      sectionLabel = LocalizedLabel.fromJson(sectionJson);
+    }
+
     LocalizedLabel? source;
     final sourceJson = json['source'];
     if (sourceJson is Map<String, dynamic>) {
@@ -99,6 +112,7 @@ class PresetSheetList {
       title: LocalizedLabel.fromJson(title),
       text: text.trim(),
       sortOrder: (json['sortOrder'] as num?)?.toInt() ?? 0,
+      section: sectionLabel,
       description: description,
       tags: tags,
       source: source,
@@ -110,6 +124,7 @@ class PresetSheetList {
         'title': title.toJson(),
         'text': text,
         if (sortOrder != 0) 'sortOrder': sortOrder,
+        if (section != null) 'section': section!.toJson(),
         if (description != null) 'description': description!.toJson(),
         if (tags.isNotEmpty) 'tags': tags,
         if (source != null) 'source': source!.toJson(),

@@ -31,23 +31,45 @@ void main() {
       }
     });
 
-    test('findById returns preset', () async {
+    test('has four top-level categories after merge', () async {
       final catalog = await loader.loadFromAsset();
-      final preset = catalog.findById('grade1_unit1');
-      expect(preset, isNotNull);
-      expect(preset!.text, contains('天'));
+      expect(catalog.categories.length, 4);
+      expect(catalog.categories.map((c) => c.id).toList(), [
+        'classic_poetry',
+        'textbook',
+        'life',
+        'practice',
+      ]);
     });
 
-    test('includes tang300 category with poems', () async {
+    test('findById returns textbook preset', () async {
       final catalog = await loader.loadFromAsset();
-      final tang = catalog.categories.where((c) => c.id == 'tang300').toList();
-      expect(tang, hasLength(1));
-      expect(tang.first.lists.length, greaterThanOrEqualTo(300));
+      final preset = catalog.findById('textbook_g1_1');
+      expect(preset, isNotNull);
+      expect(preset!.text, contains('天'));
+      expect(preset.section?.zh, '一年级');
+    });
+
+    test('includes classic poetry with tang300 poems', () async {
+      final catalog = await loader.loadFromAsset();
+      final poetry = catalog.categories.firstWhere((c) => c.id == 'classic_poetry');
+      expect(poetry.lists.length, greaterThanOrEqualTo(300));
 
       final jingyesi = catalog.findById('tang300_233');
       expect(jingyesi, isNotNull);
       expect(jingyesi!.text, contains('床前明月光'));
-      expect(jingyesi.tags, contains('李白'));
+      expect(jingyesi.section?.zh, '五言绝句');
+    });
+
+    test('textbook grade lists cover multiple chunks per grade', () async {
+      final catalog = await loader.loadFromAsset();
+      final textbook = catalog.categories.firstWhere((c) => c.id == 'textbook');
+      final g1 = textbook.lists.where((l) => l.tags.contains('grade1')).length;
+      final g2 = textbook.lists.where((l) => l.tags.contains('grade2')).length;
+      final g3 = textbook.lists.where((l) => l.tags.contains('grade3')).length;
+      expect(g1, greaterThanOrEqualTo(8));
+      expect(g2, greaterThanOrEqualTo(6));
+      expect(g3, greaterThanOrEqualTo(6));
     });
 
     test('search finds poems by title author and content', () async {
@@ -58,23 +80,26 @@ void main() {
       expect(catalog.search('李白').length, greaterThan(5));
       expect(catalog.search('明月').length, greaterThan(3));
       expect(catalog.search('五言绝句').length, greaterThan(10));
+      expect(catalog.search('一年级').length, greaterThan(5));
       expect(catalog.search('xyznotfound'), isEmpty);
     });
   });
 
   group('PresetSheetList.matchesSearch', () {
-    const preset = PresetSheetList(
+    final preset = PresetSheetList(
       id: 'test',
-      title: LocalizedLabel(zh: '春晓'),
-      description: LocalizedLabel(zh: '孟浩然 · 五言绝句'),
+      title: const LocalizedLabel(zh: '春晓'),
+      section: const LocalizedLabel(zh: '一年级'),
+      description: const LocalizedLabel(zh: '孟浩然 · 五言绝句'),
       text: '春眠不觉晓处处闻啼鸟',
       tags: ['tang300', '孟浩然'],
     );
 
-    test('matches title author and text', () {
+    test('matches title author section and text', () {
       expect(preset.matchesSearch('春晓'), isTrue);
       expect(preset.matchesSearch('孟浩然'), isTrue);
       expect(preset.matchesSearch('啼鸟'), isTrue);
+      expect(preset.matchesSearch('一年级'), isTrue);
       expect(preset.matchesSearch('律诗'), isFalse);
     });
   });

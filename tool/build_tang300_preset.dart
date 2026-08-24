@@ -49,10 +49,15 @@ void main() {
     if (text.isEmpty || title.isEmpty) continue;
 
     final presetId = 'tang300_${(idNum as num).toInt().toString().padLeft(3, '0')}';
-    final tags = <String>['tang300', author, type, ...?_titleAliases[title]];
+    final tags = <String>['tang300', 'classic_poetry', author, type, ...?_titleAliases[title]];
     lists.add({
       'id': presetId,
       'sortOrder': (idNum as num).toInt(),
+      'section': {
+        'zh': type,
+        'en': typeEn(type),
+        'zh_Hant': type,
+      },
       'title': {'zh': title, 'en': title},
       'description': {
         'zh': '$author · $type',
@@ -65,13 +70,13 @@ void main() {
   }
 
   final category = {
-    'id': 'tang300',
-    'sortOrder': 8,
+    'id': 'classic_poetry',
+    'sortOrder': 1,
     'icon': 'auto_stories',
     'title': {
-      'zh': '唐诗三百首',
-      'en': 'Three Hundred Tang Poems',
-      'zh_Hant': '唐詩三百首',
+      'zh': '经典诗词',
+      'en': 'Classic poetry',
+      'zh_Hant': '經典詩詞',
     },
     'lists': lists,
   };

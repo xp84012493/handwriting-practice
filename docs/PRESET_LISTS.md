@@ -6,8 +6,8 @@
 
 | 路径 | 说明 |
 |------|------|
-| `assets/preset_lists.json` | 基础预设数据 |
-| `assets/preset_tang300.json` | 唐诗三百首（319 首，由 `tool/build_tang300_preset.dart` 生成） |
+| `assets/preset_lists.json` | 教材生字 / 生活主题 / 练字入门（由 `tool/build_preset_lists.dart` 生成） |
+| `assets/preset_tang300.json` | 唐诗三百首（319 首，合并入「经典诗词」，由 `tool/build_tang300_preset.dart` 生成） |
 | `lib/src/models/localized_label.dart` | 多语言标题 |
 | `lib/src/models/preset_sheet_list.dart` | 分类与列表模型 |
 | `lib/src/parsers/preset_list_catalog_loader.dart` | 加载与校验 |
@@ -70,6 +70,7 @@
 | `title` | LocalizedLabel | 是 | 列表项标题 |
 | `text` | string | 是 | **仅汉字**，无空格标点；与输入框规则一致 |
 | `sortOrder` | int | 否 | 分类内排序 |
+| `section` | LocalizedLabel | 否 | 列表内二级分组标题（如「一年级」「五言绝句」） |
 | `description` | LocalizedLabel | 否 | 副标题（字数、单元说明） |
 | `tags` | string[] | 否 | 自由标签，便于筛选 |
 | `source` | LocalizedLabel | 否 | 出处（教材版本等） |
