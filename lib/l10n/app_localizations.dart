@@ -980,6 +980,30 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Could not load preset sheets'**
   String get presetLoadFailed;
+
+  /// No description provided for @presetSearchHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Search title, author, lines, or form'**
+  String get presetSearchHint;
+
+  /// No description provided for @presetSearchClear.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear search'**
+  String get presetSearchClear;
+
+  /// No description provided for @presetSearchEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No matching preset sheets'**
+  String get presetSearchEmpty;
+
+  /// No description provided for @presetSearchResultCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} result(s)'**
+  String presetSearchResultCount(int count);
 }
 
 class _AppLocalizationsDelegate

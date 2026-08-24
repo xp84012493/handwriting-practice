@@ -36,6 +36,29 @@ class PresetSheetList {
   /// 去重后的汉字个数（按 Unicode 字符计）。
   int get characterCount => text.runes.length;
 
+  /// 关键字搜索：标题、描述、正文、标签（中英文子串匹配）。
+  bool matchesSearch(String query) {
+    final q = query.trim();
+    if (q.isEmpty) return false;
+
+    final parts = <String>[
+      title.zh,
+      if (title.en != null) title.en!,
+      if (title.zhHant != null) title.zhHant!,
+      if (description != null) description!.zh,
+      if (description?.en != null) description!.en!,
+      if (description?.zhHant != null) description!.zhHant!,
+      text,
+      ...tags,
+    ];
+    for (final part in parts) {
+      if (part.contains(q)) return true;
+      final lower = q.toLowerCase();
+      if (lower != q && part.toLowerCase().contains(lower)) return true;
+    }
+    return false;
+  }
+
   factory PresetSheetList.fromJson(Map<String, dynamic> json) {
     final id = json['id'];
     if (id is! String || id.trim().isEmpty) {
@@ -189,6 +212,41 @@ class PresetListCatalog {
       }
     }
     return null;
+  }
+
+  /// 返回包含该预设的分类；未找到时 null。
+  PresetListCategory? categoryForPreset(PresetSheetList preset) {
+    for (final category in categories) {
+      if (category.lists.any((l) => l.id == preset.id)) {
+        return category;
+      }
+    }
+    return null;
+  }
+
+  /// 按标题、作者、体裁、正文、标签关键字搜索（子串匹配）。
+  List<PresetSheetList> search(String query) {
+    final q = query.trim();
+    if (q.isEmpty) return const [];
+    return allLists.where((list) => list.matchesSearch(q)).toList(growable: false);
+  }
+
+  /// 合并多个目录（分类与列表 id 须全局唯一）。
+  static PresetListCatalog merge(List<PresetListCatalog> catalogs) {
+    if (catalogs.isEmpty) {
+      throw ArgumentError('merge 至少需要一个目录');
+    }
+    final categories =
+        catalogs.expand((catalog) => catalog.categories).toList(growable: false);
+    _assertUniqueIds(categories.map((c) => c.id), 'categories');
+    _assertUniqueIds(
+      categories.expand((c) => c.lists.map((l) => l.id)),
+      'all lists',
+    );
+    return PresetListCatalog(
+      schemaVersion: catalogs.first.schemaVersion,
+      categories: _sortedCategories(categories),
+    );
   }
 
   factory PresetListCatalog.fromJson(Map<String, dynamic> json) {

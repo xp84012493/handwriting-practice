@@ -15,6 +15,8 @@ IconData presetCategoryIcon(String? iconName) {
       return Icons.chat_bubble_outline;
     case 'menu_book':
       return Icons.menu_book_outlined;
+    case 'auto_stories':
+      return Icons.auto_stories_outlined;
     default:
       return Icons.library_books_outlined;
   }

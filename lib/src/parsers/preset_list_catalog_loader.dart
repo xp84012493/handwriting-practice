@@ -5,23 +5,36 @@ import 'package:flutter/services.dart' show rootBundle;
 
 import '../models/preset_sheet_list.dart';
 
-/// 从 `assets/preset_lists.json` 加载预设生字词表。
+/// 从 assets 加载预设生字词表（基础 + 唐诗三百首等扩展包）。
 class PresetListCatalogLoader {
   const PresetListCatalogLoader();
+
+  static const String tang300AssetPath = 'assets/preset_tang300.json';
 
   static final RegExp _hanzi = RegExp(r'[\u4e00-\u9fff]');
 
   Future<PresetListCatalog> loadFromAsset({
     String assetPath = PresetListCatalog.assetPath,
+    bool includeTang300 = true,
   }) async {
+    final catalogs = <PresetListCatalog>[
+      await _loadSingle(assetPath),
+    ];
+    if (includeTang300) {
+      catalogs.add(await _loadSingle(tang300AssetPath));
+    }
+    final catalog = PresetListCatalog.merge(catalogs);
+    _validateHanziText(catalog);
+    return catalog;
+  }
+
+  Future<PresetListCatalog> _loadSingle(String assetPath) async {
     final raw = await rootBundle.loadString(assetPath);
     final json = jsonDecode(raw);
     if (json is! Map<String, dynamic>) {
-      throw FormatException('preset_lists 根节点须为 JSON 对象');
+      throw FormatException('$assetPath 根节点须为 JSON 对象');
     }
-    final catalog = PresetListCatalog.fromJson(json);
-    _validateHanziText(catalog);
-    return catalog;
+    return PresetListCatalog.fromJson(json);
   }
 
   /// 仅保留基本汉字，与 [PracticeSheetController] 输入规则一致。

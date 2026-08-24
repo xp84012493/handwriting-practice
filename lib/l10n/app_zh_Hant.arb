@@ -175,5 +175,16 @@
       "count": { "type": "int" }
     }
   },
-  "presetLoadFailed": "預設字帖載入失敗"
+  "presetLoadFailed": "預設字帖載入失敗",
+  "presetSearchHint": "搜尋標題、作者、詩句或體裁",
+  "presetSearchClear": "清除搜尋",
+  "presetSearchEmpty": "未找到符合的預設字帖",
+  "presetSearchResultCount": "找到 {count} 條",
+  "@presetSearchResultCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  }
 }

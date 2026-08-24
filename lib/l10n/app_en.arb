@@ -325,5 +325,16 @@
       "count": { "type": "int" }
     }
   },
-  "presetLoadFailed": "Could not load preset sheets"
+  "presetLoadFailed": "Could not load preset sheets",
+  "presetSearchHint": "Search title, author, lines, or form",
+  "presetSearchClear": "Clear search",
+  "presetSearchEmpty": "No matching preset sheets",
+  "presetSearchResultCount": "{count} result(s)",
+  "@presetSearchResultCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  }
 }

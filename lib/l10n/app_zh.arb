@@ -175,5 +175,16 @@
       "count": { "type": "int" }
     }
   },
-  "presetLoadFailed": "预设字帖加载失败"
+  "presetLoadFailed": "预设字帖加载失败",
+  "presetSearchHint": "搜索标题、作者、诗句或体裁",
+  "presetSearchClear": "清除搜索",
+  "presetSearchEmpty": "未找到匹配的预设字帖",
+  "presetSearchResultCount": "找到 {count} 条",
+  "@presetSearchResultCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  }
 }

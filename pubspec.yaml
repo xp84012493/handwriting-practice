@@ -36,6 +36,7 @@ flutter:
     - assets/sample_graphics.json
     - assets/hanzi_dictionary.json
     - assets/preset_lists.json
+    - assets/preset_tang300.json
     - LICENSE
     - THIRD_PARTY_NOTICES.md
   fonts:

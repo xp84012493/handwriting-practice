@@ -6,7 +6,8 @@
 
 | 路径 | 说明 |
 |------|------|
-| `assets/preset_lists.json` | 预设数据（可独立扩充） |
+| `assets/preset_lists.json` | 基础预设数据 |
+| `assets/preset_tang300.json` | 唐诗三百首（319 首，由 `tool/build_tang300_preset.dart` 生成） |
 | `lib/src/models/localized_label.dart` | 多语言标题 |
 | `lib/src/models/preset_sheet_list.dart` | 分类与列表模型 |
 | `lib/src/parsers/preset_list_catalog_loader.dart` | 加载与校验 |

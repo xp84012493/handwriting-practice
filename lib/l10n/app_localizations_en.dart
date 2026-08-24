@@ -527,4 +527,18 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get presetLoadFailed => 'Could not load preset sheets';
+
+  @override
+  String get presetSearchHint => 'Search title, author, lines, or form';
+
+  @override
+  String get presetSearchClear => 'Clear search';
+
+  @override
+  String get presetSearchEmpty => 'No matching preset sheets';
+
+  @override
+  String presetSearchResultCount(int count) {
+    return '$count result(s)';
+  }
 }

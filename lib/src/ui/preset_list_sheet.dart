@@ -5,7 +5,7 @@ import '../models/preset_sheet_list.dart';
 import '../services/preset_list_service.dart';
 import 'preset_category_icon.dart';
 
-/// 底部弹层：分类 Tab + 预设列表。
+/// 底部弹层：分类 Tab + 关键字搜索 + 预设列表。
 Future<void> showPresetListSheet(
   BuildContext context, {
   required PresetListCatalog catalog,
@@ -48,6 +48,8 @@ class _PresetListSheet extends StatefulWidget {
 class _PresetListSheetState extends State<_PresetListSheet>
     with SingleTickerProviderStateMixin {
   late final TabController _tabController;
+  late final TextEditingController _searchController;
+  String _query = '';
 
   @override
   void initState() {
@@ -60,11 +62,19 @@ class _PresetListSheetState extends State<_PresetListSheet>
       vsync: this,
       initialIndex: initialIndex,
     );
+    _searchController = TextEditingController();
+    _searchController.addListener(() {
+      final next = _searchController.text;
+      if (next != _query) {
+        setState(() => _query = next);
+      }
+    });
   }
 
   @override
   void dispose() {
     _tabController.dispose();
+    _searchController.dispose();
     super.dispose();
   }
 
@@ -72,6 +82,16 @@ class _PresetListSheetState extends State<_PresetListSheet>
     Navigator.of(context).pop();
     widget.onSelected(preset);
   }
+
+  void _clearSearch() {
+    _searchController.clear();
+    setState(() => _query = '');
+  }
+
+  bool get _isSearching => _query.trim().isNotEmpty;
+
+  List<PresetSheetList> get _searchResults =>
+      widget.catalog.search(_query);
 
   @override
   Widget build(BuildContext context) {
@@ -99,7 +119,29 @@ class _PresetListSheetState extends State<_PresetListSheet>
                 color: theme.colorScheme.onSurfaceVariant,
               ),
             ),
-            if (widget.recentPresets.isNotEmpty) ...[
+            const SizedBox(height: 12),
+            SearchBar(
+              controller: _searchController,
+              hintText: l10n.presetSearchHint,
+              leading: const Icon(Icons.search),
+              trailing: _isSearching
+                  ? [
+                      IconButton(
+                        icon: const Icon(Icons.clear),
+                        onPressed: _clearSearch,
+                        tooltip: l10n.presetSearchClear,
+                      ),
+                    ]
+                  : null,
+              elevation: WidgetStateProperty.all(0),
+              backgroundColor: WidgetStateProperty.all(
+                theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.5),
+              ),
+              padding: const WidgetStatePropertyAll(
+                EdgeInsets.symmetric(horizontal: 12),
+              ),
+            ),
+            if (!_isSearching && widget.recentPresets.isNotEmpty) ...[
               const SizedBox(height: 16),
               Text(
                 l10n.presetRecentSection,
@@ -126,47 +168,85 @@ class _PresetListSheetState extends State<_PresetListSheet>
               ),
             ],
             const SizedBox(height: 12),
-            TabBar(
-              controller: _tabController,
-              isScrollable: true,
-              tabAlignment: TabAlignment.start,
-              tabs: widget.catalog.categories.map((category) {
-                return Tab(
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Icon(
-                        presetCategoryIcon(category.icon),
-                        size: 18,
+            if (_isSearching) ...[
+              Text(
+                l10n.presetSearchResultCount(_searchResults.length),
+                style: theme.textTheme.labelLarge?.copyWith(
+                  color: theme.colorScheme.onSurfaceVariant,
+                ),
+              ),
+              const SizedBox(height: 8),
+              Expanded(
+                child: _searchResults.isEmpty
+                    ? Center(
+                        child: Text(
+                          l10n.presetSearchEmpty,
+                          style: theme.textTheme.bodyLarge?.copyWith(
+                            color: theme.colorScheme.onSurfaceVariant,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                      )
+                    : ListView.separated(
+                        padding: const EdgeInsets.only(top: 4, bottom: 8),
+                        itemCount: _searchResults.length,
+                        separatorBuilder: (_, __) => const SizedBox(height: 8),
+                        itemBuilder: (context, index) {
+                          final preset = _searchResults[index];
+                          final category =
+                              widget.catalog.categoryForPreset(preset);
+                          return _PresetListTile(
+                            preset: preset,
+                            locale: locale,
+                            categoryLabel: category?.title.resolve(locale),
+                            onTap: () => _pick(preset),
+                          );
+                        },
                       ),
-                      const SizedBox(width: 6),
-                      Text(category.title.resolve(locale)),
-                    ],
-                  ),
-                );
-              }).toList(),
-            ),
-            const SizedBox(height: 8),
-            Expanded(
-              child: TabBarView(
+              ),
+            ] else ...[
+              TabBar(
                 controller: _tabController,
-                children: widget.catalog.categories.map((category) {
-                  return ListView.separated(
-                    padding: const EdgeInsets.only(top: 4, bottom: 8),
-                    itemCount: category.lists.length,
-                    separatorBuilder: (_, __) => const SizedBox(height: 8),
-                    itemBuilder: (context, index) {
-                      final preset = category.lists[index];
-                      return _PresetListTile(
-                        preset: preset,
-                        locale: locale,
-                        onTap: () => _pick(preset),
-                      );
-                    },
+                isScrollable: true,
+                tabAlignment: TabAlignment.start,
+                tabs: widget.catalog.categories.map((category) {
+                  return Tab(
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(
+                          presetCategoryIcon(category.icon),
+                          size: 18,
+                        ),
+                        const SizedBox(width: 6),
+                        Text(category.title.resolve(locale)),
+                      ],
+                    ),
                   );
                 }).toList(),
               ),
-            ),
+              const SizedBox(height: 8),
+              Expanded(
+                child: TabBarView(
+                  controller: _tabController,
+                  children: widget.catalog.categories.map((category) {
+                    return ListView.separated(
+                      padding: const EdgeInsets.only(top: 4, bottom: 8),
+                      itemCount: category.lists.length,
+                      separatorBuilder: (_, __) => const SizedBox(height: 8),
+                      itemBuilder: (context, index) {
+                        final preset = category.lists[index];
+                        return _PresetListTile(
+                          preset: preset,
+                          locale: locale,
+                          onTap: () => _pick(preset),
+                        );
+                      },
+                    );
+                  }).toList(),
+                ),
+              ),
+            ],
           ],
         ),
       ),
@@ -179,11 +259,13 @@ class _PresetListTile extends StatelessWidget {
     required this.preset,
     required this.locale,
     required this.onTap,
+    this.categoryLabel,
   });
 
   final PresetSheetList preset;
   final Locale locale;
   final VoidCallback onTap;
+  final String? categoryLabel;
 
   @override
   Widget build(BuildContext context) {
@@ -228,13 +310,26 @@ class _PresetListTile extends StatelessWidget {
                   ),
                 ],
               ),
+              if (categoryLabel != null) ...[
+                const SizedBox(height: 4),
+                Text(
+                  categoryLabel!,
+                  style: theme.textTheme.labelSmall?.copyWith(
+                    color: theme.colorScheme.primary,
+                  ),
+                ),
+              ],
               const SizedBox(height: 8),
               Text(
                 preset.text,
+                maxLines: 3,
+                overflow: TextOverflow.ellipsis,
                 style: theme.textTheme.headlineSmall?.copyWith(
                   fontWeight: FontWeight.w600,
                   letterSpacing: 4,
                   height: 1.3,
+                  fontSize: (theme.textTheme.headlineSmall?.fontSize ?? 24) *
+                      (preset.characterCount > 28 ? 0.72 : 1.0),
                 ),
               ),
             ],

@@ -508,6 +508,20 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get presetLoadFailed => '预设字帖加载失败';
+
+  @override
+  String get presetSearchHint => '搜索标题、作者、诗句或体裁';
+
+  @override
+  String get presetSearchClear => '清除搜索';
+
+  @override
+  String get presetSearchEmpty => '未找到匹配的预设字帖';
+
+  @override
+  String presetSearchResultCount(int count) {
+    return '找到 $count 条';
+  }
 }
 
 /// The translations for Chinese, using the Han script (`zh_Hant`).
@@ -1014,4 +1028,18 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String get presetLoadFailed => '預設字帖載入失敗';
+
+  @override
+  String get presetSearchHint => '搜尋標題、作者、詩句或體裁';
+
+  @override
+  String get presetSearchClear => '清除搜尋';
+
+  @override
+  String get presetSearchEmpty => '未找到符合的預設字帖';
+
+  @override
+  String presetSearchResultCount(int count) {
+    return '找到 $count 條';
+  }
 }
